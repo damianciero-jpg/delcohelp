@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#2D6A4F" />
+    <meta name="description" content="DelcoHelp — Free app for food pantries, benefits, and emergency resources in Delaware County, PA" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="DelcoHelp" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:title" content="DelcoHelp — Find Help in Delaware County" />
+    <meta property="og:description" content="Free bilingual app for food pantries, benefits, and emergency resources." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://delcohelp.org" />
+
+    <title>DelcoHelp — Find Help in Delaware County</title>
+
+    <!-- Google Analytics 4 — DelcoHelp (G-3DEVDTQ80W) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3DEVDTQ80W"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3DEVDTQ80W');
+    </script>
+
+    <script>
+      // Register service worker for offline support + push notifications
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('[DelcoHelp] Service worker registered', reg.scope))
+            .catch(err => console.log('[DelcoHelp] SW registration failed', err));
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
