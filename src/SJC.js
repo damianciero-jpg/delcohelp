@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { auth, db, googleProvider, FIREBASE_ENABLED } from "./firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import HealthFoodCheck from "./HealthFoodCheck";
+import NutritionFoodCheck from "./NutritionFoodCheck";
 import { EXTRA_TRANSLATIONS, InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent,
   PantryInventoryWidget, IAmGoingButton, SaveResourceButton, FoundHelpButton,
@@ -2924,7 +2924,7 @@ function PublicApp() {
   const tabs=[
     {id:"home",icon:"✝",label:"Home"},
     {id:"find",icon:"🔍",label:"Find"},
-    {id:"health",icon:"H",label:"Health"},
+    {id:"nutrition",icon:"🍎",label:"Nutrition"},
     {id:"youtube",icon:"▶️",label:"Masses"},
     {id:"events",icon:"📅",label:"Events"},
     {id:"reports",icon:"📊",label:"Impact"},
@@ -2937,7 +2937,7 @@ function PublicApp() {
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
-    health:<HealthFoodCheck variant="sjc"/>,
+    nutrition:<NutritionFoodCheck variant="sjc"/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
     volunteer:<VolunteerScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,
     events:<EventCalendarScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,

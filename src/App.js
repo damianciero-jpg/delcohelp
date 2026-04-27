@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { auth, db, googleProvider, FIREBASE_ENABLED } from "./firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import HealthFoodCheck from "./HealthFoodCheck";
+import NutritionFoodCheck from "./NutritionFoodCheck";
 import TrustCheck from "./TrustCheck";
 import {
   InstallPrompt, SMSAccessCard, EligibilityQuiz,
@@ -518,6 +518,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
           {[
             {icon:"🍽",label:"Food",sub:"Pantries open now",nav:"find",filter:"food"},
             {icon:"📋",label:"Benefits",sub:"SNAP, WIC & more",nav:"benefits"},
+            {icon:"??",label:"Nutrition",sub:"Food check & nutrition",nav:"nutrition"},
             {icon:"?",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
             {icon:"📞",label:"Crisis Line",sub:"Free & confidential",nav:"hotline"},
             {icon:"🏠",label:"Housing",sub:"Shelter & legal aid",nav:"find",filter:"assistance"},
@@ -1218,7 +1219,7 @@ export default function App() {
     {id:"home",icon:"🏠",label:"home"},
     {id:"find",icon:"🔍",label:"find"},
     {id:"benefits",icon:"📋",label:"benefits"},
-    {id:"health",icon:"H",label:"Health"},
+    {id:"nutrition",icon:"🍎",label:"Nutrition"},
     {id:"hotline",icon:"🚨",label:"hotline"},
     {id:"ai",icon:"🤖",label:"askAI"},
   ];
@@ -1227,7 +1228,7 @@ export default function App() {
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
-    health:<HealthFoodCheck variant="delco"/>,
+    nutrition:<NutritionFoodCheck variant="delco"/>,
     trust:<TrustCheck/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
     volunteer:<VolunteerScreen lang={lang}/>,
@@ -1300,4 +1301,5 @@ export default function App() {
     </div>
   );
 }
+
 

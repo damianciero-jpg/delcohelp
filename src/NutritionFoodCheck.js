@@ -27,10 +27,10 @@ function numberFrom(value) {
 
 function getRating(grade) {
   const normalized = String(grade || "").toLowerCase();
-  if (normalized === "a" || normalized === "b") return { label: "Healthy Choice", tone: "good" };
-  if (normalized === "c") return { label: "Okay Sometimes", tone: "ok" };
-  if (normalized === "d" || normalized === "e") return { label: "Limit If Possible", tone: "limit" };
-  return { label: "Not enough nutrition data", tone: "unknown" };
+  if (normalized === "a" || normalized === "b") return { label: "Healthy Choice", tone: "good", marker: "✓" };
+  if (normalized === "c") return { label: "Okay Sometimes", tone: "ok", marker: "~" };
+  if (normalized === "d" || normalized === "e") return { label: "Limit If Possible", tone: "limit", marker: "!" };
+  return { label: "Not enough nutrition data", tone: "unknown", marker: "○" };
 }
 
 function getNutritionFlags(nutriments = {}) {
@@ -83,7 +83,7 @@ function firstDetectedValue(detectedCodes) {
   return String(code?.rawValue || code?.text || "").trim();
 }
 
-export default function HealthFoodCheck({ variant = "delco" }) {
+export default function NutritionFoodCheck({ variant = "delco" }) {
   const [barcode, setBarcode] = useState("");
   const [cameraOpen, setCameraOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -107,11 +107,15 @@ export default function HealthFoodCheck({ variant = "delco" }) {
     }
     return {
       accent: "#0ea5e9",
-      accentDark: "#002D72",
+      accentDark: "#1e3a8a",
+      deepBlue: "#002D72",
+      yellow: "#facc15",
+      red: "#ef4444",
+      success: "#16a34a",
       bg: "#f8fafc",
       surface: "#FFFFFF",
       soft: "rgba(14,165,233,0.08)",
-      border: "rgba(14,165,233,0.18)",
+      border: "#e2e8f0",
       text: "#0f172a",
       muted: "#475569",
       font: "'DM Sans', sans-serif",
@@ -190,27 +194,33 @@ export default function HealthFoodCheck({ variant = "delco" }) {
   const allergyText = product ? getAllergyText(product) : "";
 
   return (
-    <div className="dfi" style={{ padding: 20, fontFamily: theme.font, color: theme.text }}>
-      <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 800, color: theme.accent, marginBottom: 8 }}>
-          Health
+    <div className="dfi" style={{ padding: 20, fontFamily: theme.font, color: theme.text, background: theme.bg, minHeight: "100%" }}>
+      <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 20, padding: 18, boxShadow: "0 4px 14px rgba(0,0,0,0.05)", marginBottom: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+          <div aria-hidden="true" style={{ width: 44, height: 44, borderRadius: 14, background: theme.soft, color: theme.accentDark, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24 }}>
+            🍎
+          </div>
+          <div>
+            <div style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 900, color: theme.accentDark, marginBottom: 3 }}>
+              Nutrition
+            </div>
+            <h1 style={{ margin: 0, fontSize: 26, lineHeight: 1.08 }}>Nutrition Check</h1>
+          </div>
         </div>
-        <h1 style={{ margin: 0, fontSize: 28, lineHeight: 1.08, letterSpacing: "-0.02em" }}>Food Health Check</h1>
-        <p style={{ margin: "8px 0 0", fontSize: 14, lineHeight: 1.45, color: theme.muted }}>
-          Scan or enter a food barcode to understand nutrition quickly.
+        <p style={{ margin: "0 0 12px", fontSize: 14, lineHeight: 1.45, color: theme.muted }}>
+          Scan or enter a food barcode to quickly understand what is in the food.
         </p>
+        <div style={{ background: theme.soft, border: "1px solid rgba(14,165,233,0.18)", borderRadius: 14, padding: 13, fontSize: 13, lineHeight: 1.45, color: "#334155" }}>
+          Any food can help when you need it. This tool helps you make the best choice available.
+        </div>
       </div>
 
-      <div style={{ background: theme.soft, border: `1px solid ${theme.border}`, borderRadius: 18, padding: 14, fontSize: 13, lineHeight: 1.45, marginBottom: 16 }}>
-        Any food can help when you need it. This tool is here to help you make the best choice available.
-      </div>
-
-      <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 20, padding: 16, boxShadow: "0 4px 18px rgba(0,0,0,0.06)", marginBottom: 16 }}>
-        <label htmlFor="health-barcode" style={{ display: "block", fontSize: 12, fontWeight: 800, color: theme.muted, marginBottom: 8 }}>
+      <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 20, padding: 16, boxShadow: "0 4px 14px rgba(0,0,0,0.05)", marginBottom: 16 }}>
+        <label htmlFor="nutrition-barcode" style={{ display: "block", fontSize: 12, fontWeight: 800, color: theme.muted, marginBottom: 8 }}>
           Barcode
         </label>
         <input
-          id="health-barcode"
+          id="nutrition-barcode"
           value={barcode}
           onChange={(event) => setBarcode(event.target.value)}
           inputMode="numeric"
@@ -222,14 +232,14 @@ export default function HealthFoodCheck({ variant = "delco" }) {
             type="button"
             onClick={() => lookupFood(barcode)}
             disabled={loading}
-            style={{ minHeight: 48, border: "none", borderRadius: 14, background: theme.accent, color: "white", fontSize: 14, fontWeight: 800, cursor: loading ? "default" : "pointer" }}
+            style={{ minHeight: 50, border: "none", borderRadius: 16, background: theme.yellow || "#facc15", color: "#0f172a", fontSize: 14, fontWeight: 900, cursor: loading ? "default" : "pointer", opacity: loading ? 0.7 : 1 }}
           >
             {loading ? "Checking..." : "Check Food"}
           </button>
           <button
             type="button"
             onClick={() => { if (cameraOpen) stopCamera(); else openScanner(); }}
-            style={{ minHeight: 48, border: `1.5px solid ${theme.accent}`, borderRadius: 14, background: cameraOpen ? theme.soft : "white", color: theme.accentDark, fontSize: 14, fontWeight: 800, cursor: "pointer" }}
+            style={{ minHeight: 50, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 14, fontWeight: 900, cursor: "pointer" }}
           >
             {cameraOpen ? "Stop Camera" : "Use Camera"}
           </button>
@@ -237,7 +247,7 @@ export default function HealthFoodCheck({ variant = "delco" }) {
       </div>
 
       {cameraOpen && (
-        <div style={{ background: "#111", borderRadius: 20, overflow: "hidden", marginBottom: 16, border: `2px solid ${theme.border}` }}>
+        <div style={{ background: "#0f172a", borderRadius: 20, overflow: "hidden", marginBottom: 16, border: `1px solid ${theme.border}`, boxShadow: "0 4px 14px rgba(0,0,0,0.05)" }}>
           <Scanner
             key={scannerKey}
             onScan={handleScannerResult}
@@ -252,7 +262,7 @@ export default function HealthFoodCheck({ variant = "delco" }) {
             <button
               type="button"
               onClick={stopCamera}
-              style={{ width: "100%", minHeight: 44, border: `1.5px solid ${theme.accent}`, borderRadius: 12, background: "white", color: theme.accentDark, fontSize: 13, fontWeight: 800, cursor: "pointer" }}
+              style={{ width: "100%", minHeight: 46, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
             >
               Stop Camera
             </button>
@@ -267,12 +277,12 @@ export default function HealthFoodCheck({ variant = "delco" }) {
       )}
 
       {error && !loading && (
-        <div style={{ background: "#FFF7ED", border: "1px solid #FED7AA", borderRadius: 18, padding: 16, marginBottom: 16 }}>
-          <div style={{ fontSize: 13, lineHeight: 1.45, color: "#7C2D12", marginBottom: 12 }}>{error}</div>
+        <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 18, padding: 16, marginBottom: 16 }}>
+          <div style={{ fontSize: 13, lineHeight: 1.45, color: theme.red || "#ef4444", marginBottom: 12, fontWeight: 700 }}>{error}</div>
           <button
             type="button"
             onClick={() => { setError(""); setProduct(DEMO_PRODUCT); }}
-            style={{ width: "100%", minHeight: 44, border: "none", borderRadius: 12, background: "#9A3412", color: "white", fontSize: 13, fontWeight: 800, cursor: "pointer" }}
+            style={{ width: "100%", minHeight: 44, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
           >
             Show Demo Product
           </button>
@@ -280,7 +290,7 @@ export default function HealthFoodCheck({ variant = "delco" }) {
       )}
 
       {product && rating && (
-        <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 22, padding: 18, boxShadow: "0 6px 24px rgba(0,0,0,0.08)" }}>
+        <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 22, padding: 18, boxShadow: "0 6px 18px rgba(0,0,0,0.06)" }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
             <div style={{ fontSize: 12, color: theme.muted, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", paddingTop: 4 }}>
               Food result
@@ -298,8 +308,8 @@ export default function HealthFoodCheck({ variant = "delco" }) {
           {product.brands && <div style={{ marginTop: 5, color: theme.muted, fontSize: 13 }}>{product.brands}</div>}
 
           <div style={{ display: "grid", gap: 10, margin: "16px 0" }}>
-            <div style={{ background: rating.tone === "good" ? "#e0f2fe" : rating.tone === "ok" ? "#FEF9C3" : rating.tone === "limit" ? "#FFEDD5" : "#F3F4F6", color: rating.tone === "good" ? "#075985" : rating.tone === "ok" ? "#854D0E" : rating.tone === "limit" ? "#9A3412" : "#374151", borderRadius: 14, padding: "12px 14px", fontSize: 15, fontWeight: 900 }}>
-              {rating.label}
+            <div style={{ background: rating.tone === "good" ? "#dcfce7" : rating.tone === "ok" ? "#fef9c3" : rating.tone === "limit" ? "#ffedd5" : "#f3f4f6", color: rating.tone === "good" ? "#166534" : rating.tone === "ok" ? "#854d0e" : rating.tone === "limit" ? "#9a3412" : "#374151", borderRadius: 14, padding: "12px 14px", fontSize: 15, fontWeight: 900 }}>
+              {rating.marker} {rating.label}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <InfoTile label="Nutri-Score" value={product.nutriscore_grade ? String(product.nutriscore_grade).toUpperCase() : "Not listed"} theme={theme} />
@@ -341,14 +351,14 @@ export default function HealthFoodCheck({ variant = "delco" }) {
             <button
               type="button"
               onClick={scanAnother}
-              style={{ minHeight: 48, border: "none", borderRadius: 14, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
+              style={{ minHeight: 50, border: "none", borderRadius: 16, background: theme.yellow || "#facc15", color: "#0f172a", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
             >
               Scan Another Food
             </button>
             <button
               type="button"
               onClick={closeResult}
-              style={{ minHeight: 48, border: `1.5px solid ${theme.accent}`, borderRadius: 14, background: "white", color: theme.accentDark, fontSize: 13, fontWeight: 900, cursor: "pointer" }}
+              style={{ minHeight: 50, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
             >
               Clear Results
             </button>
