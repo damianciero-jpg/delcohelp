@@ -518,6 +518,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
           {[
             {icon:"🍽",label:"Food",sub:"Pantries open now",nav:"find",filter:"food"},
             {icon:"📋",label:"Benefits",sub:"SNAP, WIC & more",nav:"benefits"},
+            {icon:"?",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
             {icon:"📞",label:"Crisis Line",sub:"Free & confidential",nav:"hotline"},
             {icon:"🏠",label:"Housing",sub:"Shelter & legal aid",nav:"find",filter:"assistance"},
           ].map(a=>(
