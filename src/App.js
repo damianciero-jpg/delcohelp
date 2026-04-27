@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { auth, db, googleProvider, FIREBASE_ENABLED } from "./firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import HealthFoodCheck from "./HealthFoodCheck";
 import {
   InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent, EXTRA_TRANSLATIONS,
@@ -1134,6 +1135,7 @@ export default function App() {
     {id:"home",icon:"🏠",label:"home"},
     {id:"find",icon:"🔍",label:"find"},
     {id:"benefits",icon:"📋",label:"benefits"},
+    {id:"health",icon:"H",label:"Health"},
     {id:"hotline",icon:"🚨",label:"hotline"},
     {id:"ai",icon:"🤖",label:"askAI"},
   ];
@@ -1142,6 +1144,7 @@ export default function App() {
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
+    health:<HealthFoodCheck variant="delco"/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
     volunteer:<VolunteerScreen lang={lang}/>,
     impact:<ImpactScreen lang={lang}/>,
