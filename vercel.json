@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/trust-check",
+      "destination": "/index.html"
+    }
+  ]
+}
+

@@ -106,14 +106,14 @@ export default function HealthFoodCheck({ variant = "delco" }) {
       };
     }
     return {
-      accent: "#2D6A4F",
-      accentDark: "#1B4332",
-      bg: "#F6FBF5",
+      accent: "#0ea5e9",
+      accentDark: "#002D72",
+      bg: "#f8fafc",
       surface: "#FFFFFF",
-      soft: "rgba(45,106,79,0.08)",
-      border: "rgba(45,106,79,0.16)",
-      text: "#1C2B1E",
-      muted: "#6B7C6E",
+      soft: "rgba(14,165,233,0.08)",
+      border: "rgba(14,165,233,0.18)",
+      text: "#0f172a",
+      muted: "#475569",
       font: "'DM Sans', sans-serif",
     };
   }, [variant]);
@@ -298,7 +298,7 @@ export default function HealthFoodCheck({ variant = "delco" }) {
           {product.brands && <div style={{ marginTop: 5, color: theme.muted, fontSize: 13 }}>{product.brands}</div>}
 
           <div style={{ display: "grid", gap: 10, margin: "16px 0" }}>
-            <div style={{ background: rating.tone === "good" ? "#DCFCE7" : rating.tone === "ok" ? "#FEF9C3" : rating.tone === "limit" ? "#FFEDD5" : "#F3F4F6", color: rating.tone === "good" ? "#166534" : rating.tone === "ok" ? "#854D0E" : rating.tone === "limit" ? "#9A3412" : "#374151", borderRadius: 14, padding: "12px 14px", fontSize: 15, fontWeight: 900 }}>
+            <div style={{ background: rating.tone === "good" ? "#e0f2fe" : rating.tone === "ok" ? "#FEF9C3" : rating.tone === "limit" ? "#FFEDD5" : "#F3F4F6", color: rating.tone === "good" ? "#075985" : rating.tone === "ok" ? "#854D0E" : rating.tone === "limit" ? "#9A3412" : "#374151", borderRadius: 14, padding: "12px 14px", fontSize: 15, fontWeight: 900 }}>
               {rating.label}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -380,3 +380,4 @@ function Section({ title, children, theme }) {
     </div>
   );
 }
+
