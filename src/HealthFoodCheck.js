@@ -89,6 +89,7 @@ export default function HealthFoodCheck({ variant = "delco" }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [product, setProduct] = useState(null);
+  const [scannerKey, setScannerKey] = useState(0);
 
   const theme = useMemo(() => {
     if (variant === "sjc") {
@@ -146,6 +147,35 @@ export default function HealthFoodCheck({ variant = "delco" }) {
     }
   }, []);
 
+  const openScanner = useCallback(() => {
+    setCameraOpen(true);
+    setScannerKey((key) => key + 1);
+  }, []);
+
+  const stopCamera = useCallback(() => {
+    setCameraOpen(false);
+  }, []);
+
+  const scanAnother = useCallback(() => {
+    setProduct(null);
+    setError("");
+    setBarcode("");
+    setLoading(false);
+    setCameraOpen(true);
+    setScannerKey((key) => key + 1);
+  }, []);
+
+  const closeResult = useCallback(() => {
+    setProduct(null);
+    setError("");
+    setLoading(false);
+    setCameraOpen(false);
+  }, []);
+
+  const handleScannerError = useCallback(() => {
+    setError("Camera is unavailable. You can still type the barcode number.");
+  }, []);
+
   const handleScannerResult = useCallback((detectedCodes) => {
     const value = firstDetectedValue(detectedCodes);
     if (!value || loading) return;
@@ -198,10 +228,10 @@ export default function HealthFoodCheck({ variant = "delco" }) {
           </button>
           <button
             type="button"
-            onClick={() => setCameraOpen((open) => !open)}
+            onClick={() => { if (cameraOpen) stopCamera(); else openScanner(); }}
             style={{ minHeight: 48, border: `1.5px solid ${theme.accent}`, borderRadius: 14, background: cameraOpen ? theme.soft : "white", color: theme.accentDark, fontSize: 14, fontWeight: 800, cursor: "pointer" }}
           >
-            {cameraOpen ? "Close Camera" : "Use Camera"}
+            {cameraOpen ? "Stop Camera" : "Use Camera"}
           </button>
         </div>
       </div>
@@ -209,14 +239,24 @@ export default function HealthFoodCheck({ variant = "delco" }) {
       {cameraOpen && (
         <div style={{ background: "#111", borderRadius: 20, overflow: "hidden", marginBottom: 16, border: `2px solid ${theme.border}` }}>
           <Scanner
+            key={scannerKey}
             onScan={handleScannerResult}
-            onError={() => setError("Camera is unavailable. You can still type the barcode number.")}
+            onError={handleScannerError}
             formats={BARCODE_FORMATS}
             constraints={{ facingMode: "environment", aspectRatio: 1 }}
             scanDelay={700}
             allowMultiple={false}
             styles={{ container: { width: "100%" }, video: { width: "100%" } }}
           />
+          <div style={{ padding: 12, background: theme.surface }}>
+            <button
+              type="button"
+              onClick={stopCamera}
+              style={{ width: "100%", minHeight: 44, border: `1.5px solid ${theme.accent}`, borderRadius: 12, background: "white", color: theme.accentDark, fontSize: 13, fontWeight: 800, cursor: "pointer" }}
+            >
+              Stop Camera
+            </button>
+          </div>
         </div>
       )}
 
@@ -241,8 +281,18 @@ export default function HealthFoodCheck({ variant = "delco" }) {
 
       {product && rating && (
         <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 22, padding: 18, boxShadow: "0 6px 24px rgba(0,0,0,0.08)" }}>
-          <div style={{ fontSize: 12, color: theme.muted, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>
-            Food result
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
+            <div style={{ fontSize: 12, color: theme.muted, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", paddingTop: 4 }}>
+              Food result
+            </div>
+            <button
+              type="button"
+              onClick={closeResult}
+              aria-label="Close food result"
+              style={{ width: 34, height: 34, border: `1px solid ${theme.border}`, borderRadius: 12, background: theme.soft, color: theme.accentDark, fontSize: 18, fontWeight: 900, lineHeight: 1, cursor: "pointer" }}
+            >
+              x
+            </button>
           </div>
           <h2 style={{ margin: 0, fontSize: 22, lineHeight: 1.15 }}>{product.product_name || "Unnamed food item"}</h2>
           {product.brands && <div style={{ marginTop: 5, color: theme.muted, fontSize: 13 }}>{product.brands}</div>}
@@ -285,6 +335,23 @@ export default function HealthFoodCheck({ variant = "delco" }) {
 
           <div style={{ background: theme.soft, borderRadius: 16, padding: 14, fontSize: 13, lineHeight: 1.45, marginTop: 14 }}>
             If available, try pairing this with water, fruit, vegetables, whole grains, or protein.
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 16 }}>
+            <button
+              type="button"
+              onClick={scanAnother}
+              style={{ minHeight: 48, border: "none", borderRadius: 14, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
+            >
+              Scan Another Food
+            </button>
+            <button
+              type="button"
+              onClick={closeResult}
+              style={{ minHeight: 48, border: `1.5px solid ${theme.accent}`, borderRadius: 14, background: "white", color: theme.accentDark, fontSize: 13, fontWeight: 900, cursor: "pointer" }}
+            >
+              Clear Results
+            </button>
           </div>
         </div>
       )}
