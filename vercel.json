@@ -1,9 +1,24 @@
 {
   "rewrites": [
     {
+      "source": "/sjc",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sjc/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/SJC",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/SJC/:path*",
+      "destination": "/index.html"
+    },
+    {
       "source": "/trust-check",
       "destination": "/index.html"
     }
   ]
 }
-
