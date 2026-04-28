@@ -193,6 +193,25 @@ const VOLUNTEER_OPPS = [
   { org:"Media Food Bank", role:"Donation Sorter", time:"Thursdays 5–8 PM", icon:"🗂️", color:"#1B4332" },
 ];
 
+const SJC_OFFICIAL_LINKS = [
+  { title:"Weekly Bulletin", icon:"PDF", description:"Read the current bulletin and browse the official parish bulletin archive.", url:"https://sjcparish.org/bulletins" },
+  { title:"Parish Calendar", icon:"CAL", description:"Check upcoming parish events, meetings, liturgies, and calendar updates.", url:"https://sjcparish.org/google-calendar" },
+  { title:"Mass & Confession Times", icon:"MASS", description:"Confirm regular Mass, Confession, Adoration, Holy Day, and accessibility information.", url:"https://sjcparish.org/mass-times" },
+  { title:"Watch Mass", icon:"LIVE", description:"Find SJC livestream options and recorded Masses on the official parish page.", url:"https://sjcparish.org/mass-online" },
+  { title:"Mass & Podcasts", icon:"AUDIO", description:"Explore worship information, Mass resources, and parish podcast links.", url:"https://sjcparish.org/mass" },
+  { title:"Parish Newsletter / The Angelus", icon:"NEWS", description:"Open The Angelus parish newsletter page and recent newsletter archive.", url:"https://sjcparish.org/parish-newsletter" },
+  { title:"Parish Life", icon:"LIFE", description:"Learn about parish organizations, ministries, and ways to get involved.", url:"https://sjcparish.org/parish-life" },
+  { title:"Community Service", icon:"HELP", description:"Find service ministries and community outreach opportunities through SJC.", url:"https://sjcparish.org/ministries" },
+  { title:"Youth Group", icon:"YOUTH", description:"View youth group information and official updates for young parishioners.", url:"https://sjcparish.org/youth-group" },
+  { title:"Contact & Directions", icon:"INFO", description:"Contact the Parish House, find staff information, and confirm office details.", url:"https://sjcparish.org/contact-clergy-staff" },
+];
+
+const SJC_LATEST_ITEMS = [
+  { title:"Weekly Bulletin", date:"Update weekly", description:"Open the official bulletin page for the newest bulletin and archived issues.", url:"https://sjcparish.org/bulletins" },
+  { title:"Parish Calendar", date:"Check before attending", description:"Use the official calendar for the latest parish events, meetings, and schedule notes.", url:"https://sjcparish.org/google-calendar" },
+  { title:"Parish Newsletter", date:"Spring / Fall", description:"Read The Angelus newsletter and review the official newsletter archive.", url:"https://sjcparish.org/parish-newsletter" },
+];
+
 const IMPACT_STATS = [
   { label:"totalUsers", value:"1,240", trend:"+18% this month", icon:"👥", color:BRAND.primary },
   { label:"resourcesFound", value:"6,830", trend:"+11% this month", icon:"🔍", color:"#40916C" },
@@ -232,6 +251,10 @@ const CSS = `
   .sjc-btn-out:hover { background:rgba(27,58,107,0.06); }
   .sjc-card { background:white; border-radius:18px; padding:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04); cursor:pointer; transition:all 0.18s; }
   .sjc-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
+  .sjc-link-card { background:white; border-radius:16px; padding:15px; box-shadow:0 2px 12px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04); }
+  .sjc-link-icon { width:42px; height:42px; border-radius:12px; background:${BRAND.primary}12; color:${BRAND.primary}; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; letter-spacing:0.02em; flex-shrink:0; }
+  .sjc-official-btn { display:flex; align-items:center; justify-content:center; min-height:46px; width:100%; border-radius:13px; background:${BRAND.primary}; color:white; text-decoration:none; font-size:13px; font-weight:700; font-family:'Source Sans 3',sans-serif; margin-top:12px; transition:all 0.18s; }
+  .sjc-official-btn:hover { background:${BRAND.dark}; transform:translateY(-1px); }
   .sjc-tag { background:#EEE9DC; border-radius:8px; padding:3px 8px; font-size:11px; color:#5A4A30; font-weight:500; }
   .sjc-input { width:100%; background:white; border:1.5px solid rgba(0,0,0,0.1); border-radius:14px; padding:12px 16px 12px 42px; font-family:'Source Sans 3',sans-serif; font-size:14px; color:#1A1A2E; outline:none; transition:border-color 0.18s; }
   .sjc-input:focus { border-color:${BRAND.primary}; }
@@ -394,6 +417,59 @@ function EmergencyMode({ onClose, lang }) {
 }
 
 /* ── HOME ── */
+function SJCParishHub() {
+  return (
+    <>
+      <section style={{marginBottom:18}}>
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:10}}>
+          <div>
+            <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"#1A1A2E",lineHeight:1.2,marginBottom:4}}>SJC Parish Hub</div>
+            <div style={{fontSize:13,color:"#5F6673",lineHeight:1.45}}>Quick links to parish news, Mass times, bulletins, events, and community resources.</div>
+          </div>
+          <a href="https://sjcparish.org/" target="_blank" rel="noreferrer" style={{flexShrink:0,textDecoration:"none",background:`${BRAND.secondary}22`,color:"#5A4000",border:`1px solid ${BRAND.secondary}55`,borderRadius:12,padding:"8px 10px",fontSize:11,fontWeight:800}}>sjcparish.org</a>
+        </div>
+        <div style={{background:`${BRAND.primary}08`,border:`1px solid ${BRAND.primary}18`,borderRadius:14,padding:12,fontSize:12,color:"#465064",lineHeight:1.5,marginBottom:12}}>
+          This page is a community shortcut to public SJC parish resources. Please confirm details with the official parish website.
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr",gap:10}}>
+          {SJC_OFFICIAL_LINKS.map(link=>(
+            <article key={link.title} className="sjc-link-card">
+              <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+                <div className="sjc-link-icon">{link.icon}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:15,fontWeight:800,color:"#1A1A2E",lineHeight:1.25,marginBottom:4}}>{link.title}</div>
+                  <div style={{fontSize:12,color:"#5F6673",lineHeight:1.45}}>{link.description}</div>
+                </div>
+              </div>
+              <a className="sjc-official-btn" href={link.url} target="_blank" rel="noreferrer">Open Official Page</a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section style={{marginBottom:18}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:10}}>
+          <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:18,color:"#1A1A2E"}}>Latest from SJC</div>
+          <div style={{fontSize:10,fontWeight:800,color:"#8A7350",textTransform:"uppercase",letterSpacing:"0.06em"}}>Manual updates</div>
+        </div>
+        {SJC_LATEST_ITEMS.map(item=>(
+          <article key={item.title} className="sjc-link-card" style={{marginBottom:10}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",marginBottom:6}}>
+              <div style={{fontSize:14,fontWeight:800,color:"#1A1A2E",lineHeight:1.25}}>{item.title}</div>
+              <span style={{background:`${BRAND.secondary}22`,color:"#6B5418",borderRadius:8,padding:"3px 7px",fontSize:10,fontWeight:800,whiteSpace:"nowrap"}}>{item.date}</span>
+            </div>
+            <div style={{fontSize:12,color:"#5F6673",lineHeight:1.5,marginBottom:10}}>{item.description}</div>
+            <a href={item.url} target="_blank" rel="noreferrer" style={{color:BRAND.primary,fontSize:12,fontWeight:800,textDecoration:"none"}}>Open official link</a>
+          </article>
+        ))}
+        <div style={{background:"white",borderRadius:14,padding:13,border:"1px solid rgba(0,0,0,0.06)",fontSize:12,color:"#5F6673",lineHeight:1.45}}>
+          Want something added or corrected? Email <a href="mailto:cierolink@gmail.com" style={{color:BRAND.primary,fontWeight:800,textDecoration:"none"}}>cierolink@gmail.com</a>
+        </div>
+      </section>
+    </>
+  );
+}
+
 function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
   const t=T[lang]||T.en, openNow=RESOURCES.filter(r=>isOpenNow(r));
   const savedIds = getSavedResources().map(s=>s.id);
@@ -431,6 +507,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
       </div>
 
       <div style={{padding:"0 24px"}}>
+        <SJCParishHub/>
         {openNow.length>0&&<>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
             <div style={{width:8,height:8,borderRadius:"50%",background:"#40916C"}} className="pulse"/>

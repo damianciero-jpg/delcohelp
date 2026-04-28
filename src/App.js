@@ -15,7 +15,7 @@ import {
 } from "./features";
 
 // Simple path router
-if (window.location.pathname.startsWith("/sjc")) {
+if (window.location.pathname.toLowerCase().startsWith("/sjc")) {
   document.getElementById("root").innerHTML = "";
   import("./SJC").then(mod => {
     const React = require("react");
