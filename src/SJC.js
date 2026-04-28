@@ -212,6 +212,22 @@ const SJC_LATEST_ITEMS = [
   { title:"Parish Newsletter", date:"Spring / Fall", description:"Read The Angelus newsletter and review the official newsletter archive.", url:"https://sjcparish.org/parish-newsletter" },
 ];
 
+const SJC_COMMUNITY_FILTERS = [
+  { id:"announcements", label:"Announcements" },
+  { id:"events", label:"Events" },
+  { id:"prayer", label:"Prayer Requests" },
+  { id:"volunteer", label:"Volunteer Needs" },
+  { id:"help", label:"Community Help" },
+];
+
+const SJC_COMMUNITY_POSTS = [
+  { type:"announcements", typeLabel:"Announcement", title:"Weekly Bulletin Available", message:"Read the latest parish bulletin and upcoming events.", date:"This week", source:"SJC Parish Hub", button:"Open Bulletin", url:"https://sjcparish.org/bulletins" },
+  { type:"prayer", typeLabel:"Prayer Request", title:"Prayer Request", message:"Please keep our parish families and neighbors in your prayers this week.", date:"This week", source:"Community sample", button:"I prayed" },
+  { type:"volunteer", typeLabel:"Volunteer Need", title:"Volunteers Needed", message:"Help is needed for upcoming parish and community events.", date:"This week", source:"Community sample", button:"I can help" },
+  { type:"events", typeLabel:"Event", title:"Upcoming Parish Event", message:"Check the parish calendar for this week's events.", date:"This week", source:"Official calendar", button:"View Calendar", url:"https://sjcparish.org/google-calendar" },
+  { type:"help", typeLabel:"Community Help", title:"Neighbor Support", message:"Share reviewed needs for rides, meals, outreach, or local support through the request form.", date:"Sample", source:"Community sample", button:"Submit a Request" },
+];
+
 const IMPACT_STATS = [
   { label:"totalUsers", value:"1,240", trend:"+18% this month", icon:"👥", color:BRAND.primary },
   { label:"resourcesFound", value:"6,830", trend:"+11% this month", icon:"🔍", color:"#40916C" },
@@ -255,6 +271,11 @@ const CSS = `
   .sjc-link-icon { width:42px; height:42px; border-radius:12px; background:${BRAND.primary}12; color:${BRAND.primary}; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; letter-spacing:0.02em; flex-shrink:0; }
   .sjc-official-btn { display:flex; align-items:center; justify-content:center; min-height:46px; width:100%; border-radius:13px; background:${BRAND.primary}; color:white; text-decoration:none; font-size:13px; font-weight:700; font-family:'Source Sans 3',sans-serif; margin-top:12px; transition:all 0.18s; }
   .sjc-official-btn:hover { background:${BRAND.dark}; transform:translateY(-1px); }
+  .sjc-community-tabs { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; margin-bottom:10px; }
+  .sjc-community-tabs::-webkit-scrollbar { display:none; }
+  .sjc-community-tab { white-space:nowrap; border:none; border-radius:999px; padding:8px 12px; font-family:'Source Sans 3',sans-serif; font-size:12px; font-weight:800; cursor:pointer; }
+  .sjc-community-tab.active { background:${BRAND.primary}; color:white; }
+  .sjc-community-tab.inactive { background:white; color:${BRAND.primary}; box-shadow:0 0 0 1px rgba(27,58,107,0.18) inset; }
   .sjc-tag { background:#EEE9DC; border-radius:8px; padding:3px 8px; font-size:11px; color:#5A4A30; font-weight:500; }
   .sjc-input { width:100%; background:white; border:1.5px solid rgba(0,0,0,0.1); border-radius:14px; padding:12px 16px 12px 42px; font-family:'Source Sans 3',sans-serif; font-size:14px; color:#1A1A2E; outline:none; transition:border-color 0.18s; }
   .sjc-input:focus { border-color:${BRAND.primary}; }
@@ -418,6 +439,38 @@ function EmergencyMode({ onClose, lang }) {
 
 /* ── HOME ── */
 function SJCParishHub() {
+  const [communityFilter,setCommunityFilter]=useState("announcements");
+  const [showRequestForm,setShowRequestForm]=useState(false);
+  const [request,setRequest]=useState({name:"",email:"",type:"Announcement",message:"",phone:"",review:false});
+  const visiblePosts=SJC_COMMUNITY_POSTS.filter(post=>post.type===communityFilter);
+  function communityButtonAction(post) {
+    if (post.url) {
+      window.open(post.url,"_blank","noopener,noreferrer");
+      return;
+    }
+    if (post.button==="Submit a Request" || post.button==="I can help") {
+      setShowRequestForm(true);
+    }
+  }
+  function submitCommunityRequest(e) {
+    e.preventDefault();
+    if (!request.review) return;
+    const subject=encodeURIComponent(`SJC Parish Hub ${request.type} Request`);
+    const body=encodeURIComponent([
+      "SJC Parish Hub submission",
+      "",
+      `Name: ${request.name}`,
+      `Email: ${request.email}`,
+      `Post type: ${request.type}`,
+      `Phone: ${request.phone || "Not provided"}`,
+      "",
+      "Message:",
+      request.message,
+      "",
+      "Review acknowledgement: I understand this will be reviewed before being posted."
+    ].join("\n"));
+    window.location.href=`mailto:cierolink@gmail.com?subject=${subject}&body=${body}`;
+  }
   return (
     <>
       <section style={{marginBottom:18}}>
@@ -464,6 +517,70 @@ function SJCParishHub() {
         ))}
         <div style={{background:"white",borderRadius:14,padding:13,border:"1px solid rgba(0,0,0,0.06)",fontSize:12,color:"#5F6673",lineHeight:1.45}}>
           Want something added or corrected? Email <a href="mailto:cierolink@gmail.com" style={{color:BRAND.primary,fontWeight:800,textDecoration:"none"}}>cierolink@gmail.com</a>
+        </div>
+      </section>
+
+      <section style={{marginBottom:18}}>
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:10}}>
+          <div>
+            <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"#1A1A2E",lineHeight:1.2,marginBottom:4}}>Parish Community</div>
+            <div style={{fontSize:13,color:"#5F6673",lineHeight:1.45}}>Stay connected with announcements, prayer requests, events, and ways to help.</div>
+          </div>
+        </div>
+        <div style={{background:`${BRAND.secondary}18`,border:`1px solid ${BRAND.secondary}44`,borderRadius:14,padding:12,fontSize:12,color:"#604A12",lineHeight:1.5,marginBottom:12}}>
+          This is a community shortcut page and submitted content may be reviewed before posting. Submitted items are reviewed before appearing publicly.
+        </div>
+        <div className="sjc-community-tabs" aria-label="Parish community filters">
+          {SJC_COMMUNITY_FILTERS.map(filter=>(
+            <button key={filter.id} type="button" className={`sjc-community-tab ${communityFilter===filter.id?"active":"inactive"}`} onClick={()=>setCommunityFilter(filter.id)}>
+              {filter.label}
+            </button>
+          ))}
+        </div>
+        {visiblePosts.map(post=>(
+          <article key={`${post.type}-${post.title}`} className="sjc-link-card" style={{marginBottom:10}}>
+            <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",marginBottom:8}}>
+              <span style={{background:`${BRAND.primary}12`,color:BRAND.primary,borderRadius:8,padding:"3px 7px",fontSize:10,fontWeight:800}}>{post.typeLabel}</span>
+              <span style={{fontSize:11,color:"#7A8190",fontWeight:700,whiteSpace:"nowrap"}}>{post.date}</span>
+            </div>
+            <div style={{fontSize:15,fontWeight:800,color:"#1A1A2E",lineHeight:1.25,marginBottom:5}}>{post.title}</div>
+            <div style={{fontSize:12,color:"#5F6673",lineHeight:1.5,marginBottom:10}}>{post.message}</div>
+            <div style={{fontSize:11,color:"#8A7350",fontWeight:700,marginBottom:10}}>Source: {post.source}</div>
+            <div style={{display:"grid",gridTemplateColumns:post.button?"1fr 1fr":"1fr",gap:8}}>
+              {post.button&&(
+                <button type="button" onClick={()=>communityButtonAction(post)} style={{background:BRAND.primary,color:"white",border:"none",borderRadius:12,padding:"11px 10px",fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:800,cursor:"pointer"}}>
+                  {post.button}
+                </button>
+              )}
+              <a href={`mailto:cierolink@gmail.com?subject=${encodeURIComponent("Report issue with SJC Parish Hub post")}&body=${encodeURIComponent(`Post: ${post.title}\nType: ${post.typeLabel}\n\nIssue:`)}`} style={{display:"flex",alignItems:"center",justifyContent:"center",border:`1.5px solid ${BRAND.primary}55`,borderRadius:12,padding:"10px",fontSize:12,fontWeight:800,color:BRAND.primary,textDecoration:"none"}}>
+                Report issue
+              </a>
+            </div>
+          </article>
+        ))}
+        <button className="sjc-btn" type="button" style={{marginBottom:showRequestForm?12:8}} onClick={()=>setShowRequestForm(v=>!v)}>
+          Submit a Request
+        </button>
+        {showRequestForm&&(
+          <form onSubmit={submitCommunityRequest} className="sjc-link-card" style={{marginBottom:10}}>
+            <div style={{fontSize:14,fontWeight:800,color:"#1A1A2E",marginBottom:4}}>Submit a Request</div>
+            <div style={{fontSize:12,color:"#5F6673",lineHeight:1.45,marginBottom:12}}>Requests are sent by email for review. Nothing is posted automatically.</div>
+            <input required className="sjc-input-plain" placeholder="Name" value={request.name} onChange={e=>setRequest({...request,name:e.target.value})} style={{paddingLeft:16}}/>
+            <input required type="email" className="sjc-input-plain" placeholder="Email" value={request.email} onChange={e=>setRequest({...request,email:e.target.value})} style={{paddingLeft:16}}/>
+            <select className="sjc-input-plain" value={request.type} onChange={e=>setRequest({...request,type:e.target.value})} style={{paddingLeft:16}}>
+              {["Announcement","Event","Prayer Request","Volunteer Need","Community Help"].map(type=><option key={type}>{type}</option>)}
+            </select>
+            <textarea required className="sjc-input-plain" placeholder="Message" rows={4} value={request.message} onChange={e=>setRequest({...request,message:e.target.value})} style={{paddingLeft:16,resize:"none"}}/>
+            <input className="sjc-input-plain" placeholder="Optional phone number" value={request.phone} onChange={e=>setRequest({...request,phone:e.target.value})} style={{paddingLeft:16}}/>
+            <label style={{display:"flex",alignItems:"flex-start",gap:10,fontSize:12,color:"#465064",lineHeight:1.4,margin:"2px 0 12px",cursor:"pointer"}}>
+              <input required type="checkbox" checked={request.review} onChange={e=>setRequest({...request,review:e.target.checked})} style={{marginTop:2,flexShrink:0}}/>
+              <span>I understand this will be reviewed before being posted.</span>
+            </label>
+            <button className="sjc-btn" type="submit">Email for Review</button>
+          </form>
+        )}
+        <div style={{fontSize:11,color:"#7A8190",lineHeight:1.5}}>
+          This is not an open comment board. Public items should be approved before appearing here.
         </div>
       </section>
     </>
