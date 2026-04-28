@@ -624,7 +624,6 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
       </div>
 
       <div style={{padding:"0 24px"}}>
-        <SJCParishHub/>
         {openNow.length>0&&<>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
             <div style={{width:8,height:8,borderRadius:"50%",background:"#40916C"}} className="pulse"/>
@@ -3117,6 +3116,7 @@ function PublicApp() {
 
   const tabs=[
     {id:"home",icon:"✝",label:"Home"},
+    {id:"hub",icon:"✝",label:"Parish Hub"},
     {id:"find",icon:"🔍",label:"Find"},
     {id:"nutrition",icon:"🍎",label:"Nutrition"},
     {id:"youtube",icon:"▶️",label:"Masses"},
@@ -3128,6 +3128,7 @@ function PublicApp() {
   function handleUpgrade(newTier) { setTier(newTier); }
 
   const screens={
+    hub:<div className="dfi" style={{padding:"16px 24px 20px"}}><SJCParishHub/></div>,
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
