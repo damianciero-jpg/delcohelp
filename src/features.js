@@ -334,7 +334,7 @@ export function SMSAccessCard({ phoneNumber="" }) {
         </div>
       </div>
       <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6 }}>
-        {[["FOOD","#E76F51"],["HELP","#E76F51"],["SNAP","#E76F51"],["CRISIS","#D62828"]].map(([kw,bg]) => (
+        {[["FOOD","#E76F51"],["INFO","#E76F51"],["SNAP","#E76F51"],["CRISIS","#D62828"]].map(([kw,bg]) => (
           <a key={kw} href={smsUrl(kw)} style={{ background:bg,color:"white",textDecoration:"none",padding:"8px 10px",borderRadius:8,fontSize:11,fontWeight:600,textAlign:"center" }}>Text {kw}</a>
         ))}
       </div>

@@ -667,10 +667,10 @@ export function SMSAccessCard({ phoneNumber = "" }) {
           background: "#E76F51", color: "white", textDecoration: "none",
           padding: "8px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, textAlign: "center"
         }}>Text FOOD</a>
-        <a href={smsUrl("HELP")} style={{
+        <a href={smsUrl("INFO")} style={{
           background: "#E76F51", color: "white", textDecoration: "none",
           padding: "8px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, textAlign: "center"
-        }}>Text HELP</a>
+        }}>Text INFO</a>
         <a href={smsUrl("SNAP")} style={{
           background: "#E76F51", color: "white", textDecoration: "none",
           padding: "8px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600, textAlign: "center"
