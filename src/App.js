@@ -923,6 +923,32 @@ function incrementAIUsage() {
 }
 
 /* ── AI CHAT SCREEN ── */
+function getLocalDelcoHelpResponse(message) {
+  const text = message.toLowerCase();
+
+  if (text.includes("food") || text.includes("pantry") || text.includes("meal")) {
+    return "I can help you find food resources. Tap Food or Need Help Now to see nearby pantries, meals, and support options.";
+  }
+
+  if (text.includes("shelter") || text.includes("housing") || text.includes("homeless")) {
+    return "I can help you find shelter and housing support. Tap Shelter or Need Help Now, and please call ahead when possible.";
+  }
+
+  if (text.includes("benefits") || text.includes("snap") || text.includes("ebt") || text.includes("utility")) {
+    return "I can help with benefits information. Try the Benefits section for SNAP, utility help, and emergency assistance resources.";
+  }
+
+  if (text.includes("church") || text.includes("parish")) {
+    return "You can check the Churches or Parish Hub sections for local church support, events, and resources.";
+  }
+
+  if (text.includes("nutrition") || text.includes("barcode") || text.includes("healthy")) {
+    return "Use the Nutrition tab to scan or enter a food barcode and get simple nutrition guidance.";
+  }
+
+  return "I can help you find food, shelter, benefits, churches, school resources, nutrition help, or local support. What do you need help with?";
+}
+
 function AIScreen({ lang }) {
   const t=T[lang]||T.en;
   const [messages,setMessages]=useState([{role:"ai",text:"👋 Hi! I'm the DelcoHelp AI. Ask me anything about local resources, benefits, or getting help in Delaware County, PA."}]);
@@ -936,7 +962,10 @@ function AIScreen({ lang }) {
 
   async function sendMessage() {
     if (!input.trim()||loading||atLimit) return;
-    const userMsg=input.trim(); setInput(""); setLoading(true);
+    const userMsg=input.trim();
+    const conversation=[...messages.filter((m,i)=>i>0).map(m=>({role:m.role==="ai"?"assistant":"user",content:m.text})),{role:"user",content:userMsg}];
+    setInput("");
+    setLoading(true);
     incrementAIUsage();
     setUsageCount(getAIUsage());
     setMessages(m=>[...m,{role:"user",text:userMsg}]);
@@ -954,14 +983,16 @@ Key local resources:
 - SNAP, WIC, LIHEAP, Medicaid all available via compass.state.pa.us
 
 Keep responses short, warm, and actionable. Always give a phone number when recommending a resource. If someone seems in crisis, lead with 988 or 911.`;
-      const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:systemPrompt,messages:[...messages.filter((m,i)=>i>0).map(m=>({role:m.role==="ai"?"assistant":"user",content:m.text})),{role:"user",content:userMsg}]})});
+      const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:systemPrompt,messages:conversation})});
       const data=await res.json();
-      const reply=data.content?.[0]?.text||"I'm sorry, I couldn't find an answer. Please call PA 211 (dial 211) for immediate help.";
+      if (!res.ok) throw new Error(data.error || "Chat API request failed");
+      const reply=data.content?.[0]?.text||getLocalDelcoHelpResponse(userMsg);
       setMessages(m=>[...m,{role:"ai",text:reply}]);
     } catch(e) {
-      setMessages(m=>[...m,{role:"ai",text:"I'm having trouble connecting. Please call PA 211 (dial 211) for immediate help finding resources."}]);
+      setMessages(m=>[...m,{role:"ai",text:"I’m sorry, I couldn’t get a response right now. Please try the Help Now button or call the resource directly."}]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const suggestions=["I need food near me tonight","How do I apply for SNAP?","I need diapers for my baby","I'm facing eviction, can you help?"];
@@ -989,6 +1020,7 @@ Keep responses short, warm, and actionable. Always give a phone number when reco
           <div key={i} className={m.role==="user"?"chat-bubble-user":"chat-bubble-ai"}>{m.text}</div>
         ))}
         {loading&&<div className="chat-bubble-ai" style={{display:"flex",gap:6,alignItems:"center"}}>
+          <span style={{fontSize:12,color:"#475569",fontWeight:600}}>DelcoHelp is thinking...</span>
           <div style={{width:6,height:6,borderRadius:"50%",background:"#0ea5e9",animation:"pulse 1s infinite"}}/>
           <div style={{width:6,height:6,borderRadius:"50%",background:"#0ea5e9",animation:"pulse 1s infinite 0.2s"}}/>
           <div style={{width:6,height:6,borderRadius:"50%",background:"#0ea5e9",animation:"pulse 1s infinite 0.4s"}}/>
