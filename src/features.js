@@ -631,7 +631,7 @@ export function CrisisEscapePlan({ onClose }) {
         <div style={{ display:"flex",gap:8 }}>
           <a href="tel:988" style={{ flex:1,background:"#7B2D8B",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Call 988</a>
           <a href="tel:911" style={{ flex:1,background:"#D62828",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Call 911</a>
-          <a href="sms:741741?&body=PA" style={{ flex:1,background:"#023E8A",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Text PA to 741741</a>
+          <a href="sms:741741?body=PA" style={{ flex:1,background:"#023E8A",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Text PA to 741741</a>
         </div>
         <div style={{ marginTop:12,fontSize:10,color:"#9BA8A0",textAlign:"center" }}>This plan is stored only on your device. It is never shared or uploaded.</div>
       </div>

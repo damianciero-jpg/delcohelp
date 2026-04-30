@@ -213,6 +213,15 @@ const HOTLINES = [
   { id:10, name:"Child Abuse Hotline", sub:"PA ChildLine — 24/7 reporting", number:"1-800-932-0313", color:"#D62828", bg:"#FFF0F0", icon:"👶" },
 ];
 
+function openHotlineAction(h) {
+  const href = h.actionHref || `${h.isText ? "sms" : "tel"}:${h.number}`;
+  if (href.startsWith("sms:")) {
+    window.location.href = href;
+  } else {
+    window.open(href);
+  }
+}
+
 // eslint-disable-next-line no-unused-vars
 const CATEGORY_LABELS = { food:"Food Pantry", assistance:"Family Assistance", legal:"Legal Aid" };
 // eslint-disable-next-line no-unused-vars
@@ -416,7 +425,7 @@ function EmergencyMode({ onClose, lang }) {
               <div style={{fontSize:13,fontWeight:700,color:"white"}}>{h.name}</div>
               <div style={{fontSize:11,color:"rgba(255,255,255,0.7)"}}>{h.sub}</div>
             </div>
-            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(h.actionHref||`tel:${h.number}`)}>
+            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>openHotlineAction(h)}>
               {h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}
             </button>
           </div>
@@ -712,7 +721,7 @@ function HotlineScreen({ lang, onEscape }) {
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{h.icon}</div>
             <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#1C2B1E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7C6E",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7C6E",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
-            <button className="hotline-call-btn" style={{background:h.color,color:"white"}} onClick={()=>window.open(h.actionHref||`tel:${h.number}`)}>{h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}</button>
+            <button className="hotline-call-btn" style={{background:h.color,color:"white"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}</button>
           </div>
         ))}
         <div style={{height:12}}/>
@@ -723,7 +732,7 @@ function HotlineScreen({ lang, onEscape }) {
             <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1C2B1E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7C6E",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7C6E",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
             <div style={{display:"flex",flexDirection:"column",gap:6,flexShrink:0}}>
               {h.secondaryActionLabel&&<button className="hotline-call-btn" style={{background:h.color,color:"white"}} onClick={()=>window.open(h.secondaryActionHref)}>{h.secondaryActionLabel}</button>}
-              <button className="hotline-call-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>window.open(h.actionHref||`tel:${h.number}`)}>{h.actionLabel||h.number}</button>
+              <button className="hotline-call-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||h.number}</button>
             </div>
           </div>
         ))}

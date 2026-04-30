@@ -15,7 +15,7 @@ export const DELCO_CRISIS = {
 export const PA_CRISIS_TEXT = {
   name: "PA Crisis Text Line",
   phone: "741741",
-  phoneHref: "sms:741741?&body=PA",
+  phoneHref: "sms:741741?body=PA",
   displayText: "PA Crisis Text Line — Text PA to 741741",
   description: "Text PA to 741741 for free 24/7 crisis text support.",
   availability: "24/7",
