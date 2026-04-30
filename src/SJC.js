@@ -3,6 +3,7 @@ import { auth, db, googleProvider, FIREBASE_ENABLED } from "./firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import NutritionFoodCheck from "./NutritionFoodCheck";
+import { DELCO_CRISIS, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
 import { EXTRA_TRANSLATIONS, InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent,
   PantryInventoryWidget, IAmGoingButton, SaveResourceButton, FoundHelpButton,
@@ -170,12 +171,12 @@ const BENEFITS = [
 
 const HOTLINES = [
   { id:1, name:"911 Emergency", sub:"Police, Fire, Medical", number:"911", color:"#D62828", bg:"#FFF0F0", icon:"🚨", urgent:true },
-  { id:2, name:"Crisis Text Line", sub:"Text HOME to 741741 — 24/7", number:"741741", color:"#D62828", bg:"#FFF0F0", icon:"💬", urgent:true, isText:true },
+  { id:2, name:PA_CRISIS_TEXT.displayText, sub:PA_CRISIS_TEXT.description, number:PA_CRISIS_TEXT.phone, actionLabel:"Text PA", actionHref:PA_CRISIS_TEXT.phoneHref, color:"#D62828", bg:"#FFF0F0", icon:"💬", urgent:true, isText:true, verified:PA_CRISIS_TEXT.verified, verifiedBy:PA_CRISIS_TEXT.verifiedBy, lastUpdated:PA_CRISIS_TEXT.lastUpdated },
   { id:3, name:"988 Suicide & Crisis", sub:"Call or text 988 — 24/7 free", number:"988", color:"#7B2D8B", bg:"#F8F0FF", icon:"🧠", urgent:true },
   { id:4, name:"SJC Parish Office", sub:"Pastoral care & referrals", number:"610-874-3418", color:BRAND.primary, bg:"#F0F4FF", icon:"✝" },
   { id:5, name:"PA 211 Helpline", sub:"All social services — dial 2-1-1", number:"211", color:"#2D6A4F", bg:"#F0FBF4", icon:"📞" },
   { id:6, name:"Domestic Violence Hotline", sub:"PA DV Hotline — 24/7 confidential", number:"1-800-799-7233", color:"#9D4EDD", bg:"#F8F0FF", icon:"🏠" },
-  { id:7, name:"Delaware County Crisis", sub:"Mental health emergency line", number:"610-565-4300", color:"#023E8A", bg:"#F0F4FF", icon:"🧩" },
+  { id:7, name:DELCO_CRISIS.displayName, sub:DELCO_CRISIS.description, number:DELCO_CRISIS.phone, actionLabel:"Call Crisis Line", actionHref:DELCO_CRISIS.phoneHref, color:"#023E8A", bg:"#F0F4FF", icon:"🧩", urgent:true, verified:DELCO_CRISIS.verified, verifiedBy:DELCO_CRISIS.verifiedBy, lastUpdated:DELCO_CRISIS.lastUpdated },
   { id:8, name:"Hunger Hotline", sub:"Find food near you right now", number:"1-866-348-6479", color:"#40916C", bg:"#F0FBF4", icon:"🥫" },
   { id:9, name:"Poison Control", sub:"24/7 medical emergency", number:"1-800-222-1222", color:"#E76F51", bg:"#FFF6F0", icon:"⚠️" },
   { id:10, name:"Child Abuse Hotline", sub:"PA ChildLine — 24/7 reporting", number:"1-800-932-0313", color:"#D62828", bg:"#FFF0F0", icon:"👶" },
@@ -414,11 +415,14 @@ function EmergencyMode({ onClose, lang }) {
           <button onClick={onClose} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:50,width:34,height:34,color:"white",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
         </div>
         <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>🚨 Crisis Lines</div>
+        <div style={{background:"rgba(255,255,255,0.15)",borderRadius:12,padding:12,color:"white",fontSize:12,lineHeight:1.5,marginBottom:10}}>
+          {DELCO_CRISIS.emergencyDisclaimer} {DELCO_CRISIS.callToConfirm}
+        </div>
         {urgent.map(h=>(
           <div key={h.id} style={{background:"rgba(255,255,255,0.15)",borderRadius:14,padding:"12px 14px",marginBottom:8,display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:20}}>{h.icon}</span>
             <div style={{flex:1}}><div style={{fontSize:13,fontWeight:700,color:"white"}}>{h.name}</div><div style={{fontSize:11,color:"rgba(255,255,255,0.7)"}}>{h.sub}</div></div>
-            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(`tel:${h.number}`)}>{h.isText?"Text":"Call"} {h.number}</button>
+            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(h.actionHref||`tel:${h.number}`)}>{h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}</button>
           </div>
         ))}
         <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",margin:"14px 0 8px"}}>📍 Open Near You Now</div>
@@ -823,12 +827,16 @@ function HotlineScreen({ lang, onEscape }) {
         {onEscape && <button onClick={onEscape} style={{background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:10,padding:"6px 12px",color:"white",fontSize:11,fontWeight:600,cursor:"pointer",marginTop:10,fontFamily:"'Source Sans 3',sans-serif"}}>🔒 Set Up My Safety Plan</button>}
       </div>
       <div style={{padding:"0 24px"}}>
+        <div style={{background:"#FFF0F0",borderRadius:14,padding:12,border:"1px solid rgba(214,40,40,0.2)",marginBottom:12}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#D62828",marginBottom:4}}>{DELCO_CRISIS.emergencyDisclaimer}</div>
+          <div style={{fontSize:12,color:"#7f1d1d",lineHeight:1.5}}>{DELCO_CRISIS.callToConfirm}</div>
+        </div>
         <div style={{fontSize:12,fontWeight:700,color:"#D62828",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.immediateEmergency}</div>
         {urgent.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div></div>
-            <button className="hotline-btn" style={{background:h.color,color:"white"}} onClick={()=>window.open(`tel:${h.number}`)}>{h.isText?"Text":"Call"} {h.number}</button>
+            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
+            <button className="hotline-btn" style={{background:h.color,color:"white"}} onClick={()=>window.open(h.actionHref||`tel:${h.number}`)}>{h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}</button>
           </div>
         ))}
         <div style={{height:12}}/>
@@ -836,7 +844,7 @@ function HotlineScreen({ lang, onEscape }) {
         {rest.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div></div>
+            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
             <button className="hotline-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>window.open(`tel:${h.number}`)}>{h.number}</button>
           </div>
         ))}
@@ -1594,7 +1602,7 @@ Local resources:
 - Delco Helping Hands: diapers, supplies, 484-474-0590
 - PA 211: dial 211 for any social service
 
-Keep responses warm, pastoral, and brief. Include phone numbers. In crisis situations, lead with 988 or 911. Reflect the Catholic mission of serving those in need with dignity.`;
+Keep responses warm, pastoral, and brief. Include phone numbers. If someone seems in immediate danger, lead with 911. For Delaware County crisis support, use ${DELCO_CRISIS.phone}. For text support, say text PA to 741741. Reflect the Catholic mission of serving those in need with dignity.`;
       const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[...messages.filter((_,i)=>i>0).map(m=>({role:m.role==="ai"?"assistant":"user",content:m.text})),{role:"user",content:userMsg}]})});
       const data=await res.json();
       setMessages(m=>[...m,{role:"ai",text:data.content?.[0]?.text||"Please call our parish office at 610-874-3418 for assistance."}]);

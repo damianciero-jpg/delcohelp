@@ -610,7 +610,7 @@ export function CrisisEscapePlan({ onClose }) {
   const [plan, setPlan] = useState(()=>getCrisisEscapePlan()||{step1:"",step2:"",step3:"",safeContact:"",safeContactPhone:""});
   const [saved, setSaved] = useState(false);
   function save() { try { localStorage.setItem(ESCAPE_PLAN_KEY,JSON.stringify(plan)); } catch {} setSaved(true); setTimeout(()=>setSaved(false),2000); }
-  const fields = [{key:"step1",label:"Step 1 — First call I make",placeholder:"e.g. Call 988 or text HOME to 741741"},{key:"step2",label:"Step 2 — First place I go",placeholder:"e.g. 25 Cedar Rd, Wallingford (Lifewerks)"},{key:"step3",label:"Step 3 — What I say when I get there",placeholder:"e.g. I need emergency help, I'm not safe at home"},{key:"safeContact",label:"My trusted contact",placeholder:"e.g. Sister Maria"},{key:"safeContactPhone",label:"Their phone number",placeholder:"e.g. 610-555-0000"}];
+  const fields = [{key:"step1",label:"Step 1 — First call I make",placeholder:"e.g. Call 855-889-7827, call 988, or text PA to 741741"},{key:"step2",label:"Step 2 — First place I go",placeholder:"e.g. 25 Cedar Rd, Wallingford (Lifewerks)"},{key:"step3",label:"Step 3 — What I say when I get there",placeholder:"e.g. I need emergency help, I'm not safe at home"},{key:"safeContact",label:"My trusted contact",placeholder:"e.g. Sister Maria"},{key:"safeContactPhone",label:"Their phone number",placeholder:"e.g. 610-555-0000"}];
   return (
     <div style={{ position:"fixed",inset:0,background:"rgba(100,0,0,0.92)",zIndex:9999,display:"flex",alignItems:"flex-end" }}>
       <div style={{ background:"white",width:"100%",maxWidth:480,maxHeight:"92vh",borderRadius:"24px 24px 0 0",overflow:"auto",padding:20 }}>
@@ -631,7 +631,7 @@ export function CrisisEscapePlan({ onClose }) {
         <div style={{ display:"flex",gap:8 }}>
           <a href="tel:988" style={{ flex:1,background:"#7B2D8B",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Call 988</a>
           <a href="tel:911" style={{ flex:1,background:"#D62828",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Call 911</a>
-          <a href="sms:741741?&body=HOME" style={{ flex:1,background:"#023E8A",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Text 741741</a>
+          <a href="sms:741741?&body=PA" style={{ flex:1,background:"#023E8A",color:"white",textDecoration:"none",borderRadius:10,padding:10,fontSize:12,fontWeight:700,textAlign:"center" }}>Text PA to 741741</a>
         </div>
         <div style={{ marginTop:12,fontSize:10,color:"#9BA8A0",textAlign:"center" }}>This plan is stored only on your device. It is never shared or uploaded.</div>
       </div>

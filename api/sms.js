@@ -51,9 +51,9 @@ export default async function handler(req, res) {
 
       SNAP: "SNAP/WIC APPLICATION:\nApply free at compass.state.pa.us\nOr call PA 211 (dial 211) for help applying.\n\nMight qualify if monthly income under:\n1 person: $1,580\n2 people: $2,137\n3 people: $2,694\n4 people: $3,250",
 
-      CRISIS: "DELCOHELP CRISIS LINES:\n- 911 (immediate emergency)\n- 988 (suicide & crisis)\n- Text HOME to 741741 (text crisis)\n- PA 211 (dial 211 for any help)\n- Delco Crisis: 855-889-7827\n\nYou are not alone. Help is available 24/7.",
+      CRISIS: "DELCOHELP CRISIS LINES:\n- If immediate emergency or danger: call 911\n- Delaware County Crisis Connections Team: 855-889-7827 (24/7)\n- 988 Suicide & Crisis: call/text 988\n- PA Crisis Text Line: text PA to 741741\n- PA 211: dial 211 for any help\n\nResource info can change. Please call ahead when possible.",
 
-      HOUSING: "DELCOHELP HOUSING:\n- Delco Housing Authority: 610-876-4945\n- Legal Aid of SE PA: 877-429-5994\n- Catholic Social Services: 267-331-2490\n- PA 211 for emergency shelter",
+      HOUSING: "DELCOHELP HOUSING:\nFor homelessness or immediate housing needs in Delaware County, residents may need a Coordinated Entry assessment.\nNeeds verification: call Delaware County Human Services or visit delcopa.gov human services housing/homeless resources to confirm the correct access point.\nCrisis line: 855-889-7827\nEmergency danger: call 911.",
     };
 
     const message = responses[keyword] ||
