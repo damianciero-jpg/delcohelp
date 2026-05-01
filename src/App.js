@@ -12,6 +12,8 @@ import {
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent, EXTRA_TRANSLATIONS,
   PantryInventoryWidget, IAmGoingButton, SaveResourceButton, FoundHelpButton,
   // eslint-disable-next-line no-unused-vars
+  StoriesSection, LanguageSelector, HealthScreen,
+  // eslint-disable-next-line no-unused-vars
   DocumentChecklist, SNAPAssistant, CrisisEscapePlan, FamilyResourcePlan,
   FamilyProfileSetup, getFamilyProfile, getSavedResources, LegalScreen,
   TrustBadge, ReportIssueButton
@@ -559,8 +561,8 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
           {[
             {icon:"🍽",label:"Food",sub:"Pantries open now",nav:"find",filter:"food"},
             {icon:"📋",label:"Benefits",sub:"SNAP, WIC & more",nav:"benefits"},
-            {icon:"??",label:"Nutrition",sub:"Food check & nutrition",nav:"nutrition"},
-            {icon:"?",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
+            {icon:"🍎",label:"Nutrition",sub:"Food check & nutrition",nav:"nutrition"},
+            {icon:"🔎",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
             {icon:"📞",label:"Crisis Line",sub:"Free & confidential",nav:"hotline"},
             {icon:"🏠",label:"Housing",sub:"Shelter & legal aid",nav:"find",filter:"assistance"},
           ].map(a=>(
@@ -588,22 +590,6 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             {savedResources.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
           </div>
         )}
-        <div className="dh-card" style={{marginBottom:12,cursor:"pointer",border:"1px solid rgba(30,90,138,0.18)"}} onClick={()=>onNav("trust")}>
-          <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-            <div style={{width:44,height:44,borderRadius:12,background:"rgba(30,90,138,0.12)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:800,color:"#1E5A8A",flexShrink:0}}>
-              ?
-            </div>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:16,fontWeight:800,color:"#0F172A",lineHeight:1.25,marginBottom:4}}>Check This Info</div>
-              <div style={{fontSize:12,color:"#334155",lineHeight:1.45,marginBottom:12}}>
-                Paste a link, article, message, job post, or rental listing to check for scam signals, bias signals, and AI-writing signals.
-              </div>
-              <button className="dh-btn-primary" style={{minHeight:44,padding:"11px 16px"}} onClick={(event)=>{event.stopPropagation();onNav("trust");}}>
-                Check Now
-              </button>
-            </div>
-          </div>
-        </div>
         <SMSAccessCard phoneNumber="(877) 473-4752"/>
         <div style={{background:"linear-gradient(135deg,#FFF7D6,#FFF7D6)",borderRadius:16,padding:14,marginBottom:20,border:"1px solid rgba(242,201,76,0.3)",cursor:"pointer"}} onClick={onDonate}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>

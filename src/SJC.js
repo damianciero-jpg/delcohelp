@@ -3,10 +3,13 @@ import { auth, db, googleProvider, FIREBASE_ENABLED } from "./firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import NutritionFoodCheck from "./NutritionFoodCheck";
+import TrustCheck from "./TrustCheck";
 import { DELCO_CRISIS, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
 import { EXTRA_TRANSLATIONS, InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent,
   PantryInventoryWidget, IAmGoingButton, SaveResourceButton, FoundHelpButton,
+  // eslint-disable-next-line no-unused-vars
+  StoriesSection, LanguageSelector, HealthScreen,
   // eslint-disable-next-line no-unused-vars
   DocumentChecklist, SNAPAssistant, CrisisEscapePlan, FamilyResourcePlan,
   FamilyProfileSetup, getFamilyProfile, getSavedResources, LegalScreen,
@@ -624,6 +627,8 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
           {[
             {icon:"🍽",label:"Food",sub:"Pantries open now",nav:"find",filter:"food"},
             {icon:"📋",label:"Benefits",sub:"SNAP, WIC & more",nav:"benefits"},
+            {icon:"🍎",label:"Nutrition",sub:"Food check & nutrition",nav:"nutrition"},
+            {icon:"🔍",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
             {icon:"📞",label:"Crisis Line",sub:"Free & confidential",nav:"hotline"},
             {icon:"🏠",label:"Housing",sub:"Shelter & legal aid",nav:"find",filter:"assistance"},
           ].map(a=>(
@@ -652,6 +657,22 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             {savedResources.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
           </div>
         )}
+        <div className="sjc-card" style={{marginBottom:12,cursor:"pointer",border:`1px solid ${BRAND.primary}30`}} onClick={()=>onNav("trust")}>
+          <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
+            <div style={{width:44,height:44,borderRadius:12,background:`${BRAND.primary}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:800,color:BRAND.primary,flexShrink:0}}>
+              🔍
+            </div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{fontSize:16,fontWeight:800,color:BRAND.dark,lineHeight:1.25,marginBottom:4}}>Check This Info</div>
+              <div style={{fontSize:12,color:"#334155",lineHeight:1.45,marginBottom:12}}>
+                Paste a link, article, message, job post, or rental listing to check for scam signals, bias signals, and AI-writing signals.
+              </div>
+              <button className="sjc-btn" style={{minHeight:44,padding:"11px 16px"}} onClick={(event)=>{event.stopPropagation();onNav("trust");}}>
+                Check Now
+              </button>
+            </div>
+          </div>
+        </div>
         <SMSAccessCard phoneNumber="(877) 473-4752"/>
         <div style={{background:`linear-gradient(135deg,${BRAND.secondary}22,${BRAND.secondary}10)`,borderRadius:16,padding:14,marginBottom:12,border:`1px solid ${BRAND.secondary}44`,cursor:"pointer"}} onClick={onDonate}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
@@ -3150,6 +3171,7 @@ function PublicApp() {
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
     nutrition:<NutritionFoodCheck variant="sjc"/>,
+    trust:<TrustCheck/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
     volunteer:<VolunteerScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,
     events:<EventCalendarScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,
