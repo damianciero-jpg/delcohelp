@@ -280,14 +280,14 @@ const CSS = `
   .dh-sb { display:flex; justify-content:space-between; align-items:center; padding:14px 24px 10px; font-size:12px; font-weight:600; color:white; background:var(--color-county-navy); flex-shrink:0; }
   .dh-sc { flex:1; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
   .dh-sc::-webkit-scrollbar { display:none; }
-  .dh-nav { display:flex; justify-content:space-around; align-items:center; padding:6px 0 16px; border-top:1px solid var(--color-border); background:var(--color-card); flex-shrink:0; }
-  .dh-ni { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:4px 8px; border-radius:12px; transition:all 0.18s; position:relative; }
+  .dh-nav { display:flex; justify-content:space-around; align-items:center; padding:8px 6px 18px; border-top:1px solid var(--color-border); background:rgba(255,255,255,0.97); box-shadow:0 -6px 20px rgba(15,23,42,0.07); flex-shrink:0; }
+  .dh-ni { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:6px 10px; border-radius:14px; transition:all 0.18s; min-width:50px; }
   .dh-ni:hover { background:rgba(30,90,138,0.08); }
-  .dh-ni-ic { font-size:18px; opacity:0.35; transition:opacity 0.18s; }
-  .dh-ni-lb { font-size:8px; font-weight:600; letter-spacing:0.05em; color:var(--color-muted); transition:color 0.18s; text-transform:uppercase; }
+  .dh-ni-ic { font-size:20px; opacity:0.5; transition:all 0.18s; line-height:1; }
+  .dh-ni-lb { font-size:9px; font-weight:600; letter-spacing:0.03em; color:#64748B; transition:color 0.18s; text-transform:uppercase; }
   .dh-ni.act { background:var(--color-civic-blue); }
-  .dh-ni.act .dh-ni-ic { opacity:1; color:white; }
-  .dh-ni.act .dh-ni-lb { color:white; }
+  .dh-ni.act .dh-ni-ic { opacity:1; }
+  .dh-ni.act .dh-ni-lb { color:white; font-weight:700; }
   .dfi { animation:dhFi 0.28s ease; }
   @keyframes dhFi { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
   .dh-chip { display:inline-flex; align-items:center; gap:4px; background:var(--color-bg); border-radius:20px; padding:4px 10px; font-size:11px; font-weight:500; color:#334155; }
@@ -556,20 +556,29 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         <p className="support-trust-line">
           Free community resource • Built and supported by CieroLink LLC
         </p>
-        <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>What do you need?</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+        <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>Quick Help</div>
+        <div style={{display:"flex",gap:8,marginBottom:10}}>
           {[
-            {icon:"🍽",label:"Food",sub:"Pantries open now",nav:"find",filter:"food"},
-            {icon:"📋",label:"Benefits",sub:"SNAP, WIC & more",nav:"benefits"},
+            {icon:"🍽",label:"Pantries open now",nav:"find",filter:"food"},
+            {icon:"📋",label:"SNAP, WIC & more",nav:"benefits"},
+          ].map(a=>(
+            <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{flex:1,background:"rgba(255,255,255,0.14)",borderRadius:20,padding:"13px 12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.22)",display:"flex",alignItems:"center",gap:8,minHeight:52}}>
+              <span style={{fontSize:18,lineHeight:1}}>{a.icon}</span>
+              <span style={{fontSize:12,fontWeight:700,color:"white",lineHeight:1.25}}>{a.label}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          {[
             {icon:"🍎",label:"Nutrition",sub:"Food check & nutrition",nav:"nutrition"},
             {icon:"🔎",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
             {icon:"📞",label:"Crisis Line",sub:"Free & confidential",nav:"hotline"},
             {icon:"🏠",label:"Housing",sub:"Shelter & legal aid",nav:"find",filter:"assistance"},
           ].map(a=>(
-            <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{background:"white",borderRadius:14,padding:"12px",cursor:"pointer",border:"1px solid #E2E8F0",boxShadow:"0 4px 14px rgba(15,23,42,0.06)"}}>
-              <div style={{fontSize:24,marginBottom:4}}>{a.icon}</div>
-              <div style={{fontSize:13,fontWeight:700,color:"#0F172A",lineHeight:1.2}}>{a.label}</div>
-              <div style={{fontSize:10,color:"#475569",marginTop:2}}>{a.sub}</div>
+            <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{background:"white",borderRadius:20,padding:"16px 14px",cursor:"pointer",border:"1px solid rgba(226,232,240,0.8)",boxShadow:"0 6px 18px rgba(15,23,42,0.07)"}}>
+              <div style={{width:40,height:40,borderRadius:12,background:"#F0F6FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:10}}>{a.icon}</div>
+              <div style={{fontSize:14,fontWeight:800,color:"#0F172A",lineHeight:1.2,marginBottom:3}}>{a.label}</div>
+              <div style={{fontSize:11,color:"#475569",lineHeight:1.35}}>{a.sub}</div>
             </div>
           ))}
         </div>
