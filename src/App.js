@@ -111,6 +111,173 @@ const T = {
 // Merge Vietnamese and Chinese translations
 Object.assign(T, EXTRA_TRANSLATIONS);
 
+const UI_TRANSLATIONS = {
+  en: {
+    nutrition:"Nutrition", pantriesOpenNow:"Pantries open now", snapWicMore:"SNAP, WIC & more",
+    checkInfo:"Check Info", scamBiasSignals:"Scam & bias signals", crisisLine:"Crisis Line",
+    freeConfidential:"Free & confidential", housing:"Housing", shelterLegalAid:"Shelter & legal aid",
+    noSmartphoneTextUs:"No smartphone? Text us!", worksOnAnyPhone:"Works on any phone, even flip phones",
+    website:"Website", closed:"Closed", callToConfirm:"Call to Confirm", hoursUnknown:"Hours Unknown",
+    reportIncorrectInfo:"Report incorrect info", lastUpdated:"Last updated", verified:"Verified",
+    needsVerification:"Needs verification", emergency911:"If this is an emergency, call 911.",
+    resourceInfoCanChange:"Resource information can change. Please call ahead when possible.",
+    freeCommunityResource:"Free community resource",
+    terms:"Terms", privacy:"Privacy", disclaimer:"Disclaimer", quickHelp:"Quick Help",
+    foodCheckNutrition:"Food check & nutrition", openNearYouRightNow:"Open Near You Right Now",
+    crisisLinesCallNow:"Crisis Lines — Call Now", callNow:"Call", seeAllOpenNow:"See all {count} open now →",
+    mySavedResources:"My Saved Resources", all:"All", food:"Food", help:"Help", legal:"Legal",
+    yourLocation:"Your Location", enterZip:"Enter zip code (e.g. 19013)", nearMe:"Near me",
+    zipNotInCounty:"Zip code not in Delaware County — showing all resources",
+    showingWithinMiles:"Showing resources within 10 miles of {zip}",
+    resourcesNear:"{count} resources {place} · sorted by distance", nearZip:"near {zip}",
+    nearWallingford:"near Wallingford", noResourcesFound:"No resources found {place}",
+    noResourcesHelp:"Try a nearby zip code, or call PA 211 (dial 211) for help finding resources anywhere in Delaware County.",
+    moreResourcesSoon:"More resources coming soon",
+    pa211Coming:"We're integrating the PA 211 database — coming Q3 2026 with hundreds of verified resources across all 49 Delaware County zip codes.",
+    checkEligibility60:"Check My Eligibility in 60 Seconds →", snapGuide:"SNAP Application Step-by-Step Guide",
+    buildChecklist:"Build My Document Checklist", applyCompassDesc:"Apply online through PA's COMPASS portal — takes about 15 minutes.",
+    safetyPlan:"Set Up My Safety Plan", builtForCommunity:"Built for the community",
+    supportTrustBody:"DelcoHelp helps residents quickly find local food, shelter, health, school, church, and support resources.",
+    freeToUse:"Free to use", communityFocused:"Community-focused", builtForDelco:"Built for Delaware County",
+    noLoginRequired:"No login required", whyFree:"Why this is free",
+    whyFreeBody:"DelcoHelp is free and will always keep core help resources free. CieroLink LLC supports this project so residents and families can find trusted help faster.",
+    textKeyword:"Text {keyword}", replyZip:"Reply with your zip code to get nearest resources",
+    resourceSubmitted:"Resource Submitted!", contactUs:"Contact Us", questionsFeedback:"Questions or feedback?",
+    aboutDelcoHelp:"About DelcoHelp", aboutDelcoHelpBody:"Free community service connecting Delaware County residents to food pantries, benefits programs, and emergency resources. Built by CieroLink LLC.",
+  },
+  es: {
+    nutrition:"Nutrición", pantriesOpenNow:"Despensas abiertas ahora", snapWicMore:"SNAP, WIC y más",
+    checkInfo:"Verificar info", scamBiasSignals:"Señales de estafa y sesgo", crisisLine:"Línea de crisis",
+    freeConfidential:"Gratis y confidencial", housing:"Vivienda", shelterLegalAid:"Refugio y ayuda legal",
+    noSmartphoneTextUs:"¿No tiene smartphone? Envíenos un texto", worksOnAnyPhone:"Funciona en cualquier teléfono, incluso teléfonos básicos",
+    website:"Sitio web", closed:"Cerrado", callToConfirm:"Llame para confirmar", hoursUnknown:"Horario desconocido",
+    reportIncorrectInfo:"Reportar información incorrecta", lastUpdated:"Última actualización", verified:"Verificado",
+    needsVerification:"Necesita verificación", emergency911:"Si es una emergencia, llame al 911.",
+    resourceInfoCanChange:"La información puede cambiar. Llame antes cuando sea posible.",
+    freeCommunityResource:"Recurso comunitario gratuito", builtSupportedBy:"Construido y apoyado por CieroLink LLC",
+    terms:"Términos", privacy:"Privacidad", disclaimer:"Aviso", quickHelp:"Ayuda rápida",
+    foodCheckNutrition:"Revisión de comida y nutrición", openNearYouRightNow:"Abierto cerca de usted ahora",
+    crisisLinesCallNow:"Líneas de crisis — llame ahora", callNow:"Llamar", seeAllOpenNow:"Ver los {count} abiertos ahora →",
+    mySavedResources:"Mis recursos guardados", all:"Todos", food:"Comida", help:"Ayuda", legal:"Legal",
+    yourLocation:"Su ubicación", enterZip:"Ingrese código postal (ej. 19013)", nearMe:"Cerca de mí",
+    zipNotInCounty:"Código postal fuera del Condado de Delaware — mostrando todos los recursos",
+    showingWithinMiles:"Mostrando recursos dentro de 10 millas de {zip}",
+    resourcesNear:"{count} recursos {place} · ordenados por distancia", nearZip:"cerca de {zip}",
+    nearWallingford:"cerca de Wallingford", noResourcesFound:"No se encontraron recursos {place}",
+    noResourcesHelp:"Pruebe un código postal cercano o llame a PA 211 (marque 211) para ayuda en el Condado de Delaware.",
+    moreResourcesSoon:"Más recursos próximamente",
+    pa211Coming:"Estamos integrando la base de datos PA 211 — llegará en Q3 2026 con cientos de recursos verificados.",
+    checkEligibility60:"Verificar mi elegibilidad en 60 segundos →", snapGuide:"Guía paso a paso para solicitar SNAP",
+    buildChecklist:"Crear mi lista de documentos", applyCompassDesc:"Solicite en línea por PA COMPASS — toma unos 15 minutos.",
+    safetyPlan:"Configurar mi plan de seguridad", builtForCommunity:"Creado para la comunidad",
+    supportTrustBody:"DelcoHelp ayuda a residentes a encontrar rápidamente comida, refugio, salud, escuela, iglesia y apoyo local.",
+    freeToUse:"Gratis", communityFocused:"Enfocado en la comunidad", builtForDelco:"Creado para Delaware County",
+    noLoginRequired:"No requiere cuenta", whyFree:"Por qué es gratis",
+    whyFreeBody:"DelcoHelp es gratis y siempre mantendrá gratuitos los recursos básicos de ayuda. CieroLink LLC apoya este proyecto para que familias encuentren ayuda confiable más rápido.",
+    textKeyword:"Enviar {keyword}", replyZip:"Responda con su código postal para recursos cercanos",
+    resourceSubmitted:"¡Recurso enviado!", contactUs:"Contáctenos", questionsFeedback:"¿Preguntas o comentarios?",
+    aboutDelcoHelp:"Acerca de DelcoHelp", aboutDelcoHelpBody:"Servicio comunitario gratuito que conecta residentes del Condado de Delaware con despensas, beneficios y recursos de emergencia. Creado por CieroLink LLC.",
+  },
+  vi: {
+    home:"Trang chủ", find:"Tìm", benefits:"Phúc lợi", nutrition:"Dinh dưỡng", hotline:"Đường dây nóng", askAI:"Hỏi AI",
+    needHelpNow:"Cần giúp ngay?", pantriesOpenNow:"Kho thực phẩm đang mở", snapWicMore:"SNAP, WIC và thêm nữa",
+    checkInfo:"Kiểm tra thông tin", scamBiasSignals:"Dấu hiệu lừa đảo và thiên lệch", crisisLine:"Đường dây khủng hoảng",
+    freeConfidential:"Miễn phí & bảo mật", housing:"Nhà ở", shelterLegalAid:"Nơi trú ẩn & trợ giúp pháp lý",
+    openRightNow:"Đang mở", noSmartphoneTextUs:"Không có smartphone? Nhắn tin cho chúng tôi!",
+    worksOnAnyPhone:"Hoạt động trên mọi điện thoại, kể cả điện thoại cơ bản", call:"Gọi", directions:"Chỉ đường",
+    website:"Trang web", openNow:"Đang mở", closed:"Đã đóng", callToConfirm:"Gọi để xác nhận",
+    hoursUnknown:"Không rõ giờ", reportIncorrectInfo:"Báo thông tin sai", lastUpdated:"Cập nhật lần cuối",
+    verified:"Đã xác minh", needsVerification:"Cần xác minh", emergency911:"Nếu đây là trường hợp khẩn cấp, hãy gọi 911.",
+    resourceInfoCanChange:"Thông tin có thể thay đổi. Vui lòng gọi trước khi có thể.",
+    freeCommunityResource:"Tài nguyên cộng đồng miễn phí", builtSupportedBy:"Được xây dựng và hỗ trợ bởi CieroLink LLC",
+    terms:"Điều khoản", privacy:"Quyền riêng tư", disclaimer:"Tuyên bố miễn trừ", quickHelp:"Trợ giúp nhanh",
+    foodCheckNutrition:"Kiểm tra thực phẩm & dinh dưỡng", openNearYouRightNow:"Đang mở gần bạn",
+    crisisLinesCallNow:"Đường dây khủng hoảng — gọi ngay", callNow:"Gọi", seeAllOpenNow:"Xem tất cả {count} nơi đang mở →",
+    mySavedResources:"Tài nguyên đã lưu", all:"Tất cả", food:"Thực phẩm", help:"Trợ giúp", legal:"Pháp lý",
+    yourLocation:"Vị trí của bạn", enterZip:"Nhập mã ZIP (vd. 19013)", nearMe:"Gần tôi",
+    zipNotInCounty:"Mã ZIP không thuộc Delaware County — đang hiển thị tất cả tài nguyên",
+    showingWithinMiles:"Đang hiển thị tài nguyên trong vòng 10 dặm từ {zip}",
+    resourcesNear:"{count} tài nguyên {place} · sắp xếp theo khoảng cách", nearZip:"gần {zip}",
+    nearWallingford:"gần Wallingford", noResourcesFound:"Không tìm thấy tài nguyên {place}",
+    noResourcesHelp:"Thử mã ZIP gần đó hoặc gọi PA 211 (quay 211) để được trợ giúp tìm tài nguyên.",
+    moreResourcesSoon:"Sắp có thêm tài nguyên", pa211Coming:"Chúng tôi đang tích hợp cơ sở dữ liệu PA 211 — dự kiến Q3 2026.",
+    checkEligibility60:"Kiểm tra điều kiện trong 60 giây →", snapGuide:"Hướng dẫn từng bước đăng ký SNAP",
+    buildChecklist:"Tạo danh sách giấy tờ", applyCompassDesc:"Đăng ký trực tuyến qua PA COMPASS — mất khoảng 15 phút.",
+    safetyPlan:"Thiết lập kế hoạch an toàn", builtForCommunity:"Xây dựng cho cộng đồng",
+    supportTrustBody:"DelcoHelp giúp cư dân nhanh chóng tìm thực phẩm, nơi trú ẩn, y tế, trường học, nhà thờ và hỗ trợ địa phương.",
+    freeToUse:"Miễn phí sử dụng", communityFocused:"Tập trung vào cộng đồng", builtForDelco:"Dành cho Delaware County",
+    noLoginRequired:"Không cần đăng nhập", whyFree:"Vì sao miễn phí",
+    whyFreeBody:"DelcoHelp miễn phí và sẽ luôn giữ các tài nguyên trợ giúp cốt lõi miễn phí. CieroLink LLC hỗ trợ dự án này để các gia đình tìm trợ giúp tin cậy nhanh hơn.",
+    textKeyword:"Nhắn {keyword}", replyZip:"Trả lời bằng mã ZIP để nhận tài nguyên gần nhất",
+    resourceSubmitted:"Đã gửi tài nguyên!", contactUs:"Liên hệ", questionsFeedback:"Câu hỏi hoặc góp ý?",
+    aboutDelcoHelp:"Giới thiệu DelcoHelp", aboutDelcoHelpBody:"Dịch vụ cộng đồng miễn phí kết nối cư dân Delaware County với kho thực phẩm, phúc lợi và tài nguyên khẩn cấp. Được xây dựng bởi CieroLink LLC.",
+  },
+  zh: {
+    home:"首页", find:"查找", benefits:"福利", nutrition:"营养", hotline:"热线", askAI:"询问 AI",
+    needHelpNow:"现在需要帮助？", pantriesOpenNow:"现在开放的食品 pantry", snapWicMore:"SNAP、WIC 等",
+    checkInfo:"检查信息", scamBiasSignals:"诈骗和偏见信号", crisisLine:"危机热线",
+    freeConfidential:"免费且保密", housing:"住房", shelterLegalAid:"庇护所和法律援助",
+    openRightNow:"现在开放", noSmartphoneTextUs:"没有智能手机？给我们发短信！",
+    worksOnAnyPhone:"适用于任何手机，包括翻盖手机", call:"拨打", directions:"路线",
+    website:"网站", openNow:"现在开放", closed:"已关闭", callToConfirm:"请致电确认",
+    hoursUnknown:"营业时间未知", reportIncorrectInfo:"报告错误信息", lastUpdated:"最后更新",
+    verified:"已验证", needsVerification:"需要验证", emergency911:"如果这是紧急情况，请拨打 911。",
+    resourceInfoCanChange:"资源信息可能会变化。请尽可能提前致电确认。",
+    freeCommunityResource:"免费社区资源", builtSupportedBy:"由 CieroLink LLC 建立并支持",
+    terms:"条款", privacy:"隐私", disclaimer:"免责声明", quickHelp:"快速帮助",
+    foodCheckNutrition:"食品和营养检查", openNearYouRightNow:"您附近现在开放",
+    crisisLinesCallNow:"危机热线 — 立即拨打", callNow:"拨打", seeAllOpenNow:"查看全部 {count} 个开放资源 →",
+    mySavedResources:"我保存的资源", all:"全部", food:"食物", help:"帮助", legal:"法律",
+    yourLocation:"您的位置", enterZip:"输入邮编（例如 19013）", nearMe:"离我近",
+    zipNotInCounty:"邮编不在 Delaware County — 显示所有资源",
+    showingWithinMiles:"显示 {zip} 10 英里内的资源",
+    resourcesNear:"{count} 个资源 {place} · 按距离排序", nearZip:"靠近 {zip}",
+    nearWallingford:"靠近 Wallingford", noResourcesFound:"未找到资源 {place}",
+    noResourcesHelp:"请尝试附近邮编，或拨打 PA 211（拨 211）获取帮助。",
+    moreResourcesSoon:"更多资源即将推出", pa211Coming:"我们正在整合 PA 211 数据库 — 预计 2026 年第三季度推出。",
+    checkEligibility60:"60 秒检查我的资格 →", snapGuide:"SNAP 申请分步指南",
+    buildChecklist:"建立我的文件清单", applyCompassDesc:"通过 PA COMPASS 在线申请 — 大约需要 15 分钟。",
+    safetyPlan:"设置我的安全计划", builtForCommunity:"为社区而建",
+    supportTrustBody:"DelcoHelp 帮助居民快速找到本地食物、庇护、健康、学校、教会和支持资源。",
+    freeToUse:"免费使用", communityFocused:"关注社区", builtForDelco:"为 Delaware County 而建",
+    noLoginRequired:"无需登录", whyFree:"为什么免费",
+    whyFreeBody:"DelcoHelp 免费，并将始终保持核心帮助资源免费。CieroLink LLC 支持该项目，让居民和家庭更快找到可信帮助。",
+    textKeyword:"发送 {keyword}", replyZip:"回复您的邮编以获取最近资源",
+    resourceSubmitted:"资源已提交！", contactUs:"联系我们", questionsFeedback:"问题或反馈？",
+    aboutDelcoHelp:"关于 DelcoHelp", aboutDelcoHelpBody:"免费社区服务，将 Delaware County 居民连接到食品 pantry、福利和紧急资源。由 CieroLink LLC 建立。",
+  },
+};
+
+Object.entries(UI_TRANSLATIONS).forEach(([lang, values]) => {
+  T[lang] = { ...(T.en || {}), ...(T[lang] || {}), ...values };
+});
+
+Object.assign(T.en, { text:"Text", callCrisisLine:"Call Crisis Line", textPA:"Text PA", officialCountyResources:"Visit Official County Resources" });
+Object.assign(T.es, { text:"Texto", callCrisisLine:"Llamar a la línea de crisis", textPA:"Texto PA", officialCountyResources:"Visitar recursos oficiales del condado" });
+Object.assign(T.vi, { text:"Nhắn tin", callCrisisLine:"Gọi đường dây khủng hoảng", textPA:"Nhắn PA", officialCountyResources:"Xem tài nguyên chính thức của quận" });
+Object.assign(T.zh, { text:"短信", callCrisisLine:"拨打危机热线", textPA:"发送 PA", officialCountyResources:"访问官方县资源" });
+
+function translate(lang, key) {
+  const value = T[lang]?.[key] || T.en?.[key];
+  if (!value && process.env.NODE_ENV === "development") {
+    // Keep missing i18n visible during local development without crashing production.
+    console.warn(`Missing translation key: ${key}`);
+  }
+  return value || key;
+}
+
+function getT(lang) {
+  return new Proxy(T.en, {
+    get(_target, key) {
+      return translate(lang, key);
+    },
+  });
+}
+
+function fmt(template, values = {}) {
+  return String(template).replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
+}
+
 /* ── DATA ── */
 
 // Zip code center coordinates for distance calculation
@@ -218,14 +385,14 @@ const BENEFITS = [
 
 const HOTLINES = [
   { id:1, name:"911 Emergency", sub:"Police, Fire, Medical", number:"911", color:THEME.emergency, bg:THEME.emergencyBg, icon:"🚨", urgent:true },
-  { id:2, name:PA_CRISIS_TEXT.displayText, sub:PA_CRISIS_TEXT.description, number:PA_CRISIS_TEXT.phone, actionLabel:"Text PA", actionHref:PA_CRISIS_TEXT.phoneHref, color:THEME.emergency, bg:THEME.emergencyBg, icon:"💬", urgent:true, isText:true, verified:PA_CRISIS_TEXT.verified, verifiedBy:PA_CRISIS_TEXT.verifiedBy, lastUpdated:PA_CRISIS_TEXT.lastUpdated },
+  { id:2, name:PA_CRISIS_TEXT.displayText, sub:PA_CRISIS_TEXT.description, number:PA_CRISIS_TEXT.phone, actionLabelKey:"textPA", actionHref:PA_CRISIS_TEXT.phoneHref, color:THEME.emergency, bg:THEME.emergencyBg, icon:"💬", urgent:true, isText:true, verified:PA_CRISIS_TEXT.verified, verifiedBy:PA_CRISIS_TEXT.verifiedBy, lastUpdated:PA_CRISIS_TEXT.lastUpdated },
   { id:3, name:"988 Suicide & Crisis", sub:"Call or text 988 — 24/7 free", number:"988", color:THEME.emergency, bg:THEME.emergencyBg, icon:"🧠", urgent:true },
   { id:4, name:"Domestic Violence Hotline", sub:"PA DV Hotline — 24/7 confidential", number:"1-800-799-7233", color:THEME.emergency, bg:THEME.emergencyBg, icon:"🏠" },
-  { id:5, name:DELCO_CRISIS.displayName, sub:DELCO_CRISIS.description, number:DELCO_CRISIS.phone, actionLabel:"Call Crisis Line", actionHref:DELCO_CRISIS.phoneHref, color:THEME.emergency, bg:THEME.emergencyBg, icon:"🧩", urgent:true, verified:DELCO_CRISIS.verified, verifiedBy:DELCO_CRISIS.verifiedBy, lastUpdated:DELCO_CRISIS.lastUpdated },
+  { id:5, name:DELCO_CRISIS.displayName, sub:DELCO_CRISIS.description, number:DELCO_CRISIS.phone, actionLabelKey:"callCrisisLine", actionHref:DELCO_CRISIS.phoneHref, color:THEME.emergency, bg:THEME.emergencyBg, icon:"🧩", urgent:true, verified:DELCO_CRISIS.verified, verifiedBy:DELCO_CRISIS.verifiedBy, lastUpdated:DELCO_CRISIS.lastUpdated },
   { id:6, name:"PA 211 Helpline", sub:"All social services — dial 2-1-1", number:"211", color:THEME.civicBlue, bg:"#EFF6FF", icon:"📞" },
   { id:7, name:"Hunger Hotline", sub:"Find food near you right now", number:"1-866-348-6479", color:THEME.civicBlue, bg:"#EFF6FF", icon:"🍽" },
   { id:8, name:"Poison Control", sub:"24/7 medical emergency", number:"1-800-222-1222", color:THEME.emergency, bg:THEME.emergencyBg, icon:"⚠️" },
-  { id:9, name:DELCO_HOUSING_ENTRY.name, sub:`${DELCO_HOUSING_ENTRY.description} ${DELCO_HOUSING_ENTRY.guidance}`, number:DELCO_HOUSING_ENTRY.status, actionLabel:"Visit Official County Resources", actionHref:DELCO_HOUSING_ENTRY.officialUrl, secondaryActionLabel:"Call Crisis Line", secondaryActionHref:DELCO_CRISIS.phoneHref, color:THEME.unknownText, bg:THEME.softGold, icon:"🏠️", verified:DELCO_HOUSING_ENTRY.verified, verifiedBy:DELCO_HOUSING_ENTRY.verifiedBy, lastUpdated:DELCO_HOUSING_ENTRY.lastUpdated },
+  { id:9, name:DELCO_HOUSING_ENTRY.name, sub:`${DELCO_HOUSING_ENTRY.description} ${DELCO_HOUSING_ENTRY.guidance}`, number:DELCO_HOUSING_ENTRY.status, actionLabelKey:"officialCountyResources", actionHref:DELCO_HOUSING_ENTRY.officialUrl, secondaryActionLabelKey:"callCrisisLine", secondaryActionHref:DELCO_CRISIS.phoneHref, color:THEME.unknownText, bg:THEME.softGold, icon:"🏠️", verified:DELCO_HOUSING_ENTRY.verified, verifiedBy:DELCO_HOUSING_ENTRY.verifiedBy, lastUpdated:DELCO_HOUSING_ENTRY.lastUpdated },
   { id:10, name:"Child Abuse Hotline", sub:"PA ChildLine — 24/7 reporting", number:"1-800-932-0313", color:THEME.emergency, bg:THEME.emergencyBg, icon:"👶" },
 ];
 
@@ -363,7 +530,7 @@ function injectCSS() {
 
 /* ── RESOURCE CARD ── */
 function ResourceCard({ r, onClick, lang }) {
-  const open=isOpenNow(r), today=isOpenToday(r), t=T[lang]||T.en;
+  const open=isOpenNow(r), today=isOpenToday(r), t=getT(lang);
   return (
     <div className="dh-card" onClick={()=>{trackEvent("resource_viewed",{id:r.id,name:r.name,category:r.category});onClick(r);}} style={{marginBottom:10}}>
       <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
@@ -386,7 +553,7 @@ function ResourceCard({ r, onClick, lang }) {
 
 /* ── DETAIL VIEW ── */
 function DetailView({ r, onBack, onDonate, lang }) {
-  const open=isOpenNow(r), today=isOpenToday(r), t=T[lang]||T.en;
+  const open=isOpenNow(r), today=isOpenToday(r), t=getT(lang);
   const zip = (r.address.match(/\d{5}/) || ["19086"])[0];
   return (
     <div className="dfi">
@@ -439,7 +606,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
         </div>
         <button onClick={onDonate} style={{width:"100%",background:"linear-gradient(135deg,#F2C94C,#1E5A8A)",border:"none",borderRadius:14,padding:14,fontFamily:"'DM Sans',sans-serif",fontSize:14,fontWeight:600,color:"white",cursor:"pointer",marginBottom:12}}>{t.donatePantry}</button>
         <div style={{textAlign:"center",paddingBottom:16}}>
-          <ReportIssueButton resource={r}/>
+          <ReportIssueButton resource={r} t={t}/>
         </div>
       </div>
     </div>
@@ -448,7 +615,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
 
 /* ── EMERGENCY MODE ── */
 function EmergencyMode({ onClose, lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const openNow=RESOURCES.filter(r=>isOpenNow(r)).slice(0,3);
   const urgentLines=HOTLINES.filter(h=>h.urgent);
   trackEvent("emergency_mode_activated");
@@ -462,9 +629,9 @@ function EmergencyMode({ onClose, lang }) {
           </div>
           <button onClick={onClose} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:50,width:36,height:36,color:"white",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
         </div>
-        <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:10}}>🚨 Crisis Lines — Call Now</div>
+        <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:10}}>{t.crisisLinesCallNow}</div>
         <div style={{background:"rgba(255,255,255,0.15)",borderRadius:12,padding:12,color:"white",fontSize:12,lineHeight:1.5,marginBottom:10}}>
-          {DELCO_CRISIS.emergencyDisclaimer} {DELCO_CRISIS.callToConfirm}
+          {t.emergency911} {t.resourceInfoCanChange}
         </div>
         {urgentLines.map(h=>(
           <div key={h.id} style={{background:"rgba(255,255,255,0.15)",borderRadius:14,padding:"12px 14px",marginBottom:8,display:"flex",alignItems:"center",gap:10}}>
@@ -474,7 +641,7 @@ function EmergencyMode({ onClose, lang }) {
               <div style={{fontSize:11,color:"rgba(255,255,255,0.7)"}}>{h.sub}</div>
             </div>
             <button style={{background:"white",color:"#DC2626",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>openHotlineAction(h)}>
-              {h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}
+              {h.actionLabelKey?t[h.actionLabelKey]:(h.actionLabel||`${h.isText?t.text:t.call} ${h.number}`)}
             </button>
           </div>
         ))}
@@ -488,7 +655,7 @@ function EmergencyMode({ onClose, lang }) {
               <div style={{fontSize:13,fontWeight:700,color:"white"}}>{r.name}</div>
               <div style={{fontSize:11,color:"rgba(255,255,255,0.7)"}}>{r.address.split(",")[0]} · {r.miles} mi</div>
             </div>
-            <button style={{background:"white",color:"#1E5A8A",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(`tel:${r.phone}`)}>Call</button>
+            <button style={{background:"white",color:"#1E5A8A",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(`tel:${r.phone}`)}>{t.call}</button>
           </div>
         ))}
         <div style={{height:24}}/>
@@ -498,43 +665,37 @@ function EmergencyMode({ onClose, lang }) {
 }
 
 /* ── HOME SCREEN ── */
-function SupportTrustCard() {
+function SupportTrustCard({ lang }) {
+  const t = getT(lang);
   return (
     <section className="support-trust-card">
-      <div className="support-pill">Free community resource</div>
+      <div className="support-pill">{t.freeCommunityResource}</div>
 
-      <h2>Built for the community</h2>
+      <h2>{t.builtForCommunity}</h2>
 
-      <p>
-        DelcoHelp helps residents quickly find local food, shelter, health,
-        school, church, and support resources.
-      </p>
+      <p>{t.supportTrustBody}</p>
 
       <p className="support-line">
-        Built and supported by <strong>CieroLink LLC</strong>
+        {t.builtSupportedBy}
       </p>
 
       <div className="trust-points">
-        <span>Free to use</span>
-        <span>Community-focused</span>
-        <span>Built for Delaware County</span>
-        <span>No login required</span>
+        <span>{t.freeToUse}</span>
+        <span>{t.communityFocused}</span>
+        <span>{t.builtForDelco}</span>
+        <span>{t.noLoginRequired}</span>
       </div>
 
       <details className="why-free">
-        <summary>Why this is free</summary>
-        <p>
-          DelcoHelp is free and will always keep core help resources free.
-          CieroLink LLC supports this project so residents and families
-          can find trusted help faster.
-        </p>
+        <summary>{t.whyFree}</summary>
+        <p>{t.whyFreeBody}</p>
       </details>
     </section>
   );
 }
 
 function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const openNow=RESOURCES.filter(r=>isOpenNow(r));
   const savedIds = getSavedResources().map(s=>s.id);
   const savedResources = RESOURCES.filter(r=>savedIds.includes(r.id));
@@ -554,13 +715,13 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
           Philadelphia
         </button>
         <p className="support-trust-line">
-          Free community resource • Built and supported by CieroLink LLC
+          {t.freeCommunityResource} - {t.builtSupportedBy}
         </p>
-        <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>Quick Help</div>
+        <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>{t.quickHelp}</div>
         <div style={{display:"flex",gap:8,marginBottom:10}}>
           {[
-            {icon:"🍽",label:"Pantries open now",nav:"find",filter:"food"},
-            {icon:"📋",label:"SNAP, WIC & more",nav:"benefits"},
+            {icon:"🍽",label:t.pantriesOpenNow,nav:"find",filter:"food"},
+            {icon:"📋",label:t.snapWicMore,nav:"benefits"},
           ].map(a=>(
             <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{flex:1,background:"rgba(255,255,255,0.14)",borderRadius:20,padding:"13px 12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.22)",display:"flex",alignItems:"center",gap:8,minHeight:52}}>
               <span style={{fontSize:18,lineHeight:1}}>{a.icon}</span>
@@ -570,10 +731,10 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {[
-            {icon:"🍎",label:"Nutrition",sub:"Food check & nutrition",nav:"nutrition"},
-            {icon:"🔎",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
-            {icon:"📞",label:"Crisis Line",sub:"Free & confidential",nav:"hotline"},
-            {icon:"🏠",label:"Housing",sub:"Shelter & legal aid",nav:"find",filter:"assistance"},
+            {icon:"🍎",label:t.nutrition,sub:t.foodCheckNutrition,nav:"nutrition"},
+            {icon:"🔎",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust"},
+            {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline"},
+            {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance"},
           ].map(a=>(
             <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{background:"white",borderRadius:20,padding:"16px 14px",cursor:"pointer",border:"1px solid rgba(226,232,240,0.8)",boxShadow:"0 6px 18px rgba(15,23,42,0.07)"}}>
               <div style={{width:40,height:40,borderRadius:12,background:"#F0F6FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:10}}>{a.icon}</div>
@@ -590,23 +751,23 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             <div className="open" style={{fontSize:13}}>{t.openNow} ({openNow.length})</div>
           </div>
           {openNow.slice(0,2).map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
-          {openNow.length>2&&<button className="dh-btn-outline" style={{marginBottom:8}} onClick={()=>onNav("find","food")}>See all {openNow.length} open now →</button>}
+          {openNow.length>2&&<button className="dh-btn-outline" style={{marginBottom:8}} onClick={()=>onNav("find","food")}>{fmt(t.seeAllOpenNow,{count:openNow.length})}</button>}
           <div style={{height:6}}/>
         </>}
         {savedResources.length>0&&(
           <div style={{marginBottom:12}}>
-            <div style={{fontSize:13,fontWeight:700,color:"#92400E",marginBottom:8}}>⭐ My Saved Resources ({savedResources.length})</div>
+            <div style={{fontSize:13,fontWeight:700,color:"#92400E",marginBottom:8}}>{t.mySavedResources} ({savedResources.length})</div>
             {savedResources.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
           </div>
         )}
-        <SMSAccessCard phoneNumber="(877) 473-4752"/>
+        <SMSAccessCard phoneNumber="(877) 473-4752" t={t}/>
         <div style={{background:"linear-gradient(135deg,#FFF7D6,#FFF7D6)",borderRadius:16,padding:14,marginBottom:20,border:"1px solid rgba(242,201,76,0.3)",cursor:"pointer"}} onClick={onDonate}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{fontSize:28}}>💛</div>
             <div><div style={{fontSize:13,fontWeight:700,color:"#92400E",marginBottom:2}}>{t.supportPantries}</div><div style={{fontSize:11,color:"#92400E",lineHeight:1.4}}>{t.donateDesc}</div></div>
           </div>
         </div>
-        <SupportTrustCard/>
+        <SupportTrustCard lang={lang}/>
       </div>
     </div>
   );
@@ -616,8 +777,8 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
 function FindScreen({ onResource, lang, initialFilter="all" }) {
   const [search,setSearch]=useState(""), [filter,setFilter]=useState(initialFilter), [dietary,setDietary]=useState([]);
   const [zip,setZip]=useState(""), [zipInput,setZipInput]=useState(""), [locating,setLocating]=useState(false);
-  const t=T[lang]||T.en;
-  const filters=[{id:"all",label:"All"},{id:"food",label:"🍽 Food"},{id:"assistance",label:"🤝 Help"},{id:"legal",label:"⚖️ Legal"}];
+  const t=getT(lang);
+  const filters=[{id:"all",label:t.all},{id:"food",label:t.food},{id:"assistance",label:t.help},{id:"legal",label:t.legal}];
 
   function applyZip(z) {
     const clean = z.replace(/\D/g,"").slice(0,5);
@@ -667,7 +828,7 @@ function FindScreen({ onResource, lang, initialFilter="all" }) {
     return r;
   }).sort((a,b) => a.miles - b.miles);
 
-  const userZipName = zip.length===5 && ZIP_COORDS[zip] ? `near ${zip}` : "near Wallingford";
+  const userZipName = zip.length===5 && ZIP_COORDS[zip] ? fmt(t.nearZip,{zip}) : t.nearWallingford;
 
   return (
     <div className="dfi">
@@ -676,28 +837,28 @@ function FindScreen({ onResource, lang, initialFilter="all" }) {
 
         {/* Zip code search */}
         <div style={{background:"#EFF6FF",borderRadius:14,padding:12,marginBottom:10,border:"1px solid rgba(30,90,138,0.18)"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#1E5A8A",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>📍 Your Location</div>
+          <div style={{fontSize:11,fontWeight:700,color:"#1E5A8A",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.yourLocation}</div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             <input
               style={{flex:1,background:"white",border:"1.5px solid rgba(0,0,0,0.1)",borderRadius:10,padding:"10px 14px",fontFamily:"'DM Sans',sans-serif",fontSize:14,outline:"none"}}
-              placeholder="Enter zip code (e.g. 19013)"
+              placeholder={t.enterZip}
               value={zipInput}
               onChange={e=>{setZipInput(e.target.value.replace(/\D/g,"").slice(0,5)); if(e.target.value.length===5) applyZip(e.target.value);}}
               onBlur={e=>applyZip(e.target.value)}
               maxLength={5}
             />
             <button onClick={useMyLocation} disabled={locating} style={{flexShrink:0,background:"#F2C94C",color:"#0F172A",border:"none",borderRadius:10,padding:"10px 12px",fontSize:12,fontWeight:800,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
-              {locating?"...":"📍 Near me"}
+              {locating?"...":t.nearMe}
             </button>
             {zip.length===5 && (
               <button onClick={()=>{setZip("");setZipInput("");}} style={{flexShrink:0,background:"rgba(0,0,0,0.06)",color:"#475569",border:"none",borderRadius:10,padding:"10px 10px",fontSize:12,cursor:"pointer"}}>✕</button>
             )}
           </div>
           {zip.length===5 && !ZIP_COORDS[zip] && (
-            <div style={{fontSize:11,color:"#DC2626",marginTop:6}}>Zip code not in Delaware County — showing all resources</div>
+            <div style={{fontSize:11,color:"#DC2626",marginTop:6}}>{t.zipNotInCounty}</div>
           )}
           {zip.length===5 && ZIP_COORDS[zip] && (
-            <div style={{fontSize:11,color:"#1E5A8A",marginTop:6,fontWeight:600}}>Showing resources within 10 miles of {zip}</div>
+            <div style={{fontSize:11,color:"#1E5A8A",marginTop:6,fontWeight:600}}>{fmt(t.showingWithinMiles,{zip})}</div>
           )}
         </div>
 
@@ -713,19 +874,19 @@ function FindScreen({ onResource, lang, initialFilter="all" }) {
       </div>
       <div className="dh-divider"/>
       <div style={{padding:"12px 24px"}}>
-        <div style={{fontSize:12,color:"#475569",marginBottom:10,fontWeight:500}}>{results.length} resources {userZipName} · sorted by distance</div>
+        <div style={{fontSize:12,color:"#475569",marginBottom:10,fontWeight:500}}>{fmt(t.resourcesNear,{count:results.length,place:userZipName})}</div>
         {results.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
         {results.length===0&&(
           <div style={{textAlign:"center",padding:"32px 0"}}>
             <div style={{fontSize:36,marginBottom:10}}>📍</div>
-            <div style={{fontSize:14,fontWeight:600,marginBottom:6}}>No resources found {zip.length===5?`near ${zip}`:""}</div>
-            <div style={{fontSize:12,color:"#475569",lineHeight:1.6}}>Try a nearby zip code, or call PA 211 (dial 211) for help finding resources anywhere in Delaware County.</div>
+            <div style={{fontSize:14,fontWeight:600,marginBottom:6}}>{fmt(t.noResourcesFound,{place:zip.length===5?fmt(t.nearZip,{zip}):""})}</div>
+            <div style={{fontSize:12,color:"#475569",lineHeight:1.6}}>{t.noResourcesHelp}</div>
           </div>
         )}
         {/* 211 upgrade note */}
         <div style={{background:"#EFF6FF",borderRadius:14,padding:14,marginTop:8,marginBottom:8,border:"1px solid rgba(18,53,91,0.12)"}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#1E5A8A",marginBottom:4}}>🔄 More resources coming soon</div>
-          <div style={{fontSize:11,color:"#12355B",lineHeight:1.5}}>We're integrating the PA 211 database — coming Q3 2026 with hundreds of verified resources across all 49 Delaware County zip codes.</div>
+          <div style={{fontSize:12,fontWeight:700,color:"#1E5A8A",marginBottom:4}}>{t.moreResourcesSoon}</div>
+          <div style={{fontSize:11,color:"#12355B",lineHeight:1.5}}>{t.pa211Coming}</div>
         </div>
         <div style={{height:8}}/>
       </div>
@@ -738,7 +899,7 @@ function BenefitsScreen({ lang }) {
   const [expanded,setExpanded]=useState(null), [showQuiz,setShowQuiz]=useState(false);
   const [showSNAP,setShowSNAP]=useState(false), [showChecklist,setShowChecklist]=useState(false);
   const [checklistPrograms,setChecklistPrograms]=useState(["snap"]);
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const eligibility=[
     {q:"Family of 4 with income under $3,250/month?",programs:["SNAP","Medicaid","CHIP"]},
     {q:"Pregnant or have a child under 5?",programs:["WIC","CHIP","Medicaid"]},
@@ -755,13 +916,13 @@ function BenefitsScreen({ lang }) {
         <div style={{fontSize:13,color:"#475569",marginBottom:12}}>{t.benefitsDesc}</div>
         {/* Action buttons */}
         <button onClick={()=>{trackEvent("eligibility_quiz_opened");setShowQuiz(true);}} style={{width:"100%",background:"#F2C94C",color:"#0F172A",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:800,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
-          Check My Eligibility in 60 Seconds →
+          {t.checkEligibility60}
         </button>
         <button onClick={()=>setShowSNAP(true)} style={{width:"100%",background:"white",color:"#1E5A8A",border:"1.5px solid rgba(30,90,138,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
-          🥫 SNAP Application Step-by-Step Guide
+          {t.snapGuide}
         </button>
         <button onClick={()=>{setChecklistPrograms(["snap","wic","liheap","medicaid"]);setShowChecklist(true);}} style={{width:"100%",background:"white",color:"#1E5A8A",border:"1.5px solid rgba(30,90,138,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:16,fontFamily:"'DM Sans',sans-serif"}}>
-          📋 Build My Document Checklist
+          {t.buildChecklist}
         </button>
         <div style={{background:"#EFF6FF",borderRadius:16,padding:16,marginBottom:16,border:"1px solid rgba(30,90,138,0.18)"}}>
           <div style={{fontSize:12,fontWeight:700,color:"#1E5A8A",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.quickEligibility}</div>
@@ -780,7 +941,7 @@ function BenefitsScreen({ lang }) {
               <div style={{color:"#1E5A8A",fontSize:18,fontWeight:300}}>{expanded===b.id?"−":"+"}</div>
             </div>
             {expanded===b.id&&<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid rgba(0,0,0,0.06)"}}>
-              <div style={{fontSize:13,color:"#475569",marginBottom:12}}>Apply online through PA's COMPASS portal — takes about 15 minutes.</div>
+              <div style={{fontSize:13,color:"#475569",marginBottom:12}}>{t.applyCompassDesc}</div>
               <button className="dh-btn-primary" style={{fontSize:13,padding:"12px 16px"}} onClick={()=>window.open(b.link,"_blank")}>{t.applyCompass}</button>
             </div>}
           </div>
@@ -793,27 +954,27 @@ function BenefitsScreen({ lang }) {
 
 /* ── HOTLINE SCREEN ── */
 function HotlineScreen({ lang, onEscape }) {
-  const t=T[lang]||T.en, urgent=HOTLINES.filter(h=>h.urgent), rest=HOTLINES.filter(h=>!h.urgent);
+  const t=getT(lang), urgent=HOTLINES.filter(h=>h.urgent), rest=HOTLINES.filter(h=>!h.urgent);
   return (
     <div className="dfi">
       <div style={{background:"linear-gradient(160deg,#DC2626 0%,#7F1D1D 100%)",padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"white",lineHeight:1.3,marginBottom:4}}>{t.emergencyHotlines}</div>
         <div style={{fontSize:13,color:"rgba(255,255,255,0.75)"}}>{t.hotlinesDesc}</div>
         <button onClick={onEscape} style={{background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:10,padding:"6px 12px",color:"white",fontSize:11,fontWeight:600,cursor:"pointer",marginTop:10,fontFamily:"'DM Sans',sans-serif"}}>
-          🔒 Set Up My Safety Plan
+          {t.safetyPlan}
         </button>
       </div>
       <div style={{padding:"0 24px"}}>
         <div style={{background:"#FEF2F2",borderRadius:14,padding:12,border:"1px solid rgba(214,40,40,0.2)",marginBottom:12}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#DC2626",marginBottom:4}}>{DELCO_CRISIS.emergencyDisclaimer}</div>
-          <div style={{fontSize:12,color:"#7F1D1D",lineHeight:1.5}}>{DELCO_CRISIS.callToConfirm}</div>
+          <div style={{fontSize:12,fontWeight:700,color:"#DC2626",marginBottom:4}}>{t.emergency911}</div>
+          <div style={{fontSize:12,color:"#7F1D1D",lineHeight:1.5}}>{t.resourceInfoCanChange}</div>
         </div>
         <div style={{fontSize:12,fontWeight:700,color:"#DC2626",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.immediateEmergency}</div>
         {urgent.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#0F172A"}}>{h.name}</div><div style={{fontSize:11,color:"#475569",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#64748b",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
-            <button className="hotline-call-btn" style={{background:h.color,color:"white"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}</button>
+            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#0F172A"}}>{h.name}</div><div style={{fontSize:11,color:"#475569",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#64748b",marginTop:4}}>{t.lastUpdated}: {h.lastUpdated} - {h.verified?t.verified:t.needsVerification}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>{t.reportIncorrectInfo}</a></div>
+            <button className="hotline-call-btn" style={{background:h.color,color:"white"}} onClick={()=>openHotlineAction(h)}>{h.actionLabelKey?t[h.actionLabelKey]:(h.actionLabel||`${h.isText?t.text:t.call} ${h.number}`)}</button>
           </div>
         ))}
         <div style={{height:12}}/>
@@ -821,10 +982,10 @@ function HotlineScreen({ lang, onEscape }) {
         {rest.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#0F172A"}}>{h.name}</div><div style={{fontSize:11,color:"#475569",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#64748b",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
+            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#0F172A"}}>{h.name}</div><div style={{fontSize:11,color:"#475569",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#64748b",marginTop:4}}>{t.lastUpdated}: {h.lastUpdated} - {h.verified?t.verified:t.needsVerification}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>{t.reportIncorrectInfo}</a></div>
             <div style={{display:"flex",flexDirection:"column",gap:6,flexShrink:0}}>
-              {h.secondaryActionLabel&&<button className="hotline-call-btn" style={{background:h.color,color:"white"}} onClick={()=>window.open(h.secondaryActionHref)}>{h.secondaryActionLabel}</button>}
-              <button className="hotline-call-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||h.number}</button>
+              {h.secondaryActionLabelKey&&<button className="hotline-call-btn" style={{background:h.color,color:"white"}} onClick={()=>window.open(h.secondaryActionHref)}>{t[h.secondaryActionLabelKey]}</button>}
+              <button className="hotline-call-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>openHotlineAction(h)}>{h.actionLabelKey?t[h.actionLabelKey]:(h.actionLabel||h.number)}</button>
             </div>
           </div>
         ))}
@@ -838,7 +999,7 @@ function HotlineScreen({ lang, onEscape }) {
 
 /* ── VOLUNTEER SCREEN ── */
 function VolunteerScreen({ lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const opps=[
     {org:"Lifewerks Food Pantry",role:"Pantry Volunteer",time:"Tuesdays 5:30–8:30 PM",icon:"🍽",color:"#1E5A8A",phone:"6108723344"},
     {org:"DIFAN Network",role:"Food Distributor",time:"Tuesdays & Fridays",icon:"📦",color:"#1E5A8A",phone:"4843265362"},
@@ -893,12 +1054,12 @@ function ImpactScreen({ lang }) {
           ))}
         </div>
         <div style={{background:"#EFF6FF",borderRadius:16,padding:16,marginBottom:16,border:"1px solid rgba(30,90,138,0.18)"}}>
-          <div style={{fontSize:13,fontWeight:700,color:"#12355B",marginBottom:6}}>About DelcoHelp</div>
-          <div style={{fontSize:13,color:"#475569",lineHeight:1.6}}>Free community service connecting Delaware County residents to food pantries, benefits programs, and emergency resources. Built by CieroLink LLC.</div>
+          <div style={{fontSize:13,fontWeight:700,color:"#12355B",marginBottom:6}}>{getT(lang).aboutDelcoHelp}</div>
+          <div style={{fontSize:13,color:"#475569",lineHeight:1.6}}>{getT(lang).aboutDelcoHelpBody}</div>
         </div>
         <div style={{background:"white",borderRadius:16,padding:16,marginBottom:20,boxShadow:"0 2px 8px rgba(0,0,0,0.06)"}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Questions or feedback?</div>
-          <button className="dh-btn-outline" onClick={()=>window.open("mailto:damianciero@gmail.com")}>📧 Contact Us</button>
+          <div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{getT(lang).questionsFeedback}</div>
+          <button className="dh-btn-outline" onClick={()=>window.open("mailto:damianciero@gmail.com")}>{getT(lang).contactUs}</button>
         </div>
       </div>
     </div>
@@ -909,11 +1070,11 @@ function ImpactScreen({ lang }) {
 function SubmitScreen({ lang }) {
   const [form,setForm]=useState({name:"",address:"",phone:"",category:"food",hours:"",notes:""});
   const [submitted,setSubmitted]=useState(false);
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   if (submitted) return (
     <div className="dfi" style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100%",padding:"0 24px",textAlign:"center"}}>
       <div style={{fontSize:60,marginBottom:16}}>✅</div>
-      <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#0F172A",marginBottom:8}}>Resource Submitted!</div>
+      <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#0F172A",marginBottom:8}}>{t.resourceSubmitted}</div>
       <div style={{fontSize:14,color:"#475569",lineHeight:1.6}}>{t.submitThanks}</div>
     </div>
   );
@@ -993,7 +1154,7 @@ function getLocalDelcoHelpResponse(message) {
 }
 
 function AIScreen({ lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const [messages,setMessages]=useState([{role:"ai",text:"👋 Hi! I'm the DelcoHelp AI. Ask me anything about local resources, benefits, or getting help in Delaware County, PA."}]);
   const [input,setInput]=useState(""), [loading,setLoading]=useState(false);
   const [usageCount,setUsageCount]=useState(getAIUsage());
@@ -1092,7 +1253,7 @@ Keep responses short, warm, and actionable. Always give a phone number when reco
 /* ── DONATE MODAL ── */
 function DonateModal({ onClose, lang }) {
   const [org,setOrg]=useState("Lifewerks Food Pantry");
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const orgs=[
     {name:"Lifewerks Food Pantry",icon:"🍽",desc:"Choice pantry · Wallingford",phone:"6108723344",display:"610-872-3344"},
     {name:"DIFAN Wallingford",icon:"📦",desc:"Interfaith food network",phone:"4843265362",display:"484-326-5362"},
@@ -1125,7 +1286,7 @@ function DonateModal({ onClose, lang }) {
 
 /* ── NOTIFICATION OVERLAY ── */
 function NotifOverlay({ onClose, lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const notifs=[
     {icon:"🍽",bg:"#1E5A8A",title:"Lifewerks Food Pantry — Tuesdays 6–8 PM",body:"Choice pantry at 25 Cedar Rd, Wallingford · No appointment needed",time:"weekly"},
     {icon:"📋",bg:"#1E5A8A",title:"Check your benefits eligibility",body:"SNAP, WIC, LIHEAP and Medicaid — takes 60 seconds in the Benefits tab",time:"tip"},
@@ -1293,7 +1454,7 @@ function DelcoApp() {
     {id:"home",icon:"🏠",label:"home"},
     {id:"find",icon:"🔍",label:"find"},
     {id:"benefits",icon:"📋",label:"benefits"},
-    {id:"nutrition",icon:"🍎",label:"Nutrition"},
+    {id:"nutrition",icon:"🍎",label:"nutrition"},
     {id:"hotline",icon:"🚨",label:"hotline"},
     {id:"ai",icon:"🤖",label:"askAI"},
   ];
@@ -1302,8 +1463,8 @@ function DelcoApp() {
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
-    nutrition:<NutritionFoodCheck variant="delco"/>,
-    trust:<TrustCheck/>,
+    nutrition:<NutritionFoodCheck variant="delco" lang={lang}/>,
+    trust:<TrustCheck lang={lang}/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
     volunteer:<VolunteerScreen lang={lang}/>,
     impact:<ImpactScreen lang={lang}/>,
@@ -1327,7 +1488,7 @@ function DelcoApp() {
         <div className="dh-sb">
           <span>{clock}</span>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:13,fontWeight:700,letterSpacing:"0.04em",color:"white"}}>{(T[lang]||T.en).appName}</span>
+            <span style={{fontSize:13,fontWeight:700,letterSpacing:"0.04em",color:"white"}}>{(getT(lang)).appName}</span>
             <div className="lang-toggle" style={{background:"rgba(30,90,138,0.12)"}}>
               {["en","es","vi","zh"].map(code=>(
                 <button key={code} className={`lang-btn ${lang===code?"active":"inactive"}`} style={{color:lang===code?"#12355B":"#c7d2fe",background:lang===code?"white":"transparent"}} onClick={()=>setLang(code)}>
@@ -1358,14 +1519,14 @@ function DelcoApp() {
           {tabs.map(t=>(
             <div key={t.id} className={`dh-ni${tab===t.id?" act":""}`} onClick={()=>handleNav(t.id)}>
               <div className="dh-ni-ic">{t.icon}</div>
-              <div className="dh-ni-lb">{(T[lang]||T.en)[t.label]||t.label}</div>
+              <div className="dh-ni-lb">{(getT(lang))[t.label]||t.label}</div>
             </div>
           ))}
         </nav>
         {/* Legal footer */}
         <div style={{textAlign:"center",padding:"4px 0 2px",borderTop:"1px solid rgba(0,0,0,0.04)"}}>
           <button onClick={()=>setShowLegal(true)} style={{background:"transparent",border:"none",color:"#9BA8A0",fontSize:9,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",padding:"2px 8px"}}>
-            Terms · Privacy · Disclaimer · © 2026 CieroLink LLC
+            {getT(lang).terms} · {getT(lang).privacy} · {getT(lang).disclaimer} · © 2026 CieroLink LLC
           </button>
         </div>
         {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang}/>}
@@ -1383,8 +1544,3 @@ export default function App() {
   if (path === "/philadelphia" || path === "/philly") return <Philadelphia />;
   return <DelcoApp />;
 }
-
-
-
-
-

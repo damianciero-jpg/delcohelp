@@ -20,6 +20,77 @@ const DEMO_PRODUCT = {
   traces: "May contain milk or tree nuts.",
 };
 
+const NUTRITION_TRANSLATIONS = {
+  en: {
+    nutrition:"Nutrition", nutritionCheck:"Nutrition Check", intro:"Scan or enter a food barcode to quickly understand what is in the food.",
+    note:"Any food can help when you need it. This tool helps you make the best choice available.",
+    barcode:"Barcode", enterBarcode:"Enter barcode number", checking:"Checking...", checkFood:"Check Food",
+    stopCamera:"Stop Camera", useCamera:"Use Camera", lookingUp:"Looking up nutrition details...",
+    showDemo:"Show Demo Product", foodResult:"Food result", unnamed:"Unnamed food item", notListed:"Not listed",
+    calories:"Calories", nutritionFlags:"Nutrition flags", noFlags:"No major nutrition flags found from available data.",
+    ingredients:"Ingredients", allergyWarning:"Allergy or traces warning",
+    pairing:"If available, try pairing this with water, fruit, vegetables, whole grains, or protein.",
+    scanAnother:"Scan Another Food", clearResults:"Clear Results",
+    disclaimer:"This is general nutrition guidance, not medical advice. People with diabetes, kidney disease, food allergies, or other health needs should follow medical guidance when available.",
+    enterFirst:"Enter a barcode number first.", unavailable:"Food lookup is unavailable right now.",
+    notFound:"We could not find that barcode in Open Food Facts. Try another barcode or enter the food manually if needed.",
+    connection:"Food lookup is unavailable right now. Check your connection and try again.",
+    cameraUnavailable:"Camera is unavailable. You can still type the barcode number.",
+  },
+  es: {
+    nutrition:"Nutrición", nutritionCheck:"Revisión nutricional", intro:"Escanee o ingrese un código de barras para entender rápidamente qué contiene la comida.",
+    note:"Cualquier comida puede ayudar cuando la necesita. Esta herramienta le ayuda a elegir la mejor opción disponible.",
+    barcode:"Código de barras", enterBarcode:"Ingrese el número de código de barras", checking:"Verificando...", checkFood:"Revisar comida",
+    stopCamera:"Detener cámara", useCamera:"Usar cámara", lookingUp:"Buscando detalles nutricionales...",
+    showDemo:"Mostrar producto de ejemplo", foodResult:"Resultado de comida", unnamed:"Alimento sin nombre", notListed:"No listado",
+    calories:"Calorías", nutritionFlags:"Señales nutricionales", noFlags:"No se encontraron señales nutricionales importantes con los datos disponibles.",
+    ingredients:"Ingredientes", allergyWarning:"Advertencia de alergias o trazas",
+    pairing:"Si puede, acompáñelo con agua, fruta, verduras, granos integrales o proteína.",
+    scanAnother:"Escanear otra comida", clearResults:"Limpiar resultados",
+    disclaimer:"Esta es orientación nutricional general, no consejo médico. Personas con diabetes, enfermedad renal, alergias alimentarias u otras necesidades deben seguir orientación médica cuando esté disponible.",
+    enterFirst:"Ingrese primero un código de barras.", unavailable:"La búsqueda de alimentos no está disponible ahora.",
+    notFound:"No pudimos encontrar ese código en Open Food Facts. Pruebe otro código o ingrese la comida manualmente si es necesario.",
+    connection:"La búsqueda de alimentos no está disponible ahora. Revise su conexión e inténtelo de nuevo.",
+    cameraUnavailable:"La cámara no está disponible. Aún puede escribir el código de barras.",
+  },
+  vi: {
+    nutrition:"Dinh dưỡng", nutritionCheck:"Kiểm tra dinh dưỡng", intro:"Quét hoặc nhập mã vạch thực phẩm để nhanh chóng hiểu thành phần.",
+    note:"Bất kỳ thực phẩm nào cũng có thể giúp khi bạn cần. Công cụ này giúp bạn chọn lựa tốt nhất có sẵn.",
+    barcode:"Mã vạch", enterBarcode:"Nhập số mã vạch", checking:"Đang kiểm tra...", checkFood:"Kiểm tra thực phẩm",
+    stopCamera:"Dừng camera", useCamera:"Dùng camera", lookingUp:"Đang tra cứu dinh dưỡng...",
+    showDemo:"Hiển thị sản phẩm mẫu", foodResult:"Kết quả thực phẩm", unnamed:"Thực phẩm chưa có tên", notListed:"Không có thông tin",
+    calories:"Calo", nutritionFlags:"Dấu hiệu dinh dưỡng", noFlags:"Không tìm thấy dấu hiệu dinh dưỡng lớn từ dữ liệu hiện có.",
+    ingredients:"Thành phần", allergyWarning:"Cảnh báo dị ứng hoặc vết thành phần",
+    pairing:"Nếu có thể, hãy dùng cùng nước, trái cây, rau, ngũ cốc nguyên hạt hoặc protein.",
+    scanAnother:"Quét thực phẩm khác", clearResults:"Xóa kết quả",
+    disclaimer:"Đây là hướng dẫn dinh dưỡng chung, không phải lời khuyên y tế. Người có bệnh tiểu đường, bệnh thận, dị ứng thực phẩm hoặc nhu cầu sức khỏe khác nên theo hướng dẫn y tế khi có.",
+    enterFirst:"Vui lòng nhập mã vạch trước.", unavailable:"Hiện không thể tra cứu thực phẩm.",
+    notFound:"Không tìm thấy mã vạch đó trong Open Food Facts. Hãy thử mã khác hoặc nhập thủ công nếu cần.",
+    connection:"Hiện không thể tra cứu thực phẩm. Kiểm tra kết nối và thử lại.",
+    cameraUnavailable:"Camera không khả dụng. Bạn vẫn có thể nhập mã vạch.",
+  },
+  zh: {
+    nutrition:"营养", nutritionCheck:"营养检查", intro:"扫描或输入食品条码，快速了解食品内容。",
+    note:"需要时任何食物都能提供帮助。此工具帮助您在可选范围内做出更好选择。",
+    barcode:"条码", enterBarcode:"输入条码号码", checking:"正在检查...", checkFood:"检查食品",
+    stopCamera:"停止相机", useCamera:"使用相机", lookingUp:"正在查询营养信息...",
+    showDemo:"显示示例产品", foodResult:"食品结果", unnamed:"未命名食品", notListed:"未列出",
+    calories:"卡路里", nutritionFlags:"营养提示", noFlags:"根据现有数据未发现主要营养提示。",
+    ingredients:"配料", allergyWarning:"过敏或微量成分警告",
+    pairing:"如果可以，请搭配水、水果、蔬菜、全谷物或蛋白质。",
+    scanAnother:"扫描其他食品", clearResults:"清除结果",
+    disclaimer:"这是一般营养指导，不是医疗建议。有糖尿病、肾病、食物过敏或其他健康需求的人应遵循可用的医疗指导。",
+    enterFirst:"请先输入条码号码。", unavailable:"食品查询暂时不可用。",
+    notFound:"无法在 Open Food Facts 中找到该条码。请尝试其他条码，必要时手动输入食品。",
+    connection:"食品查询暂时不可用。请检查连接并重试。",
+    cameraUnavailable:"相机不可用。您仍可以输入条码号码。",
+  },
+};
+
+function tt(lang, key) {
+  return NUTRITION_TRANSLATIONS[lang]?.[key] || NUTRITION_TRANSLATIONS.en[key] || key;
+}
+
 function numberFrom(value) {
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
@@ -83,7 +154,7 @@ function firstDetectedValue(detectedCodes) {
   return String(code?.rawValue || code?.text || "").trim();
 }
 
-export default function NutritionFoodCheck({ variant = "delco" }) {
+export default function NutritionFoodCheck({ variant = "delco", lang = "en" }) {
   const [barcode, setBarcode] = useState("");
   const [cameraOpen, setCameraOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -125,7 +196,7 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
   const lookupFood = useCallback(async (rawBarcode) => {
     const cleanBarcode = String(rawBarcode || "").replace(/\D/g, "");
     if (!cleanBarcode) {
-      setError("Enter a barcode number first.");
+      setError(tt(lang, "enterFirst"));
       setProduct(null);
       return;
     }
@@ -137,19 +208,19 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
 
     try {
       const response = await fetch(`${FOOD_API}/${encodeURIComponent(cleanBarcode)}.json`);
-      if (!response.ok) throw new Error("Food lookup is unavailable right now.");
+      if (!response.ok) throw new Error(tt(lang, "unavailable"));
       const data = await response.json();
       if (data.status !== 1 || !data.product) {
-        setError("We could not find that barcode in Open Food Facts. Try another barcode or enter the food manually if needed.");
+        setError(tt(lang, "notFound"));
         return;
       }
       setProduct(data.product);
     } catch (err) {
-      setError("Food lookup is unavailable right now. Check your connection and try again.");
+      setError(tt(lang, "connection"));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [lang]);
 
   const openScanner = useCallback(() => {
     setCameraOpen(true);
@@ -177,8 +248,8 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
   }, []);
 
   const handleScannerError = useCallback(() => {
-    setError("Camera is unavailable. You can still type the barcode number.");
-  }, []);
+    setError(tt(lang, "cameraUnavailable"));
+  }, [lang]);
 
   const handleScannerResult = useCallback((detectedCodes) => {
     const value = firstDetectedValue(detectedCodes);
@@ -202,29 +273,29 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
           </div>
           <div>
             <div style={{ fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 900, color: theme.accentDark, marginBottom: 3 }}>
-              Nutrition
+              {tt(lang, "nutrition")}
             </div>
-            <h1 style={{ margin: 0, fontSize: 26, lineHeight: 1.08 }}>Nutrition Check</h1>
+            <h1 style={{ margin: 0, fontSize: 26, lineHeight: 1.08 }}>{tt(lang, "nutritionCheck")}</h1>
           </div>
         </div>
         <p style={{ margin: "0 0 12px", fontSize: 14, lineHeight: 1.45, color: theme.muted }}>
-          Scan or enter a food barcode to quickly understand what is in the food.
+          {tt(lang, "intro")}
         </p>
         <div style={{ background: theme.soft, border: "1px solid rgba(14,165,233,0.18)", borderRadius: 14, padding: 13, fontSize: 13, lineHeight: 1.45, color: "#334155" }}>
-          Any food can help when you need it. This tool helps you make the best choice available.
+          {tt(lang, "note")}
         </div>
       </div>
 
       <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 20, padding: 16, boxShadow: "0 4px 14px rgba(0,0,0,0.05)", marginBottom: 16 }}>
         <label htmlFor="nutrition-barcode" style={{ display: "block", fontSize: 12, fontWeight: 800, color: theme.muted, marginBottom: 8 }}>
-          Barcode
+          {tt(lang, "barcode")}
         </label>
         <input
           id="nutrition-barcode"
           value={barcode}
           onChange={(event) => setBarcode(event.target.value)}
           inputMode="numeric"
-          placeholder="Enter barcode number"
+          placeholder={tt(lang, "enterBarcode")}
           style={{ width: "100%", boxSizing: "border-box", border: `1.5px solid ${theme.border}`, borderRadius: 14, padding: "14px 14px", fontSize: 16, color: theme.text, outlineColor: theme.accent, marginBottom: 12 }}
         />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
@@ -234,14 +305,14 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
             disabled={loading}
             style={{ minHeight: 50, border: "none", borderRadius: 16, background: theme.yellow || "#facc15", color: "#0f172a", fontSize: 14, fontWeight: 900, cursor: loading ? "default" : "pointer", opacity: loading ? 0.7 : 1 }}
           >
-            {loading ? "Checking..." : "Check Food"}
+            {loading ? tt(lang, "checking") : tt(lang, "checkFood")}
           </button>
           <button
             type="button"
             onClick={() => { if (cameraOpen) stopCamera(); else openScanner(); }}
             style={{ minHeight: 50, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 14, fontWeight: 900, cursor: "pointer" }}
           >
-            {cameraOpen ? "Stop Camera" : "Use Camera"}
+            {cameraOpen ? tt(lang, "stopCamera") : tt(lang, "useCamera")}
           </button>
         </div>
       </div>
@@ -264,7 +335,7 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
               onClick={stopCamera}
               style={{ width: "100%", minHeight: 46, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
             >
-              Stop Camera
+              {tt(lang, "stopCamera")}
             </button>
           </div>
         </div>
@@ -272,7 +343,7 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
 
       {loading && (
         <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 18, padding: 16, fontSize: 14, color: theme.muted, marginBottom: 16 }}>
-          Looking up nutrition details...
+          {tt(lang, "lookingUp")}
         </div>
       )}
 
@@ -284,7 +355,7 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
             onClick={() => { setError(""); setProduct(DEMO_PRODUCT); }}
             style={{ width: "100%", minHeight: 44, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
           >
-            Show Demo Product
+            {tt(lang, "showDemo")}
           </button>
         </div>
       )}
@@ -293,7 +364,7 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
         <div style={{ background: theme.surface, border: `1px solid ${theme.border}`, borderRadius: 22, padding: 18, boxShadow: "0 6px 18px rgba(0,0,0,0.06)" }}>
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
             <div style={{ fontSize: 12, color: theme.muted, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", paddingTop: 4 }}>
-              Food result
+              {tt(lang, "foodResult")}
             </div>
             <button
               type="button"
@@ -304,7 +375,7 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
               x
             </button>
           </div>
-          <h2 style={{ margin: 0, fontSize: 22, lineHeight: 1.15 }}>{product.product_name || "Unnamed food item"}</h2>
+          <h2 style={{ margin: 0, fontSize: 22, lineHeight: 1.15 }}>{product.product_name || tt(lang, "unnamed")}</h2>
           {product.brands && <div style={{ marginTop: 5, color: theme.muted, fontSize: 13 }}>{product.brands}</div>}
 
           <div style={{ display: "grid", gap: 10, margin: "16px 0" }}>
@@ -312,12 +383,12 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
               {rating.marker} {rating.label}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              <InfoTile label="Nutri-Score" value={product.nutriscore_grade ? String(product.nutriscore_grade).toUpperCase() : "Not listed"} theme={theme} />
-              <InfoTile label="Calories" value={calories || "Not listed"} theme={theme} />
+              <InfoTile label="Nutri-Score" value={product.nutriscore_grade ? String(product.nutriscore_grade).toUpperCase() : tt(lang, "notListed")} theme={theme} />
+              <InfoTile label={tt(lang, "calories")} value={calories || tt(lang, "notListed")} theme={theme} />
             </div>
           </div>
 
-          <Section title="Nutrition flags" theme={theme}>
+          <Section title={tt(lang, "nutritionFlags")} theme={theme}>
             {flags.length ? (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {flags.map((flag) => (
@@ -327,24 +398,24 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
                 ))}
               </div>
             ) : (
-              <p style={{ margin: 0, fontSize: 13, color: theme.muted }}>No major nutrition flags found from available data.</p>
+              <p style={{ margin: 0, fontSize: 13, color: theme.muted }}>{tt(lang, "noFlags")}</p>
             )}
           </Section>
 
           {product.ingredients_text && (
-            <Section title="Ingredients" theme={theme}>
+            <Section title={tt(lang, "ingredients")} theme={theme}>
               <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5 }}>{product.ingredients_text}</p>
             </Section>
           )}
 
           {allergyText && (
-            <Section title="Allergy or traces warning" theme={theme}>
+            <Section title={tt(lang, "allergyWarning")} theme={theme}>
               <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5 }}>{allergyText}</p>
             </Section>
           )}
 
           <div style={{ background: theme.soft, borderRadius: 16, padding: 14, fontSize: 13, lineHeight: 1.45, marginTop: 14 }}>
-            If available, try pairing this with water, fruit, vegetables, whole grains, or protein.
+            {tt(lang, "pairing")}
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 16 }}>
@@ -353,21 +424,21 @@ export default function NutritionFoodCheck({ variant = "delco" }) {
               onClick={scanAnother}
               style={{ minHeight: 50, border: "none", borderRadius: 16, background: theme.yellow || "#facc15", color: "#0f172a", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
             >
-              Scan Another Food
+              {tt(lang, "scanAnother")}
             </button>
             <button
               type="button"
               onClick={closeResult}
               style={{ minHeight: 50, border: "none", borderRadius: 12, background: theme.accent, color: "white", fontSize: 13, fontWeight: 900, cursor: "pointer" }}
             >
-              Clear Results
+              {tt(lang, "clearResults")}
             </button>
           </div>
         </div>
       )}
 
       <p style={{ margin: "16px 2px 0", fontSize: 11, lineHeight: 1.45, color: theme.muted }}>
-        This is general nutrition guidance, not medical advice. People with diabetes, kidney disease, food allergies, or other health needs should follow medical guidance when available.
+        {tt(lang, "disclaimer")}
       </p>
     </div>
   );

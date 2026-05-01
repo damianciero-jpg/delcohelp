@@ -127,6 +127,53 @@ const T = {
 // Add Vietnamese and Chinese translations
 Object.assign(T, EXTRA_TRANSLATIONS);
 
+const SJC_UI_TRANSLATIONS = {
+  en: {
+    nutrition:"Nutrition", pantriesOpenNow:"Pantries open now", snapWicMore:"SNAP, WIC & more",
+    checkInfo:"Check Info", scamBiasSignals:"Scam & bias signals", crisisLine:"Crisis Line",
+    freeConfidential:"Free & confidential", housing:"Housing", shelterLegalAid:"Shelter & legal aid",
+    reportIncorrectInfo:"Report incorrect info", lastUpdated:"Last updated", verified:"Verified",
+    needsVerification:"Needs verification", food:"Food", foodCheckNutrition:"Food check & nutrition", terms:"Terms", privacy:"Privacy", disclaimer:"Disclaimer",
+    text:"Text", callCrisisLine:"Call Crisis Line", textPA:"Text PA", crisisLines:"Crisis Lines",
+  },
+  es: {
+    nutrition:"Nutrición", pantriesOpenNow:"Despensas abiertas ahora", snapWicMore:"SNAP, WIC y más",
+    checkInfo:"Verificar info", scamBiasSignals:"Señales de estafa y sesgo", crisisLine:"Línea de crisis",
+    freeConfidential:"Gratis y confidencial", housing:"Vivienda", shelterLegalAid:"Refugio y ayuda legal",
+    reportIncorrectInfo:"Reportar información incorrecta", lastUpdated:"Última actualización", verified:"Verificado",
+    needsVerification:"Necesita verificación", food:"Comida", foodCheckNutrition:"Revisión de comida y nutrición", terms:"Términos", privacy:"Privacidad", disclaimer:"Aviso",
+    text:"Texto", callCrisisLine:"Llamar a la línea de crisis", textPA:"Texto PA", crisisLines:"Líneas de crisis",
+  },
+  vi: {
+    nutrition:"Dinh dưỡng", pantriesOpenNow:"Kho thực phẩm đang mở", snapWicMore:"SNAP, WIC và thêm nữa",
+    checkInfo:"Kiểm tra thông tin", scamBiasSignals:"Dấu hiệu lừa đảo và thiên lệch", crisisLine:"Đường dây khủng hoảng",
+    freeConfidential:"Miễn phí & bảo mật", housing:"Nhà ở", shelterLegalAid:"Nơi trú ẩn & trợ giúp pháp lý",
+    reportIncorrectInfo:"Báo thông tin sai", lastUpdated:"Cập nhật lần cuối", verified:"Đã xác minh",
+    needsVerification:"Cần xác minh", food:"Thực phẩm", foodCheckNutrition:"Kiểm tra thực phẩm & dinh dưỡng", terms:"Điều khoản", privacy:"Quyền riêng tư", disclaimer:"Tuyên bố miễn trừ",
+    text:"Nhắn tin", callCrisisLine:"Gọi đường dây khủng hoảng", textPA:"Nhắn PA", crisisLines:"Đường dây khủng hoảng",
+  },
+  zh: {
+    nutrition:"营养", pantriesOpenNow:"现在开放的食品 pantry", snapWicMore:"SNAP、WIC 等",
+    checkInfo:"检查信息", scamBiasSignals:"诈骗和偏见信号", crisisLine:"危机热线",
+    freeConfidential:"免费且保密", housing:"住房", shelterLegalAid:"庇护所和法律援助",
+    reportIncorrectInfo:"报告错误信息", lastUpdated:"最后更新", verified:"已验证",
+    needsVerification:"需要验证", food:"食物", foodCheckNutrition:"食品和营养检查", terms:"条款", privacy:"隐私", disclaimer:"免责声明",
+    text:"短信", callCrisisLine:"拨打危机热线", textPA:"发送 PA", crisisLines:"危机热线",
+  },
+};
+
+Object.entries(SJC_UI_TRANSLATIONS).forEach(([lang, values]) => {
+  T[lang] = { ...(T.en || {}), ...(T[lang] || {}), ...values };
+});
+
+function translate(lang, key) {
+  return T[lang]?.[key] || T.en?.[key] || key;
+}
+
+function getT(lang) {
+  return new Proxy(T.en, { get: (_target, key) => translate(lang, key) });
+}
+
 // Google Analytics event helper — fires to G-NZRTH3H74B
 function gaEvent(eventName, params = {}) {
   try { if (typeof window.gtag === "function") window.gtag("event", eventName, params); } catch(e) {}
@@ -357,7 +404,7 @@ function ResourceCard({ r, onClick, lang }) {
 
 /* ── DETAIL VIEW ── */
 function DetailView({ r, onBack, onDonate, lang }) {
-  const open=isOpenNow(r), today=isOpenToday(r), t=T[lang]||T.en;
+  const open=isOpenNow(r), today=isOpenToday(r), t=getT(lang);
   const zip = (r.address.match(/\d{5}/) || ["19086"])[0];
   return (
     <div className="dfi">
@@ -406,7 +453,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
         </div>
         <button onClick={onDonate} className="sjc-btn-gold" style={{marginBottom:12}}>{t.donatePantry}</button>
         <div style={{textAlign:"center",paddingBottom:16}}>
-          <ReportIssueButton resource={r}/>
+          <ReportIssueButton resource={r} t={t}/>
         </div>
       </div>
     </div>
@@ -415,7 +462,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
 
 /* ── EMERGENCY OVERLAY ── */
 function EmergencyMode({ onClose, lang }) {
-  const t=T[lang]||T.en, urgent=HOTLINES.filter(h=>h.urgent), openNow=RESOURCES.filter(r=>isOpenNow(r)).slice(0,3);
+  const t=getT(lang), urgent=HOTLINES.filter(h=>h.urgent), openNow=RESOURCES.filter(r=>isOpenNow(r)).slice(0,3);
   return (
     <div className="emerg-overlay">
       <div style={{padding:"24px",flexShrink:0}}>
@@ -426,7 +473,7 @@ function EmergencyMode({ onClose, lang }) {
           </div>
           <button onClick={onClose} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:50,width:34,height:34,color:"white",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
         </div>
-        <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>🚨 Crisis Lines</div>
+        <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>{t.crisisLines}</div>
         <div style={{background:"rgba(255,255,255,0.15)",borderRadius:12,padding:12,color:"white",fontSize:12,lineHeight:1.5,marginBottom:10}}>
           {DELCO_CRISIS.emergencyDisclaimer} {DELCO_CRISIS.callToConfirm}
         </div>
@@ -434,7 +481,7 @@ function EmergencyMode({ onClose, lang }) {
           <div key={h.id} style={{background:"rgba(255,255,255,0.15)",borderRadius:14,padding:"12px 14px",marginBottom:8,display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:20}}>{h.icon}</span>
             <div style={{flex:1}}><div style={{fontSize:13,fontWeight:700,color:"white"}}>{h.name}</div><div style={{fontSize:11,color:"rgba(255,255,255,0.7)"}}>{h.sub}</div></div>
-            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}</button>
+            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?t.text:t.call} ${h.number}`}</button>
           </div>
         ))}
         <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",margin:"14px 0 8px"}}>📍 Open Near You Now</div>
@@ -604,7 +651,7 @@ function SJCParishHub() {
 }
 
 function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
-  const t=T[lang]||T.en, openNow=RESOURCES.filter(r=>isOpenNow(r));
+  const t=getT(lang), openNow=RESOURCES.filter(r=>isOpenNow(r));
   const savedIds = getSavedResources().map(s=>s.id);
   const savedResources = RESOURCES.filter(r=>savedIds.includes(r.id));
   return (
@@ -625,12 +672,12 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>What do you need?</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
           {[
-            {icon:"🍽",label:"Food",sub:"Pantries open now",nav:"find",filter:"food"},
-            {icon:"📋",label:"Benefits",sub:"SNAP, WIC & more",nav:"benefits"},
-            {icon:"🍎",label:"Nutrition",sub:"Food check & nutrition",nav:"nutrition"},
-            {icon:"🔍",label:"Check Info",sub:"Scam & bias signals",nav:"trust"},
-            {icon:"📞",label:"Crisis Line",sub:"Free & confidential",nav:"hotline"},
-            {icon:"🏠",label:"Housing",sub:"Shelter & legal aid",nav:"find",filter:"assistance"},
+            {icon:"🍽",label:t.food || "Food",sub:t.pantriesOpenNow,nav:"find",filter:"food"},
+            {icon:"📋",label:t.benefits,sub:t.snapWicMore,nav:"benefits"},
+            {icon:"🍎",label:t.nutrition,sub:t.foodCheckNutrition || "Food check & nutrition",nav:"nutrition"},
+            {icon:"🔍",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust"},
+            {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline"},
+            {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance"},
           ].map(a=>(
             <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(10px)",borderRadius:14,padding:"12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.2)"}}>
               <div style={{fontSize:24,marginBottom:4}}>{a.icon}</div>
@@ -673,7 +720,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             </div>
           </div>
         </div>
-        <SMSAccessCard phoneNumber="(877) 473-4752"/>
+        <SMSAccessCard phoneNumber="(877) 473-4752" t={t}/>
         <div style={{background:`linear-gradient(135deg,${BRAND.secondary}22,${BRAND.secondary}10)`,borderRadius:16,padding:14,marginBottom:12,border:`1px solid ${BRAND.secondary}44`,cursor:"pointer"}} onClick={onDonate}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{fontSize:28}}>💛</div>
@@ -727,7 +774,7 @@ function FindScreen({ onResource, lang, initialFilter="all" }) {
   const [search,setSearch]=useState(""), [filter,setFilter]=useState(initialFilter);
   const [dietary,setDietary]=useState([]);
   const [zip,setZip]=useState(""), [zipInput,setZipInput]=useState(""), [locating,setLocating]=useState(false);
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const filters=[{id:"all",label:"All"},{id:"parish",label:"✝ Parish"},{id:"food",label:"🥫 Food"},{id:"assistance",label:"🤝 Help"},{id:"legal",label:"⚖️ Legal"}];
 
   function applyZip(z) {
@@ -794,7 +841,7 @@ function FindScreen({ onResource, lang, initialFilter="all" }) {
 function BenefitsScreen({ lang }) {
   const [expanded,setExpanded]=useState(null), [showQuiz,setShowQuiz]=useState(false);
   const [showSNAP,setShowSNAP]=useState(false), [showChecklist,setShowChecklist]=useState(false);
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const eligibility=[
     {q:"Family of 4 with income under $3,250/month?",programs:["SNAP","Medicaid","CHIP"]},
     {q:"Pregnant or have a child under 5?",programs:["WIC","CHIP","Medicaid"]},
@@ -848,7 +895,7 @@ function BenefitsScreen({ lang }) {
 
 /* ── HOTLINE ── */
 function HotlineScreen({ lang, onEscape }) {
-  const t=T[lang]||T.en, urgent=HOTLINES.filter(h=>h.urgent), rest=HOTLINES.filter(h=>!h.urgent);
+  const t=getT(lang), urgent=HOTLINES.filter(h=>h.urgent), rest=HOTLINES.filter(h=>!h.urgent);
   return (
     <div className="dfi">
       <div style={{background:"linear-gradient(160deg,#D62828 0%,#9B1C1C 100%)",padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
@@ -865,8 +912,8 @@ function HotlineScreen({ lang, onEscape }) {
         {urgent.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
-            <button className="hotline-btn" style={{background:h.color,color:"white"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?"Text":"Call"} ${h.number}`}</button>
+            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>{t.lastUpdated}: {h.lastUpdated} - {h.verified?t.verified:t.needsVerification}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>{t.reportIncorrectInfo}</a></div>
+            <button className="hotline-btn" style={{background:h.color,color:"white"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?t.text:t.call} ${h.number}`}</button>
           </div>
         ))}
         <div style={{height:12}}/>
@@ -874,7 +921,7 @@ function HotlineScreen({ lang, onEscape }) {
         {rest.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>Last updated: {h.lastUpdated} · {h.verified?"Verified":"Needs verification"}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>Report Incorrect Info</a></div>
+            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>{t.lastUpdated}: {h.lastUpdated} - {h.verified?t.verified:t.needsVerification}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>{t.reportIncorrectInfo}</a></div>
             <button className="hotline-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||h.number}</button>
           </div>
         ))}
@@ -908,7 +955,7 @@ function saveVolunteerData(data) {
 }
 
 function VolunteerScreen({ lang, tier, onUpgrade }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const [data, setData] = useState(getVolunteerData);
   const [view, setView] = useState("opportunities"); // opportunities | signup | mytracker | profile
   const [selectedOpp, setSelectedOpp] = useState(null);
@@ -1203,7 +1250,7 @@ const EVENT_CATEGORY_COLORS = {
 
 function EventCalendarScreen({ lang, tier, onUpgrade }) {
   // eslint-disable-next-line no-unused-vars
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const [rsvps, setRsvps] = useState(getEventRSVPs);
   const [filter, setFilter] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -1477,7 +1524,7 @@ function EventCalendarScreen({ lang, tier, onUpgrade }) {
 
 /* ── IMPACT DASHBOARD ── */
 function ImpactScreen({ lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const monthly=[{m:"Nov",v:680},{m:"Dec",v:790},{m:"Jan",v:900},{m:"Feb",v:1050},{m:"Mar",v:1160},{m:"Apr",v:1240}];
   const max=Math.max(...monthly.map(m=>m.v));
   const ministries=["SJC Parish Office","Lifewerks Food Pantry","DIFAN Network","Catholic Social Services","Delco Helping Hands"];
@@ -1595,7 +1642,7 @@ function incrementSJCAIUsage() {
 
 /* ── AI CHAT ── */
 function AIScreen({ lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const [messages,setMessages]=useState([{role:"ai",text:`✝ Welcome! I'm the ${BRAND.fullName} Community AI. Ask me anything about local resources, parish services, or getting help in Wallingford and Delaware County.`}]);
   const [input,setInput]=useState(""), [loading,setLoading]=useState(false);
   const [usageCount,setUsageCount]=useState(getSJCAIUsage());
@@ -2018,7 +2065,7 @@ function ReportsScreen({ lang, onNav }) {
 
 /* ── NOTIFICATIONS ── */
 function NotifOverlay({ onClose, lang }) {
-  const t=T[lang]||T.en;
+  const t=getT(lang);
   const notifs=[
     {icon:"✝",bg:BRAND.primary,title:"Sunday Mass — 9:30 AM tomorrow",body:"Join us at St. John Chrysostom · 615 S. Providence Rd",time:"now"},
     {icon:"🥫",bg:"#2D6A4F",title:"Lifewerks opens tonight!",body:"Food pantry open 6–8 PM · 0.3 mi from SJC",time:"3h"},
@@ -3170,8 +3217,8 @@ function PublicApp() {
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
-    nutrition:<NutritionFoodCheck variant="sjc"/>,
-    trust:<TrustCheck/>,
+    nutrition:<NutritionFoodCheck variant="sjc" lang={lang}/>,
+    trust:<TrustCheck lang={lang}/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
     volunteer:<VolunteerScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,
     events:<EventCalendarScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,
@@ -3228,7 +3275,7 @@ function PublicApp() {
         {/* Legal footer */}
         <div style={{textAlign:"center",padding:"4px 0 2px",borderTop:"1px solid rgba(0,0,0,0.04)"}}>
           <button onClick={()=>setShowLegal(true)} style={{background:"transparent",border:"none",color:"#9BA8A0",fontSize:9,cursor:"pointer",fontFamily:"'Source Sans 3',sans-serif",padding:"2px 8px"}}>
-            Terms · Privacy · Disclaimer · © 2026 CieroLink LLC
+            {getT(lang).terms} · {getT(lang).privacy} · {getT(lang).disclaimer} · © 2026 CieroLink LLC
           </button>
         </div>
         {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang}/>}
