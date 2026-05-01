@@ -77,6 +77,18 @@ const css = `
     margin:0 0 18px;
     color:rgba(255,255,255,0.88);
   }
+  .philly-beta {
+    display:inline-flex;
+    align-items:center;
+    border-radius:999px;
+    background:rgba(250,204,21,0.18);
+    color:#fde68a;
+    border:1px solid rgba(250,204,21,0.32);
+    font-size:11px;
+    font-weight:800;
+    padding:6px 10px;
+    margin-bottom:16px;
+  }
   .philly-actions {
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -187,6 +199,7 @@ export default function Philadelphia() {
           <p className="philly-copy">
             Find food, shelter, benefits, crisis support, and community resources in Philadelphia.
           </p>
+          <div className="philly-beta">Philadelphia beta page</div>
           <div className="philly-actions">
             <a className="philly-button primary" href="#resources">Browse resources</a>
             <a className="philly-button secondary" href="/">DelcoHelp</a>

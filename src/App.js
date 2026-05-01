@@ -4,6 +4,8 @@ import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import NutritionFoodCheck from "./NutritionFoodCheck";
 import TrustCheck from "./TrustCheck";
+import SJCApp from "./SJC";
+import Philadelphia from "./Philadelphia";
 import { DELCO_CRISIS, DELCO_HOUSING_ENTRY, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
 import {
   InstallPrompt, SMSAccessCard, EligibilityQuiz,
@@ -14,27 +16,6 @@ import {
   FamilyProfileSetup, getFamilyProfile, getSavedResources, LegalScreen,
   TrustBadge, ReportIssueButton
 } from "./features";
-
-// Simple path router
-if (window.location.pathname.toLowerCase().startsWith("/sjc")) {
-  document.getElementById("root").innerHTML = "";
-  import("./SJC").then(mod => {
-    const React = require("react");
-    const ReactDOM = require("react-dom/client");
-    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(mod.default));
-  });
-  throw new Error("SJC_ROUTE");
-}
-
-if (["/philadelphia", "/philly"].includes(window.location.pathname.toLowerCase())) {
-  document.getElementById("root").innerHTML = "";
-  import("./Philadelphia").then(mod => {
-    const React = require("react");
-    const ReactDOM = require("react-dom/client");
-    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(mod.default));
-  });
-  throw new Error("PHILADELPHIA_ROUTE");
-}
 
 /* ── TRANSLATIONS ── */
 const T = {
@@ -1234,8 +1215,7 @@ function AuthModal({ onClose, user, onSignIn, onSignOut }) {
   );
 }
 
-/* ── APP SHELL ── */
-export default function App() {
+function DelcoApp() {
   injectCSS();
   const [tab,setTab]=useState(()=>window.location.pathname==="/trust-check"?"trust":"home"), [detail,setDetail]=useState(null);
   const [findFilter,setFindFilter]=useState("all");
@@ -1369,6 +1349,14 @@ export default function App() {
       </div>
     </div>
   );
+}
+
+/* ── APP SHELL ── */
+export default function App() {
+  const path = window.location.pathname.toLowerCase();
+  if (path.startsWith("/sjc")) return <SJCApp />;
+  if (path === "/philadelphia" || path === "/philly") return <Philadelphia />;
+  return <DelcoApp />;
 }
 
 
