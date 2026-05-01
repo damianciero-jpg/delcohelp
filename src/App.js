@@ -26,6 +26,16 @@ if (window.location.pathname.toLowerCase().startsWith("/sjc")) {
   throw new Error("SJC_ROUTE");
 }
 
+if (["/philadelphia", "/philly"].includes(window.location.pathname.toLowerCase())) {
+  document.getElementById("root").innerHTML = "";
+  import("./Philadelphia").then(mod => {
+    const React = require("react");
+    const ReactDOM = require("react-dom/client");
+    ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(mod.default));
+  });
+  throw new Error("PHILADELPHIA_ROUTE");
+}
+
 /* ── TRANSLATIONS ── */
 const T = {
   en: {
@@ -523,6 +533,13 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         <p className="support-trust-line">
           Free community resource • Built and supported by CieroLink LLC
         </p>
+        <button
+          className="dh-btn-secondary"
+          onClick={() => { window.location.href = "/philadelphia"; }}
+          style={{ marginTop:12, marginBottom:0, background:"rgba(255,255,255,0.14)", border:"1px solid rgba(255,255,255,0.24)" }}
+        >
+          Philadelphia
+        </button>
         <button className="button-primary" onClick={()=>{trackEvent("emergency_button_tapped");onEmergency();}} style={{marginTop:16,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           {t.needHelpNow}
         </button>
