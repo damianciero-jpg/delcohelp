@@ -726,7 +726,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             </div>
           </div>
         </div>
-        <SMSAccessCard phoneNumber="(877) 473-4752" t={t}/>
+        <SMSAccessCard/>
         <div style={{background:`linear-gradient(135deg,${BRAND.secondary}22,${BRAND.secondary}10)`,borderRadius:16,padding:14,marginBottom:12,border:`1px solid ${BRAND.secondary}44`,cursor:"pointer"}} onClick={onDonate}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{fontSize:28}}>💛</div>

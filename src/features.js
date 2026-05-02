@@ -322,26 +322,26 @@ export function LanguageSelector({ currentLang, onChange }) {
 }
 
 /* ── FEATURE 8: SMS ACCESS CARD ── */
-export function SMSAccessCard({ phoneNumber="", t={} }) {
-  if (!phoneNumber) return null;
-  const smsUrl = (keyword) => `sms:${phoneNumber.replace(/\D/g,"")}?&body=${encodeURIComponent(keyword)}`;
-  const label = (key, fallback) => t[key] || fallback;
-  const format = (template, values = {}) => String(template).replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
+export function SMSAccessCard() {
   return (
-    <div onClick={()=>trackImpactEvent("text_us_click")} style={{ background:"linear-gradient(135deg,#FFF8F0,#FFF3E0)",borderRadius:16,padding:16,marginTop:12,marginBottom:12,border:"1px solid rgba(231,111,81,0.2)" }}>
+    <div style={{ background:"linear-gradient(135deg,#FFF8F0,#FFF3E0)",borderRadius:16,padding:16,marginTop:12,marginBottom:12,border:"1px solid rgba(231,111,81,0.2)" }}>
       <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:10 }}>
-        <div style={{ fontSize:24 }}>📱</div>
+        <div style={{ fontSize:24 }}>SMS</div>
         <div>
-          <div style={{ fontSize:13,fontWeight:700,color:"#7B4B00" }}>{label("noSmartphoneTextUs", "No smartphone? Text us!")}</div>
-          <div style={{ fontSize:11,color:"#A06000" }}>{label("worksOnAnyPhone", "Works on any phone, even flip phones")}</div>
+          <div style={{ fontSize:13,fontWeight:700,color:"#7B4B00" }}>Text support coming soon</div>
+          <div style={{ fontSize:11,color:"#A06000" }}>We are verifying the DelcoHelp texting number.</div>
         </div>
       </div>
-      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6 }}>
-        {[["FOOD","#E76F51"],["INFO","#E76F51"],["SNAP","#E76F51"],["CRISIS","#D62828"]].map(([kw,bg]) => (
-          <a key={kw} href={smsUrl(kw)} onClick={(event)=>{event.stopPropagation();trackImpactEvent("text_us_click");}} style={{ background:bg,color:"white",textDecoration:"none",padding:"8px 10px",borderRadius:8,fontSize:11,fontWeight:600,textAlign:"center" }}>{format(label("textKeyword", "Text {keyword}"), { keyword: kw })}</a>
-        ))}
+      <div style={{ fontSize:12,color:"#4B5563",lineHeight:1.45,marginBottom:10 }}>
+        For now, use the app to find food, shelter, crisis support, benefits, and local resources.
       </div>
-      <div style={{ fontSize:10,color:"#6B7080",textAlign:"center",marginTop:8 }}>{label("replyZip", "Reply with your zip code to get nearest resources")}</div>
+      <div style={{ fontSize:11,color:"#6B7080",lineHeight:1.4,marginBottom:10 }}>
+        SMS replies are temporarily unavailable while number verification is pending.
+      </div>
+      <div style={{ background:"#FFFFFF",border:"1px solid rgba(214,40,40,0.18)",borderRadius:10,padding:10 }}>
+        <div style={{ fontSize:12,fontWeight:700,color:"#7F1D1D",marginBottom:4 }}>Delaware County Crisis Connections Team: 855-889-7827</div>
+        <div style={{ fontSize:11,color:"#7F1D1D",lineHeight:1.35 }}>If this is an emergency, call 911.</div>
+      </div>
     </div>
   );
 }

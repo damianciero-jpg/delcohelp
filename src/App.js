@@ -766,7 +766,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             {savedResources.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
           </div>
         )}
-        <SMSAccessCard phoneNumber="(877) 473-4752" t={t}/>
+        <SMSAccessCard/>
         <div style={{background:"linear-gradient(135deg,#FFF7D6,#FFF7D6)",borderRadius:16,padding:14,marginBottom:20,border:"1px solid rgba(242,201,76,0.3)",cursor:"pointer"}} onClick={onDonate}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{fontSize:28}}>💛</div>
@@ -1296,7 +1296,7 @@ function NotifOverlay({ onClose, lang }) {
   const notifs=[
     {icon:"🍽",bg:"#1E5A8A",title:"Lifewerks Food Pantry — Tuesdays 6–8 PM",body:"Choice pantry at 25 Cedar Rd, Wallingford · No appointment needed",time:"weekly"},
     {icon:"📋",bg:"#1E5A8A",title:"Check your benefits eligibility",body:"SNAP, WIC, LIHEAP and Medicaid — takes 60 seconds in the Benefits tab",time:"tip"},
-    {icon:"📱",bg:"#1E5A8A",title:"No smartphone? Text FOOD to (877) 473-4752",body:"Works on any phone — get pantry hours instantly by text",time:"tip"},
+    {icon:"📱",bg:"#1E5A8A",title:"Text support coming soon",body:"SMS replies are temporarily unavailable while number verification is pending.",time:"tip"},
   ];
   return (
     <div className="notif-overlay" onClick={onClose}>
