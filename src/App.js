@@ -7,7 +7,7 @@ import TrustCheck from "./TrustCheck";
 import SJCApp from "./SJC";
 import Philadelphia from "./Philadelphia";
 import { DELCO_CRISIS, DELCO_HOUSING_ENTRY, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
-import { trackEvent as trackImpactEvent } from "./utils/analytics";
+import { trackEvent as trackImpactEvent, trackFlyerVisit } from "./utils/analytics";
 import {
   InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent, EXTRA_TRANSLATIONS,
@@ -398,9 +398,9 @@ const HOTLINES = [
 ];
 
 function openHotlineAction(h) {
-  trackImpactEvent("crisis_call_click", {
-    resource_name: "Delaware County Crisis Connections Team",
-    crisis_type: "mental_health",
+  trackImpactEvent("crisis_line_click", {
+    crisis_resource_name: h.name || "Delaware County Crisis Connections Team",
+    phone_number: h.number,
   });
   const href = h.actionHref || `${h.isText ? "sms" : "tel"}:${h.number}`;
   if (href.startsWith("sms:")) {
@@ -601,8 +601,8 @@ function DetailView({ r, onBack, onDonate, lang }) {
         {/* I'm Going + Directions */}
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
-          <button className="dh-btn-primary" onClick={()=>{trackImpactEvent("resource_call_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
-          <button className="dh-btn-outline" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
+          <button className="dh-btn-primary" onClick={()=>{trackImpactEvent("call_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_phone:r.phone});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
+          <button className="dh-btn-outline" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_address:r.address});window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
         </div>
         {r.website&&<button className="dh-btn-outline" style={{marginBottom:8}} onClick={()=>{trackImpactEvent("website_click",{resource_name:r.name,category:r.category||"unknown"});window.open(r.website,"_blank");}}>{t.website}</button>}
         {/* Save + I Found Help */}
@@ -727,7 +727,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         <div style={{display:"flex",gap:8,marginBottom:10}}>
           {[
             {icon:"🍽",label:t.pantriesOpenNow,nav:"find",filter:"food",category:"food"},
-            {icon:"📋",label:t.snapWicMore,nav:"benefits",category:"benefits"},
+            {icon:"📋",label:t.snapWicMore,nav:"benefits",category:"benefits",benefitType:"overview"},
           ].map(a=>(
             <div key={a.label} onClick={()=>{trackImpactEvent("category_click",{category:a.category});onNav(a.nav,a.filter);}} style={{flex:1,background:"rgba(255,255,255,0.14)",borderRadius:20,padding:"13px 12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.22)",display:"flex",alignItems:"center",gap:8,minHeight:52}}>
               <span style={{fontSize:18,lineHeight:1}}>{a.icon}</span>
@@ -921,13 +921,13 @@ function BenefitsScreen({ lang }) {
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#0F172A",marginBottom:4}}>{t.benefitsNav}</div>
         <div style={{fontSize:13,color:"#475569",marginBottom:12}}>{t.benefitsDesc}</div>
         {/* Action buttons */}
-        <button onClick={()=>{trackEvent("eligibility_quiz_opened");setShowQuiz(true);}} style={{width:"100%",background:"#F2C94C",color:"#0F172A",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:800,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
+        <button onClick={()=>{trackEvent("eligibility_quiz_opened");trackImpactEvent("benefits_click",{benefit_type:"eligibility_check"});setShowQuiz(true);}} style={{width:"100%",background:"#F2C94C",color:"#0F172A",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:800,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
           {t.checkEligibility60}
         </button>
-        <button onClick={()=>setShowSNAP(true)} style={{width:"100%",background:"white",color:"#1E5A8A",border:"1.5px solid rgba(30,90,138,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
+        <button onClick={()=>{trackImpactEvent("benefits_click",{benefit_type:"snap_guide"});setShowSNAP(true);}} style={{width:"100%",background:"white",color:"#1E5A8A",border:"1.5px solid rgba(30,90,138,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
           {t.snapGuide}
         </button>
-        <button onClick={()=>{setChecklistPrograms(["snap","wic","liheap","medicaid"]);setShowChecklist(true);}} style={{width:"100%",background:"white",color:"#1E5A8A",border:"1.5px solid rgba(30,90,138,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:16,fontFamily:"'DM Sans',sans-serif"}}>
+        <button onClick={()=>{trackImpactEvent("benefits_click",{benefit_type:"document_checklist"});setChecklistPrograms(["snap","wic","liheap","medicaid"]);setShowChecklist(true);}} style={{width:"100%",background:"white",color:"#1E5A8A",border:"1.5px solid rgba(30,90,138,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:16,fontFamily:"'DM Sans',sans-serif"}}>
           {t.buildChecklist}
         </button>
         <div style={{background:"#EFF6FF",borderRadius:16,padding:16,marginBottom:16,border:"1px solid rgba(30,90,138,0.18)"}}>
@@ -940,7 +940,7 @@ function BenefitsScreen({ lang }) {
           ))}
         </div>
         {BENEFITS.map(b=>(
-          <div key={b.id} className="dh-card" style={{marginBottom:10}} onClick={()=>setExpanded(expanded===b.id?null:b.id)}>
+          <div key={b.id} className="dh-card" style={{marginBottom:10}} onClick={()=>{trackImpactEvent("benefits_click",{benefit_type:b.id});setExpanded(expanded===b.id?null:b.id);}}>
             <div style={{display:"flex",alignItems:"center",gap:12}}>
               <div style={{fontSize:28,flexShrink:0}}>{b.icon}</div>
               <div style={{flex:1}}><div style={{fontSize:14,fontWeight:600}}>{b.name}</div><div style={{fontSize:12,color:"#475569",marginTop:2}}>{b.desc}</div></div>
@@ -1423,10 +1423,7 @@ function DelcoApp() {
   const [showAuth,setShowAuth]=useState(false);
 
   useEffect(()=>{
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("source") === "flyer" || params.get("utm_source") === "flyer") {
-      trackImpactEvent("flyer_qr_visit", { source: "flyer" });
-    }
+    trackFlyerVisit();
   },[]);
 
   useEffect(()=>{
@@ -1457,6 +1454,8 @@ function DelcoApp() {
   }
 
   function handleNav(t,filter) {
+    if (t === "nutrition") trackImpactEvent("nutrition_open");
+    if (t === "benefits") trackImpactEvent("benefits_click", { benefit_type: "overview" });
     setTab(t); setDetail(null); if(filter) setFindFilter(filter);
     const nextPath = t === "trust" ? "/trust-check" : "/";
     if (window.location.pathname !== nextPath) window.history.pushState({}, "", nextPath);

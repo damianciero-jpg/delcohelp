@@ -194,7 +194,7 @@ export default function NutritionFoodCheck({ variant = "delco", lang = "en" }) {
     };
   }, [variant]);
 
-  const lookupFood = useCallback(async (rawBarcode, method = "manual") => {
+  const lookupFood = useCallback(async (rawBarcode) => {
     const cleanBarcode = String(rawBarcode || "").replace(/\D/g, "");
     if (!cleanBarcode) {
       setError(tt(lang, "enterFirst"));
@@ -202,9 +202,6 @@ export default function NutritionFoodCheck({ variant = "delco", lang = "en" }) {
       return;
     }
 
-    if (method === "manual") {
-      trackImpactEvent("nutrition_scan_start", { method: "manual" });
-    }
     setBarcode(cleanBarcode);
     setLoading(true);
     setError("");
@@ -216,21 +213,20 @@ export default function NutritionFoodCheck({ variant = "delco", lang = "en" }) {
       const data = await response.json();
       if (data.status !== 1 || !data.product) {
         setError(tt(lang, "notFound"));
-        trackImpactEvent("nutrition_result_view", { result_status: "not_found" });
+        trackImpactEvent("nutrition_scan", { barcode: cleanBarcode, result_found: false });
         return;
       }
       setProduct(data.product);
-      trackImpactEvent("nutrition_result_view", { result_status: "found" });
+      trackImpactEvent("nutrition_scan", { barcode: cleanBarcode, result_found: true });
     } catch (err) {
       setError(tt(lang, "connection"));
-      trackImpactEvent("nutrition_result_view", { result_status: "error" });
+      trackImpactEvent("nutrition_scan", { barcode: cleanBarcode, result_found: false });
     } finally {
       setLoading(false);
     }
   }, [lang]);
 
   const openScanner = useCallback(() => {
-    trackImpactEvent("nutrition_scan_start", { method: "camera" });
     setCameraOpen(true);
     setScannerKey((key) => key + 1);
   }, []);
@@ -263,7 +259,7 @@ export default function NutritionFoodCheck({ variant = "delco", lang = "en" }) {
     const value = firstDetectedValue(detectedCodes);
     if (!value || loading) return;
     setCameraOpen(false);
-    lookupFood(value, "camera");
+    lookupFood(value);
   }, [loading, lookupFood]);
 
   const rating = product ? getRating(product.nutriscore_grade) : null;
@@ -309,7 +305,7 @@ export default function NutritionFoodCheck({ variant = "delco", lang = "en" }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <button
             type="button"
-            onClick={() => lookupFood(barcode, "manual")}
+            onClick={() => lookupFood(barcode)}
             disabled={loading}
             style={{ minHeight: 50, border: "none", borderRadius: 16, background: theme.yellow || "#facc15", color: "#0f172a", fontSize: 14, fontWeight: 900, cursor: loading ? "default" : "pointer", opacity: loading ? 0.7 : 1 }}
           >

@@ -322,13 +322,13 @@ export function LanguageSelector({ currentLang, onChange }) {
 }
 
 /* ── FEATURE 8: SMS ACCESS CARD ── */
-export function SMSAccessCard({ phoneNumber="", t={}, source="home" }) {
+export function SMSAccessCard({ phoneNumber="", t={} }) {
   if (!phoneNumber) return null;
   const smsUrl = (keyword) => `sms:${phoneNumber.replace(/\D/g,"")}?&body=${encodeURIComponent(keyword)}`;
   const label = (key, fallback) => t[key] || fallback;
   const format = (template, values = {}) => String(template).replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
   return (
-    <div onClick={()=>trackImpactEvent("sms_help_click",{source})} style={{ background:"linear-gradient(135deg,#FFF8F0,#FFF3E0)",borderRadius:16,padding:16,marginTop:12,marginBottom:12,border:"1px solid rgba(231,111,81,0.2)" }}>
+    <div onClick={()=>trackImpactEvent("text_us_click")} style={{ background:"linear-gradient(135deg,#FFF8F0,#FFF3E0)",borderRadius:16,padding:16,marginTop:12,marginBottom:12,border:"1px solid rgba(231,111,81,0.2)" }}>
       <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:10 }}>
         <div style={{ fontSize:24 }}>📱</div>
         <div>
@@ -338,7 +338,7 @@ export function SMSAccessCard({ phoneNumber="", t={}, source="home" }) {
       </div>
       <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6 }}>
         {[["FOOD","#E76F51"],["INFO","#E76F51"],["SNAP","#E76F51"],["CRISIS","#D62828"]].map(([kw,bg]) => (
-          <a key={kw} href={smsUrl(kw)} onClick={(event)=>{event.stopPropagation();trackImpactEvent("sms_help_click",{source});}} style={{ background:bg,color:"white",textDecoration:"none",padding:"8px 10px",borderRadius:8,fontSize:11,fontWeight:600,textAlign:"center" }}>{format(label("textKeyword", "Text {keyword}"), { keyword: kw })}</a>
+          <a key={kw} href={smsUrl(kw)} onClick={(event)=>{event.stopPropagation();trackImpactEvent("text_us_click");}} style={{ background:bg,color:"white",textDecoration:"none",padding:"8px 10px",borderRadius:8,fontSize:11,fontWeight:600,textAlign:"center" }}>{format(label("textKeyword", "Text {keyword}"), { keyword: kw })}</a>
         ))}
       </div>
       <div style={{ fontSize:10,color:"#6B7080",textAlign:"center",marginTop:8 }}>{label("replyZip", "Reply with your zip code to get nearest resources")}</div>
@@ -808,7 +808,7 @@ export function ReportIssueButton({ resource, t={} }) {
       </div>
     </div>
   );
-  return <button onClick={()=>{trackImpactEvent("report_info_click",{resource_name:resource.name,category:resource.category||"unknown"});setShowForm(true);}} style={{ background:"transparent",border:"none",color:"#9BA8A0",fontSize:11,cursor:"pointer",padding:"4px 0",textDecoration:"underline",fontFamily:"sans-serif" }}>{t.reportIncorrectInfo || "Report incorrect info"}</button>;
+  return <button onClick={()=>{trackImpactEvent("report_incorrect_info",{resource_name:resource.name,resource_category:resource.category||"unknown"});setShowForm(true);}} style={{ background:"transparent",border:"none",color:"#9BA8A0",fontSize:11,cursor:"pointer",padding:"4px 0",textDecoration:"underline",fontFamily:"sans-serif" }}>{t.reportIncorrectInfo || "Report incorrect info"}</button>;
 }
 
 /* ── HEALTH SCREEN ── */

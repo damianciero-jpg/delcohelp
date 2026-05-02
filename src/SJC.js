@@ -5,7 +5,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import NutritionFoodCheck from "./NutritionFoodCheck";
 import TrustCheck from "./TrustCheck";
 import { DELCO_CRISIS, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
-import { trackEvent as trackImpactEvent } from "./utils/analytics";
+import { trackEvent as trackImpactEvent, trackFlyerVisit } from "./utils/analytics";
 import { EXTRA_TRANSLATIONS, InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent,
   PantryInventoryWidget, IAmGoingButton, SaveResourceButton, FoundHelpButton,
@@ -234,9 +234,9 @@ const HOTLINES = [
 ];
 
 function openHotlineAction(h) {
-  trackImpactEvent("crisis_call_click", {
-    resource_name: "Delaware County Crisis Connections Team",
-    crisis_type: "mental_health",
+  trackImpactEvent("crisis_line_click", {
+    crisis_resource_name: h.name || "Delaware County Crisis Connections Team",
+    phone_number: h.number,
   });
   const href = h.actionHref || `${h.isText ? "sms" : "tel"}:${h.number}`;
   if (href.startsWith("sms:")) {
@@ -449,8 +449,8 @@ function DetailView({ r, onBack, onDonate, lang }) {
         {r.tags.length>0&&<div style={{marginBottom:16,marginTop:12}}><div style={{fontSize:12,fontWeight:700,color:"#6B7080",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.whatToKnow}</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{r.tags.map(tag=><span key={tag} className="sjc-tag" style={{fontSize:12,padding:"5px 10px"}}>✓ {tag}</span>)}</div></div>}
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
-          <button className="sjc-btn" onClick={()=>{trackImpactEvent("resource_call_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
-          <button className="sjc-btn-out" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
+          <button className="sjc-btn" onClick={()=>{trackImpactEvent("call_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_phone:r.phone});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
+          <button className="sjc-btn-out" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_address:r.address});window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
         </div>
         {r.website&&<button className="sjc-btn-out" style={{marginBottom:8}} onClick={()=>{trackImpactEvent("website_click",{resource_name:r.name,category:r.category||"unknown"});window.open(r.website,"_blank");}}>{t.website}</button>}
         <div style={{display:"flex",gap:8,marginBottom:12}}>
@@ -862,7 +862,7 @@ function BenefitsScreen({ lang }) {
       <div style={{padding:"16px 24px 0"}}>
         <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"#1A1A2E",marginBottom:4}}>{t.benefitsNav}</div>
         <div style={{fontSize:13,color:"#6B7080",marginBottom:12}}>{t.benefitsDesc}</div>
-        <button onClick={()=>{trackEvent("eligibility_quiz_opened",{app:"sjc"});gaEvent("eligibility_quiz_opened");setShowQuiz(true);}} style={{width:"100%",background:BRAND.primary,color:"white",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:700,cursor:"pointer",marginBottom:8,fontFamily:"'Source Sans 3',sans-serif"}}>
+        <button onClick={()=>{trackEvent("eligibility_quiz_opened",{app:"sjc"});gaEvent("eligibility_quiz_opened");trackImpactEvent("benefits_click",{benefit_type:"eligibility_check"});setShowQuiz(true);}} style={{width:"100%",background:BRAND.primary,color:"white",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:700,cursor:"pointer",marginBottom:8,fontFamily:"'Source Sans 3',sans-serif"}}>
           Check My Eligibility in 60 Seconds →
         </button>
         <button onClick={()=>setShowSNAP(true)} style={{width:"100%",background:"white",color:BRAND.primary,border:`1.5px solid ${BRAND.primary}44`,borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:8,fontFamily:"'Source Sans 3',sans-serif"}}>
@@ -3159,10 +3159,7 @@ function PublicApp() {
     gtag("config", "G-NZRTH3H74B");
   }, []);
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("source") === "flyer" || params.get("utm_source") === "flyer") {
-      trackImpactEvent("flyer_qr_visit", { source: "flyer" });
-    }
+    trackFlyerVisit();
   }, []);
   const [tab,setTab]=useState("home"), [detail,setDetail]=useState(null);
   const [findFilter,setFindFilter]=useState("all");
@@ -3221,7 +3218,11 @@ function PublicApp() {
     {id:"reports",icon:"📊",label:"Impact"},
   ];
 
-  function handleNav(t,filter) { setTab(t); setDetail(null); if(filter) setFindFilter(filter); if(FIREBASE_ENABLED&&auth.currentUser)pushSync(auth.currentUser.uid).catch(()=>{}); }
+  function handleNav(t,filter) {
+    if (t === "nutrition") trackImpactEvent("nutrition_open");
+    if (t === "benefits") trackImpactEvent("benefits_click", { benefit_type: "overview" });
+    setTab(t); setDetail(null); if(filter) setFindFilter(filter); if(FIREBASE_ENABLED&&auth.currentUser)pushSync(auth.currentUser.uid).catch(()=>{});
+  }
   function handleUpgrade(newTier) { setTier(newTier); }
 
   const screens={

@@ -1,25 +1,26 @@
-// Privacy-friendly GA4 impact events.
-// Event meanings:
-// help_now_click: emergency help CTA usage.
-// category_click: aggregate interest in high-level resource categories.
-// resource_call_click, directions_click, website_click: resource action usage.
-// crisis_call_click: crisis/hotline action usage.
-// nutrition_scan_start, nutrition_result_view: nutrition tool funnel usage without barcodes.
-// language_change: language switcher usage.
-// report_info_click: correction/reporting intent.
-// sms_help_click: SMS access interest.
-// flyer_qr_visit: visits attributed to printed flyer QR codes.
 export function trackEvent(eventName, params = {}) {
-  try {
-    if (typeof window !== "undefined" && typeof window.gtag === "function") {
-      window.gtag("event", eventName, {
-        app_name: "DelcoHelp",
-        ...params,
-      });
-    }
-  } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("Analytics event failed:", eventName, error);
-    }
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", eventName, params);
+  } else {
+    console.log("GA event:", eventName, params);
   }
+}
+
+// Impact event meanings:
+// help_now_click: Need Help Now CTA usage.
+// call_click: public resource phone button usage.
+// directions_click: public resource map/directions usage.
+// crisis_line_click: crisis/hotline call or text button usage.
+// nutrition_open, nutrition_scan: nutrition tool engagement.
+// language_change: language switcher usage.
+// text_us_click: SMS help entry point usage.
+// report_incorrect_info: user intent to report stale resource data.
+// benefits_click: benefits flow usage.
+export function trackFlyerVisit() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("source") === "flyer" || params.get("utm_source") === "flyer") {
+      trackEvent("flyer_qr_visit", { source: "flyer" });
+    }
+  } catch {}
 }
