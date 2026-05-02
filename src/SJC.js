@@ -5,6 +5,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import NutritionFoodCheck from "./NutritionFoodCheck";
 import TrustCheck from "./TrustCheck";
 import { DELCO_CRISIS, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
+import { trackEvent as trackImpactEvent } from "./utils/analytics";
 import { EXTRA_TRANSLATIONS, InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent,
   PantryInventoryWidget, IAmGoingButton, SaveResourceButton, FoundHelpButton,
@@ -233,6 +234,10 @@ const HOTLINES = [
 ];
 
 function openHotlineAction(h) {
+  trackImpactEvent("crisis_call_click", {
+    resource_name: "Delaware County Crisis Connections Team",
+    crisis_type: "mental_health",
+  });
   const href = h.actionHref || `${h.isText ? "sms" : "tel"}:${h.number}`;
   if (href.startsWith("sms:")) {
     window.location.href = href;
@@ -444,9 +449,10 @@ function DetailView({ r, onBack, onDonate, lang }) {
         {r.tags.length>0&&<div style={{marginBottom:16,marginTop:12}}><div style={{fontSize:12,fontWeight:700,color:"#6B7080",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.whatToKnow}</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{r.tags.map(tag=><span key={tag} className="sjc-tag" style={{fontSize:12,padding:"5px 10px"}}>✓ {tag}</span>)}</div></div>}
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
-          <button className="sjc-btn" onClick={()=>window.open(`tel:${r.phone}`)}>📞 {t.call} {r.phone}</button>
-          <button className="sjc-btn-out" onClick={()=>window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`)}>{t.directions}</button>
+          <button className="sjc-btn" onClick={()=>{trackImpactEvent("resource_call_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
+          <button className="sjc-btn-out" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
         </div>
+        {r.website&&<button className="sjc-btn-out" style={{marginBottom:8}} onClick={()=>{trackImpactEvent("website_click",{resource_name:r.name,category:r.category||"unknown"});window.open(r.website,"_blank");}}>{t.website}</button>}
         <div style={{display:"flex",gap:8,marginBottom:12}}>
           <SaveResourceButton resource={r}/>
           <FoundHelpButton resource={r}/>
@@ -666,20 +672,20 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         </div>
         <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"white",lineHeight:1.3,marginBottom:4}}>{t.tagline}</div>
         <div style={{fontSize:11,color:`${BRAND.secondary}`,fontStyle:"italic",marginBottom:16,lineHeight:1.5}}>{BRAND.missionVerse}</div>
-        <button onClick={()=>{trackEvent("emergency_button_tapped");gaEvent("emergency_button_tapped");onEmergency();}} style={{width:"100%",background:"#D62828",border:"2px solid rgba(255,255,255,0.3)",borderRadius:14,padding:"12px",fontFamily:"'Source Sans 3',sans-serif",fontSize:14,fontWeight:700,color:"white",cursor:"pointer",marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+        <button onClick={()=>{trackEvent("emergency_button_tapped");gaEvent("emergency_button_tapped");trackImpactEvent("help_now_click",{source:"home"});onEmergency();}} style={{width:"100%",background:"#D62828",border:"2px solid rgba(255,255,255,0.3)",borderRadius:14,padding:"12px",fontFamily:"'Source Sans 3',sans-serif",fontSize:14,fontWeight:700,color:"white",cursor:"pointer",marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           {t.needHelpNow}
         </button>
         <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>What do you need?</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
           {[
-            {icon:"🍽",label:t.food || "Food",sub:t.pantriesOpenNow,nav:"find",filter:"food"},
-            {icon:"📋",label:t.benefits,sub:t.snapWicMore,nav:"benefits"},
-            {icon:"🍎",label:t.nutrition,sub:t.foodCheckNutrition || "Food check & nutrition",nav:"nutrition"},
-            {icon:"🔍",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust"},
-            {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline"},
-            {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance"},
+            {icon:"🍽",label:t.food || "Food",sub:t.pantriesOpenNow,nav:"find",filter:"food",category:"food"},
+            {icon:"📋",label:t.benefits,sub:t.snapWicMore,nav:"benefits",category:"benefits"},
+            {icon:"🍎",label:t.nutrition,sub:t.foodCheckNutrition || "Food check & nutrition",nav:"nutrition",category:"nutrition"},
+            {icon:"🔍",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust",category:"check_info"},
+            {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline",category:"crisis"},
+            {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance",category:"housing"},
           ].map(a=>(
-            <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(10px)",borderRadius:14,padding:"12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.2)"}}>
+            <div key={a.label} onClick={()=>{trackImpactEvent("category_click",{category:a.category});onNav(a.nav,a.filter);}} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(10px)",borderRadius:14,padding:"12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.2)"}}>
               <div style={{fontSize:24,marginBottom:4}}>{a.icon}</div>
               <div style={{fontSize:13,fontWeight:700,color:"white",lineHeight:1.2}}>{a.label}</div>
               <div style={{fontSize:10,color:"rgba(255,255,255,0.65)",marginTop:2}}>{a.sub}</div>
@@ -3152,6 +3158,12 @@ function PublicApp() {
     gtag("js", new Date());
     gtag("config", "G-NZRTH3H74B");
   }, []);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("source") === "flyer" || params.get("utm_source") === "flyer") {
+      trackImpactEvent("flyer_qr_visit", { source: "flyer" });
+    }
+  }, []);
   const [tab,setTab]=useState("home"), [detail,setDetail]=useState(null);
   const [findFilter,setFindFilter]=useState("all");
   const [showDonate,setShowDonate]=useState(false), [showNotif,setShowNotif]=useState(false);
@@ -3246,10 +3258,10 @@ function PublicApp() {
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div className="lang-toggle" style={{background:`${BRAND.primary}15`}}>
-              <button className={`lang-btn ${lang==="en"?"active":"inactive"}`} style={{color:lang==="en"?BRAND.primary:"#6B7080",background:lang==="en"?"white":"transparent"}} onClick={()=>setLang("en")}>EN</button>
-              <button className={`lang-btn ${lang==="es"?"active":"inactive"}`} style={{color:lang==="es"?BRAND.primary:"#6B7080",background:lang==="es"?"white":"transparent"}} onClick={()=>setLang("es")}>ES</button>
-              <button className={`lang-btn ${lang==="vi"?"active":"inactive"}`} style={{color:lang==="vi"?BRAND.primary:"#6B7080",background:lang==="vi"?"white":"transparent"}} onClick={()=>setLang("vi")}>VI</button>
-              <button className={`lang-btn ${lang==="zh"?"active":"inactive"}`} style={{color:lang==="zh"?BRAND.primary:"#6B7080",background:lang==="zh"?"white":"transparent"}} onClick={()=>setLang("zh")}>中</button>
+              <button className={`lang-btn ${lang==="en"?"active":"inactive"}`} style={{color:lang==="en"?BRAND.primary:"#6B7080",background:lang==="en"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"en"});setLang("en");}}>EN</button>
+              <button className={`lang-btn ${lang==="es"?"active":"inactive"}`} style={{color:lang==="es"?BRAND.primary:"#6B7080",background:lang==="es"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"es"});setLang("es");}}>ES</button>
+              <button className={`lang-btn ${lang==="vi"?"active":"inactive"}`} style={{color:lang==="vi"?BRAND.primary:"#6B7080",background:lang==="vi"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"vi"});setLang("vi");}}>VI</button>
+              <button className={`lang-btn ${lang==="zh"?"active":"inactive"}`} style={{color:lang==="zh"?BRAND.primary:"#6B7080",background:lang==="zh"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"zh"});setLang("zh");}}>中</button>
             </div>
             <div onClick={()=>{setShowNotif(true);setNotifCount(0);}} style={{position:"relative",cursor:"pointer",fontSize:14,opacity:0.7}}>
               🔔{notifCount>0&&<div style={{position:"absolute",top:-4,right:-4,width:14,height:14,background:"#D62828",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:"white",border:"2px solid #F5F2EB"}}>{notifCount}</div>}

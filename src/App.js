@@ -7,6 +7,7 @@ import TrustCheck from "./TrustCheck";
 import SJCApp from "./SJC";
 import Philadelphia from "./Philadelphia";
 import { DELCO_CRISIS, DELCO_HOUSING_ENTRY, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
+import { trackEvent as trackImpactEvent } from "./utils/analytics";
 import {
   InstallPrompt, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent, EXTRA_TRANSLATIONS,
@@ -397,6 +398,10 @@ const HOTLINES = [
 ];
 
 function openHotlineAction(h) {
+  trackImpactEvent("crisis_call_click", {
+    resource_name: "Delaware County Crisis Connections Team",
+    crisis_type: "mental_health",
+  });
   const href = h.actionHref || `${h.isText ? "sms" : "tel"}:${h.number}`;
   if (href.startsWith("sms:")) {
     window.location.href = href;
@@ -596,9 +601,10 @@ function DetailView({ r, onBack, onDonate, lang }) {
         {/* I'm Going + Directions */}
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
-          <button className="dh-btn-primary" onClick={()=>window.open(`tel:${r.phone}`)}>📞 {t.call} {r.phone}</button>
-          <button className="dh-btn-outline" onClick={()=>window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`)}>{t.directions}</button>
+          <button className="dh-btn-primary" onClick={()=>{trackImpactEvent("resource_call_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
+          <button className="dh-btn-outline" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,category:r.category||"unknown"});window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
         </div>
+        {r.website&&<button className="dh-btn-outline" style={{marginBottom:8}} onClick={()=>{trackImpactEvent("website_click",{resource_name:r.name,category:r.category||"unknown"});window.open(r.website,"_blank");}}>{t.website}</button>}
         {/* Save + I Found Help */}
         <div style={{display:"flex",gap:8,marginBottom:12}}>
           <SaveResourceButton resource={r}/>
@@ -704,7 +710,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
       <div className="header" style={{background:"#12355B",padding:"16px 24px 24px",borderRadius:"0 0 28px 28px",marginBottom:16,color:"white"}}>
         <div style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:4}}>{t.county}</div>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:24,color:"white",lineHeight:1.25,marginBottom:0,textAlign:"center"}}>{t.tagline}</div>
-        <button className="button-primary" onClick={()=>{trackEvent("emergency_button_tapped");onEmergency();}} style={{marginTop:16,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+        <button className="button-primary" onClick={()=>{trackEvent("emergency_button_tapped");trackImpactEvent("help_now_click",{source:"home"});onEmergency();}} style={{marginTop:16,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           {t.needHelpNow}
         </button>
         <button
@@ -720,10 +726,10 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>{t.quickHelp}</div>
         <div style={{display:"flex",gap:8,marginBottom:10}}>
           {[
-            {icon:"🍽",label:t.pantriesOpenNow,nav:"find",filter:"food"},
-            {icon:"📋",label:t.snapWicMore,nav:"benefits"},
+            {icon:"🍽",label:t.pantriesOpenNow,nav:"find",filter:"food",category:"food"},
+            {icon:"📋",label:t.snapWicMore,nav:"benefits",category:"benefits"},
           ].map(a=>(
-            <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{flex:1,background:"rgba(255,255,255,0.14)",borderRadius:20,padding:"13px 12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.22)",display:"flex",alignItems:"center",gap:8,minHeight:52}}>
+            <div key={a.label} onClick={()=>{trackImpactEvent("category_click",{category:a.category});onNav(a.nav,a.filter);}} style={{flex:1,background:"rgba(255,255,255,0.14)",borderRadius:20,padding:"13px 12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.22)",display:"flex",alignItems:"center",gap:8,minHeight:52}}>
               <span style={{fontSize:18,lineHeight:1}}>{a.icon}</span>
               <span style={{fontSize:12,fontWeight:700,color:"white",lineHeight:1.25}}>{a.label}</span>
             </div>
@@ -731,12 +737,12 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {[
-            {icon:"🍎",label:t.nutrition,sub:t.foodCheckNutrition,nav:"nutrition"},
-            {icon:"🔎",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust"},
-            {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline"},
-            {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance"},
+            {icon:"🍎",label:t.nutrition,sub:t.foodCheckNutrition,nav:"nutrition",category:"nutrition"},
+            {icon:"🔎",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust",category:"check_info"},
+            {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline",category:"crisis"},
+            {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance",category:"housing"},
           ].map(a=>(
-            <div key={a.label} onClick={()=>onNav(a.nav,a.filter)} style={{background:"white",borderRadius:20,padding:"16px 14px",cursor:"pointer",border:"1px solid rgba(226,232,240,0.8)",boxShadow:"0 6px 18px rgba(15,23,42,0.07)"}}>
+            <div key={a.label} onClick={()=>{trackImpactEvent("category_click",{category:a.category});onNav(a.nav,a.filter);}} style={{background:"white",borderRadius:20,padding:"16px 14px",cursor:"pointer",border:"1px solid rgba(226,232,240,0.8)",boxShadow:"0 6px 18px rgba(15,23,42,0.07)"}}>
               <div style={{width:40,height:40,borderRadius:12,background:"#F0F6FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:10}}>{a.icon}</div>
               <div style={{fontSize:14,fontWeight:800,color:"#0F172A",lineHeight:1.2,marginBottom:3}}>{a.label}</div>
               <div style={{fontSize:11,color:"#475569",lineHeight:1.35}}>{a.sub}</div>
@@ -1417,6 +1423,13 @@ function DelcoApp() {
   const [showAuth,setShowAuth]=useState(false);
 
   useEffect(()=>{
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("source") === "flyer" || params.get("utm_source") === "flyer") {
+      trackImpactEvent("flyer_qr_visit", { source: "flyer" });
+    }
+  },[]);
+
+  useEffect(()=>{
     const syncPath = () => {
       setTab(window.location.pathname==="/trust-check"?"trust":"home");
       setDetail(null);
@@ -1491,7 +1504,7 @@ function DelcoApp() {
             <span style={{fontSize:13,fontWeight:700,letterSpacing:"0.04em",color:"white"}}>{(getT(lang)).appName}</span>
             <div className="lang-toggle" style={{background:"rgba(30,90,138,0.12)"}}>
               {["en","es","vi","zh"].map(code=>(
-                <button key={code} className={`lang-btn ${lang===code?"active":"inactive"}`} style={{color:lang===code?"#12355B":"#c7d2fe",background:lang===code?"white":"transparent"}} onClick={()=>setLang(code)}>
+                <button key={code} className={`lang-btn ${lang===code?"active":"inactive"}`} style={{color:lang===code?"#12355B":"#c7d2fe",background:lang===code?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:code});setLang(code);}}>
                   {code==="en"?"EN":code==="es"?"ES":code==="vi"?"VI":"中"}
                 </button>
               ))}
