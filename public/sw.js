@@ -1,5 +1,5 @@
-// DelcoHelp service worker kill switch.
-// Offline caching is disabled so browsers receive the latest deployed UI.
+// DelcoHelp legacy service worker kill switch.
+// This path was previously registered by the app shell.
 
 self.addEventListener("install", () => {
   self.skipWaiting();

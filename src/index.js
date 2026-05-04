@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const APP_VERSION = "2026-05-04-1";
+const APP_VERSION = "2026-05-04-2";
 console.log("DelcoHelp version:", APP_VERSION);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
