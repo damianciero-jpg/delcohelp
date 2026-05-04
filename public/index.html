@@ -30,12 +30,18 @@
     </script>
 
     <script>
-      // Register service worker for offline support + push notifications
+      // Offline caching is disabled so users receive the latest deployed UI.
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(reg => console.log('[DelcoHelp] Service worker registered', reg.scope))
-            .catch(err => console.log('[DelcoHelp] SW registration failed', err));
+          navigator.serviceWorker.getRegistrations()
+            .then(registrations => Promise.all(registrations.map(reg => reg.unregister())))
+            .then(() => {
+              if ('caches' in window) {
+                return caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key))));
+              }
+            })
+            .then(() => console.log('[DelcoHelp] Service workers unregistered'))
+            .catch(err => console.log('[DelcoHelp] Service worker cleanup failed', err));
         });
       }
     </script>
