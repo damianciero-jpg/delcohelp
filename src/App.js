@@ -140,6 +140,10 @@ const UI_TRANSLATIONS = {
     resourcesNear:"{count} resources {place} · sorted by distance", nearZip:"near {zip}",
     nearWallingford:"near Wallingford", noResourcesFound:"No resources found {place}",
     noResourcesHelp:"Try a nearby zip code, or call PA 211 (dial 211) for help finding resources anywhere in Delaware County.",
+    noExactMatch:"We couldn’t find an exact match. Try the full county directory.",
+    moreResourcesTitle:"More resources",
+    moreResourcesText:"Looking for something else? Browse the full county directory.",
+    openDelcoResources:"Open Delco Resources",
     moreResourcesSoon:"More resources coming soon",
     pa211Coming:"We're integrating the PA 211 database — coming Q3 2026 with hundreds of verified resources across all 49 Delaware County zip codes.",
     checkEligibility60:"Check My Eligibility in 60 Seconds →", snapGuide:"SNAP Application Step-by-Step Guide",
@@ -175,6 +179,10 @@ const UI_TRANSLATIONS = {
     resourcesNear:"{count} recursos {place} · ordenados por distancia", nearZip:"cerca de {zip}",
     nearWallingford:"cerca de Wallingford", noResourcesFound:"No se encontraron recursos {place}",
     noResourcesHelp:"Pruebe un código postal cercano o llame a PA 211 (marque 211) para ayuda en el Condado de Delaware.",
+    noExactMatch:"No encontramos una coincidencia exacta. Pruebe el directorio completo del condado.",
+    moreResourcesTitle:"Más recursos",
+    moreResourcesText:"¿Busca algo más? Revise el directorio completo del condado.",
+    openDelcoResources:"Abrir Delco Resources",
     moreResourcesSoon:"Más recursos próximamente",
     pa211Coming:"Estamos integrando la base de datos PA 211 — llegará en Q3 2026 con cientos de recursos verificados.",
     checkEligibility60:"Verificar mi elegibilidad en 60 segundos →", snapGuide:"Guía paso a paso para solicitar SNAP",
@@ -380,6 +388,7 @@ const RESOURCES = [
   { id:8, zip:"19086", category:"assistance", name:"Catholic Social Services", address:"Delaware County, PA", phone:"267-331-2490", miles:5.0, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["housing help","rent support","counseling","legal aid"], color:"#1E5A8A", description:"Family service centers offering food pantries, housing and rent support, counseling, and legal aid to residents in need.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
   { id:9, zip:"19086", category:"legal", name:"Legal Aid of Southeastern PA", address:"Delaware County, PA", phone:"877-429-5994", miles:4.5, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["free legal help","eviction defense","benefits access"], color:"#1E5A8A", description:"Free legal representation for low-income residents — housing, evictions, employment, family law, and access to public benefits.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
   { id:10, zip:"19086", category:"assistance", name:"Women's Resource Center", address:"Delaware County, PA", phone:"610-687-6391", miles:6.0, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["women","housing instability","financial hardship","counseling"], color:"#1E5A8A", description:"Supports women facing housing instability or financial hardship with counseling, legal advocacy, and educational services.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
+  { id:40, zip:"19013", category:"assistance", name:"Bernardine Center", address:"", website:"https://www.bernardinecenter.org/bc/", phone:"", miles:5.5, hours:[{day:"Hours",time:"Call ahead to confirm hours."}], tags:["Food / Community Services","Needs verification","Call ahead to confirm hours."], color:"#1E5A8A", description:"Food and community services resource. Details need verification before visiting.", openDays:[], openStart:0, openEnd:0, lastUpdated:"2026-05-05", verified:false, status:"Needs verification" },
   { id:39, zip:"19013", category:"assistance", name:"PA 211 Delaware County Office", address:"Delaware County, PA", phone:"211", miles:0.0, hours:[{day:"24/7",time:"Dial 2-1-1"}], tags:["all services","24/7","bilingual"], color:"#1E5A8A", description:"Dial 211 from any phone for immediate connection to food, housing, utility, health, and crisis resources anywhere in Delaware County.", openDays:[0,1,2,3,4,5,6], openStart:0, openEnd:24 },
 ];
 
@@ -472,6 +481,19 @@ function SavedResourceBanner({ lang }) {
   return (
     <div style={{background:"#FFF7D6",border:"1px solid rgba(242,201,76,0.55)",borderRadius:14,padding:12,margin:"0 24px 12px",color:"#92400E",fontSize:12,lineHeight:1.45,fontWeight:650}}>
       {t.savedResourceWarning}
+    </div>
+  );
+}
+
+function MoreResourcesCard({ lang }) {
+  const t = getT(lang);
+  return (
+    <div className="dh-card" style={{marginTop:10,marginBottom:12,border:"1px solid rgba(30,90,138,0.18)"}}>
+      <div style={{fontSize:15,fontWeight:800,color:"#0F172A",marginBottom:6}}>{t.moreResourcesTitle}</div>
+      <div style={{fontSize:12,color:"#475569",lineHeight:1.45,marginBottom:12}}>{t.moreResourcesText}</div>
+      <a className="dh-btn-outline" href="https://delcoresources.org/" target="_blank" rel="noreferrer" style={{display:"block",textAlign:"center",textDecoration:"none"}}>
+        {t.openDelcoResources}
+      </a>
     </div>
   );
 }
@@ -932,9 +954,13 @@ function FindScreen({ onResource, lang, initialFilter="all", resources=RESOURCES
           <div style={{textAlign:"center",padding:"32px 0"}}>
             <div style={{fontSize:36,marginBottom:10}}>📍</div>
             <div style={{fontSize:14,fontWeight:600,marginBottom:6}}>{fmt(t.noResourcesFound,{place:zip.length===5?fmt(t.nearZip,{zip}):""})}</div>
-            <div style={{fontSize:12,color:"#475569",lineHeight:1.6}}>{t.noResourcesHelp}</div>
+            <div style={{fontSize:12,color:"#475569",lineHeight:1.6}}>{t.noExactMatch}</div>
           </div>
         )}
+        {results.length > 0 && results.length < 3&&(
+          <div style={{fontSize:12,color:"#475569",lineHeight:1.6,margin:"0 0 10px"}}>{t.noExactMatch}</div>
+        )}
+        <MoreResourcesCard lang={lang}/>
         {/* 211 upgrade note */}
         <div style={{background:"#EFF6FF",borderRadius:14,padding:14,marginTop:8,marginBottom:8,border:"1px solid rgba(18,53,91,0.12)"}}>
           <div style={{fontSize:12,fontWeight:700,color:"#1E5A8A",marginBottom:4}}>{t.moreResourcesSoon}</div>
