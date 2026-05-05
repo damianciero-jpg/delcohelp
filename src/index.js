@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-const APP_VERSION = "2026-05-05-cache-fix";
+const APP_VERSION = "restored-delco-blue-philly-2026-05-05";
 window.DELCOHELP_VERSION = APP_VERSION;
 console.log("DelcoHelp version:", APP_VERSION);
 
