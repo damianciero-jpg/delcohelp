@@ -715,13 +715,13 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         <button className="button-primary" onClick={()=>{trackEvent("emergency_button_tapped");trackImpactEvent("help_now_click",{source:"home"});onEmergency();}} style={{marginTop:16,marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           {t.needHelpNow}
         </button>
-        <button
+        <a
           className="dh-btn-secondary"
-          onClick={() => { window.location.href = "/philadelphia"; }}
-          style={{ marginBottom:10, background:"#1E5A8A", border:"1px solid rgba(255,255,255,0.24)" }}
+          href="/philadelphia"
+          style={{ marginBottom:10, background:"#1E5A8A", border:"1px solid rgba(255,255,255,0.24)", display:"block", textAlign:"center", textDecoration:"none" }}
         >
           Philadelphia
-        </button>
+        </a>
         <p className="support-trust-line">
           {t.freeCommunityResource} - {t.builtSupportedBy}
         </p>
