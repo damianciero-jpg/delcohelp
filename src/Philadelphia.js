@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { translateResourceText } from "./resourceTranslations";
 
 const placeholderResources = [
   {
@@ -184,6 +185,8 @@ function injectCSS() {
 }
 
 export default function Philadelphia() {
+  const lang = localStorage.getItem("dh_lang") || "en";
+
   useEffect(() => {
     document.title = "PhillyHelp";
   }, []);
@@ -216,10 +219,10 @@ export default function Philadelphia() {
             <article className="philly-card" key={resource.title}>
               <div className="philly-card-top">
                 <h2>{resource.title}</h2>
-                <span className="philly-tag">{resource.category}</span>
+                <span className="philly-tag">{translateResourceText(resource.category, lang)}</span>
               </div>
               <p>{resource.description}</p>
-              <span className="philly-status">Needs verification</span>
+              <span className="philly-status">{translateResourceText("Needs verification", lang)}</span>
             </article>
           ))}
         </section>

@@ -6,6 +6,7 @@ import NutritionFoodCheck from "./NutritionFoodCheck";
 import TrustCheck from "./TrustCheck";
 import SJCApp from "./SJC";
 import Philadelphia from "./Philadelphia";
+import { translateResourceText } from "./resourceTranslations";
 import { DELCO_CRISIS, DELCO_HOUSING_ENTRY, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
 import { trackEvent as trackImpactEvent, trackFlyerVisit } from "./utils/analytics";
 import {
@@ -430,6 +431,7 @@ function getImpactStats() {
 
 function isOpenNow(r) { const now=new Date(),day=now.getDay(),hour=now.getHours()+now.getMinutes()/60; return r.openDays.includes(day)&&hour>=r.openStart&&hour<r.openEnd; }
 function isOpenToday(r) { return r.openDays.includes(new Date().getDay()); }
+const rt = (value, lang) => translateResourceText(value, lang);
 
 /* ── CSS ── */
 const CSS = `
@@ -547,11 +549,11 @@ function ResourceCard({ r, onClick, lang }) {
           <div style={{fontSize:12,color:"#475569",marginBottom:7}}>{r.address.split(",")[0]} · {r.miles} mi</div>
           <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
             <span className={`dh-chip ${open?"open":today?"today":"closed"}`}>{open?t.openRightNow:today?t.opensLaterToday:t.closedToday}</span>
-            <span className="dh-chip" style={{background:CATEGORY_COLORS[r.category]+"15",color:CATEGORY_COLORS[r.category]}}>{CATEGORY_LABELS[r.category]}</span>
+            <span className="dh-chip" style={{background:CATEGORY_COLORS[r.category]+"15",color:CATEGORY_COLORS[r.category]}}>{rt(CATEGORY_LABELS[r.category], lang)}</span>
           </div>
         </div>
       </div>
-      {r.tags.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>{r.tags.slice(0,3).map(tag=><span key={tag} className="dh-tag">{tag}</span>)}</div>}
+      {r.tags.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>{r.tags.slice(0,3).map(tag=><span key={tag} className="dh-tag">{rt(tag, lang)}</span>)}</div>}
     </div>
   );
 }
@@ -566,7 +568,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
         <div className="dh-back" onClick={onBack}>{t.back}</div>
         <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
           <span className={`dh-chip ${open?"open":today?"today":"closed"}`}>{open?t.openRightNow:today?t.opensLaterToday:t.closedToday}</span>
-          <span className="dh-chip" style={{background:CATEGORY_COLORS[r.category]+"15",color:CATEGORY_COLORS[r.category]}}>{CATEGORY_LABELS[r.category]}</span>
+          <span className="dh-chip" style={{background:CATEGORY_COLORS[r.category]+"15",color:CATEGORY_COLORS[r.category]}}>{rt(CATEGORY_LABELS[r.category], lang)}</span>
         </div>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:24,color:"#0F172A",lineHeight:1.2,marginBottom:6}}>{r.name}</div>
         <div style={{fontSize:13,color:"#475569"}}>{r.address}</div>
@@ -581,14 +583,14 @@ function DetailView({ r, onBack, onDonate, lang }) {
             <div style={{fontSize:12,fontWeight:700,color:"#1E5A8A",textTransform:"uppercase",letterSpacing:"0.06em"}}>{t.about}</div>
             <TrustBadge resourceId={r.id}/>
           </div>
-          <div style={{fontSize:14,color:"#334155",lineHeight:1.6}}>{r.description}</div>
+          <div style={{fontSize:14,color:"#334155",lineHeight:1.6}}>{rt(r.description, lang)}</div>
         </div>
         <div style={{background:"white",borderRadius:14,padding:16,marginBottom:16,boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
           <div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.hours}</div>
           {r.hours.map((h,i)=>(
             <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:i<r.hours.length-1?"1px solid rgba(0,0,0,0.05)":"none"}}>
-              <div style={{fontSize:13,fontWeight:500}}>{h.day}</div>
-              <div style={{fontSize:13,color:"#334155"}}>{h.time||"Call for hours"}</div>
+              <div style={{fontSize:13,fontWeight:500}}>{rt(h.day, lang)}</div>
+              <div style={{fontSize:13,color:"#334155"}}>{h.time||rt("Call for hours", lang)}</div>
             </div>
           ))}
         </div>
@@ -597,7 +599,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
         <PantryInventoryWidget pantryId={r.id}/>
         {/* SEPTA transit info */}
         <TransitHelper resourceZip={zip} resourceName={r.name}/>
-        {r.tags.length>0&&<div style={{marginBottom:16,marginTop:12}}><div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.whatToKnow}</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{r.tags.map(tag=><span key={tag} className="dh-tag" style={{fontSize:12,padding:"5px 10px"}}>✓ {tag}</span>)}</div></div>}
+        {r.tags.length>0&&<div style={{marginBottom:16,marginTop:12}}><div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.whatToKnow}</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{r.tags.map(tag=><span key={tag} className="dh-tag" style={{fontSize:12,padding:"5px 10px"}}>✓ {rt(tag, lang)}</span>)}</div></div>}
         {/* I'm Going + Directions */}
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
@@ -1412,7 +1414,7 @@ function DelcoApp() {
   const [showEmergency,setShowEmergency]=useState(false), [notifCount,setNotifCount]=useState(3);
   const [clock,setClock]=useState(()=>{const n=new Date();return `${n.getHours()}:${String(n.getMinutes()).padStart(2,"0")}`;});
   useEffect(()=>{const id=setInterval(()=>{const n=new Date();setClock(`${n.getHours()}:${String(n.getMinutes()).padStart(2,"0")}`);},30000);return()=>clearInterval(id);},[]);
-  const [lang,setLang]=useState("en");
+  const [lang,setLang]=useState(()=>localStorage.getItem("dh_lang") || "en");
   const [showProfile,setShowProfile]=useState(()=>!getFamilyProfile());
   const [showEscape,setShowEscape]=useState(false);
   const [showLegal,setShowLegal]=useState(false);
@@ -1422,6 +1424,10 @@ function DelcoApp() {
   useEffect(()=>{
     trackFlyerVisit();
   },[]);
+
+  useEffect(()=>{
+    try { localStorage.setItem("dh_lang", lang); } catch {}
+  },[lang]);
 
   useEffect(()=>{
     const syncPath = () => {
