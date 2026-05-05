@@ -1,6 +1,7 @@
 const RESOURCE_TEXT_TRANSLATIONS = {
   es: {
-    "Food Pantry": "Banco de alimentos",
+    "Food Pantry": "Despensa de alimentos",
+    "Food Pantries": "Despensas de alimentos",
     "Family Assistance": "Asistencia familiar",
     "Legal Aid": "Ayuda legal",
     "Food": "Comida",
@@ -60,7 +61,7 @@ const RESOURCE_TEXT_TRANSLATIONS = {
     "family law": "derecho familiar",
     "borough residents": "residentes del municipio",
     "senior services": "servicios para mayores",
-    "Saturday pantry": "despensa de sabado",
+    "Saturday pantry": "despensa de alimentos de sabado",
     "Lansdowne residents": "residentes de Lansdowne",
     "job training": "capacitacion laboral",
     "financial counseling": "asesoria financiera",

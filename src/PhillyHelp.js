@@ -8,6 +8,9 @@ import {
   TrustBadge, ReportIssueButton, HealthScreen
 } from "./features";
 import { translateResourceText } from "./resourceTranslations";
+import { cachePublicResources, getInitialPublicResources } from "./resourceCache";
+
+const PHILLY_RESOURCE_CACHE_KEY = "delcohelp_cached_philly_resources_v1";
 
 // PhillyHelp — Philadelphia Community Resource App
 
@@ -52,15 +55,15 @@ const T = {
     findResources:"Buscar Recursos", foodHelpMore:"Comida, ayuda y más", benefits:"Beneficios", snapWic:"SNAP, WIC y más",
     emergency:"Emergencia", hotlinesCrisis:"Líneas de crisis", volunteer:"Voluntario", askAI:"Preguntar IA",
     openNow:"Abierto Ahora", opensLater:"Abre Más Tarde Hoy", allResources:"Todos los Recursos",
-    supportPantries:"Apoya los Bancos de Alimentos", donateDesc:"Tu donación mantiene abastecidos los bancos de alimentos. Cada $10 alimenta a una familia por una semana.",
+    supportPantries:"Apoya las despensas de alimentos", donateDesc:"Tu donación mantiene abastecidas las despensas de alimentos. Cada $10 alimenta a una familia por una semana.",
     back:"← Atrás", about:"Acerca de", hours:"Horario", whatToKnow:"Lo que debes saber", call:"Llamar", directions:"🗺️ Mapa",
-    donatePantry:"💛 Donar para Apoyar este Banco", openRightNow:"● Abierto Ahora", opensLaterToday:"◐ Abre Más Tarde", closedToday:"○ Cerrado Hoy",
+    donatePantry:"💛 Donar para apoyar esta despensa de alimentos", openRightNow:"● Abierto Ahora", opensLaterToday:"◐ Abre Más Tarde", closedToday:"○ Cerrado Hoy",
     home:"Inicio", find:"Buscar", hotline:"Línea de Crisis",
     searchPlaceholder:"Buscar comida, pañales, ayuda legal…", sortedByDistance:"recursos · ordenados por distancia",
     benefitsNav:"Navegador de Beneficios", benefitsDesc:"Encuentra programas para los que puedes calificar en Pennsylvania",
     quickEligibility:"Verificación Rápida de Elegibilidad", applyCompass:"Solicitar en PA COMPASS →",
     giveBack:"Devuelve a Tu Comunidad", volunteerDesc:"Oportunidades de voluntariado cerca de Philadelphia, PA",
-    whyMatters:"💛 Por qué importa", volunteerImpact:"Todos los bancos son administrados por voluntarios. Un turno de 2 horas ayuda a 30–50 familias por semana.",
+    whyMatters:"💛 Por qué importa", volunteerImpact:"Todas las despensas de alimentos son administradas por voluntarios. Un turno de 2 horas ayuda a 30–50 familias por semana.",
     signUp:"Inscribirse", emergencyHotlines:"Líneas de Emergencia y Crisis", hotlinesDesc:"Gratis, confidencial, disponible 24/7",
     immediateEmergency:"🚨 Emergencia Inmediata", additionalResources:"Recursos Adicionales",
     confidentialNote:"Todas las llamadas son confidenciales. No tienes que dar tu nombre. La ayuda siempre está disponible — no estás solo.",
@@ -70,7 +73,7 @@ const T = {
     yourImpact:"Tu impacto:", done:"Listo", secure:"🔒 Seguro · 100% va a organizaciones locales",
     needHelpNow:"🚨 Necesito Ayuda Ahora", emergencyMode:"Modo de Emergencia", emergencyModeDesc:"Mostrando los 3 recursos abiertos más cercanos + líneas de crisis",
     noOpenResources:"No hay recursos abiertos ahora — llama a Philly 311 (marcar 211) para ayuda inmediata.",
-    submitResource:"Enviar un Recurso", submitDesc:"¿Conoces un banco o servicio que nos falta? Agrégalo aquí.",
+    submitResource:"Enviar un Recurso", submitDesc:"¿Conoces una despensa de alimentos o servicio que nos falta? Agrégalo aquí.",
     orgName:"Nombre de la Organización", orgAddress:"Dirección", orgPhone:"Número de Teléfono", orgCategory:"Categoría",
     orgHours:"Horario / Días Abierto", orgNotes:"Notas Adicionales (opcional)", submit:"Enviar Recurso",
     submitThanks:"¡Gracias! Revisaremos y agregaremos este recurso en 24 horas.",
@@ -211,6 +214,46 @@ const SPONSORS = ["Crozer Health","Main Line Health","TD Bank","Wawa Foundation"
 function isOpenNow(r) { const now=new Date(),day=now.getDay(),hour=now.getHours()+now.getMinutes()/60; return r.openDays.includes(day)&&hour>=r.openStart&&hour<r.openEnd; }
 function isOpenToday(r) { return r.openDays.includes(new Date().getDay()); }
 
+function usePublicResourceCache(cacheKey, sourceResources) {
+  const [state, setState] = useState(() => getInitialPublicResources(cacheKey, sourceResources));
+
+  useEffect(() => {
+    if (Array.isArray(sourceResources) && sourceResources.length > 0) {
+      cachePublicResources(cacheKey, sourceResources);
+      setState({ resources: sourceResources, usingCache: false });
+      return;
+    }
+    setState(getInitialPublicResources(cacheKey, sourceResources));
+  }, [cacheKey, sourceResources]);
+
+  return state;
+}
+
+function useOnlineStatus() {
+  const [online, setOnline] = useState(() => typeof navigator === "undefined" ? true : navigator.onLine);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
+  return online;
+}
+
+function SavedResourceBanner({ lang }) {
+  const message = lang === "es"
+    ? "Es posible que esté viendo información guardada. Llame antes cuando sea posible."
+    : "You may be viewing saved resource information. Please call ahead when possible.";
+  return (
+    <div style={{background:"#FFF8F0",border:"1px solid rgba(244,162,97,0.35)",borderRadius:14,padding:12,margin:"0 24px 12px",color:"#7B4B00",fontSize:12,lineHeight:1.45,fontWeight:650}}>
+      {message}
+    </div>
+  );
+}
+
 /* ── CSS ── */
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
@@ -312,7 +355,7 @@ function ResourceCard({ r, onClick, lang }) {
 }
 
 /* ── DETAIL VIEW ── */
-function DetailView({ r, onBack, onDonate, lang }) {
+function DetailView({ r, onBack, onDonate, lang, online=true }) {
   const open=isOpenNow(r), today=isOpenToday(r), t=T[lang]||T.en;
   const rt = (value) => translateResourceText(value, lang);
   const zip = (r.address.match(/\d{5}/) || ["19121"])[0];
@@ -360,7 +403,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
           <button className="dh-btn-primary" onClick={()=>window.open(`tel:${r.phone}`)}>📞 {t.call} {r.phone}</button>
-          <button className="dh-btn-outline" onClick={()=>window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`)}>{t.directions}</button>
+          <button className="dh-btn-outline" disabled={!online} title={!online?(lang==="es"?"Las direcciones pueden requerir internet":"Directions may require internet"):undefined} onClick={()=>{if(!online)return;window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{online?t.directions:(lang==="es"?"Las direcciones pueden requerir internet":"Directions may require internet")}</button>
         </div>
         {/* Save + I Found Help */}
         <div style={{display:"flex",gap:8,marginBottom:12}}>
@@ -377,9 +420,9 @@ function DetailView({ r, onBack, onDonate, lang }) {
 }
 
 /* ── EMERGENCY MODE ── */
-function EmergencyMode({ onClose, lang }) {
+function EmergencyMode({ onClose, lang, resources=RESOURCES }) {
   const t=T[lang]||T.en;
-  const openNow=RESOURCES.filter(r=>isOpenNow(r)).slice(0,3);
+  const openNow=resources.filter(r=>isOpenNow(r)).slice(0,3);
   const urgentLines=HOTLINES.filter(h=>h.urgent);
   trackEvent("emergency_mode_activated");
   return (
@@ -425,12 +468,12 @@ function EmergencyMode({ onClose, lang }) {
 }
 
 /* ── HOME SCREEN ── */
-function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
+function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=RESOURCES }) {
   const t=T[lang]||T.en;
-  const openNow=RESOURCES.filter(r=>isOpenNow(r));
-  const openToday=RESOURCES.filter(r=>!isOpenNow(r)&&isOpenToday(r));
+  const openNow=resources.filter(r=>isOpenNow(r));
+  const openToday=resources.filter(r=>!isOpenNow(r)&&isOpenToday(r));
   const savedIds = getSavedResources().map(s=>s.id);
-  const savedResources = RESOURCES.filter(r=>savedIds.includes(r.id));
+  const savedResources = resources.filter(r=>savedIds.includes(r.id));
   return (
     <div className="dfi">
       <div style={{background:"linear-gradient(160deg,#003594 0%,#0046AD 100%)",padding:"16px 24px 24px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
@@ -465,9 +508,9 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
           {openToday.slice(0,2).map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
           <div style={{height:6}}/>
         </>}
-        <div style={{fontSize:13,fontWeight:700,color:"#6B7C6E",marginBottom:10}}>{t.allResources} ({RESOURCES.length})</div>
-        {RESOURCES.filter(r=>!isOpenNow(r)&&!isOpenToday(r)).slice(0,2).map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
-        <button className="dh-btn-outline" style={{marginBottom:12}} onClick={()=>onNav("find")}>See all {RESOURCES.length} resources →</button>
+        <div style={{fontSize:13,fontWeight:700,color:"#6B7C6E",marginBottom:10}}>{t.allResources} ({resources.length})</div>
+        {resources.filter(r=>!isOpenNow(r)&&!isOpenToday(r)).slice(0,2).map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
+        <button className="dh-btn-outline" style={{marginBottom:12}} onClick={()=>onNav("find")}>See all {resources.length} resources →</button>
         {/* Saved resources */}
         {savedResources.length > 0 && (
           <div style={{marginBottom:12}}>
@@ -497,7 +540,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
 }
 
 /* ── FIND SCREEN ── */
-function FindScreen({ onResource, lang }) {
+function FindScreen({ onResource, lang, resources=RESOURCES }) {
   const [search,setSearch]=useState(""), [filter,setFilter]=useState("all"), [dietary,setDietary]=useState([]);
   const [zip,setZip]=useState(""), [zipInput,setZipInput]=useState(""), [locating,setLocating]=useState(false);
   const t=T[lang]||T.en;
@@ -532,7 +575,7 @@ function FindScreen({ onResource, lang }) {
   }
 
   // Calculate distances from user zip and filter
-  const results = RESOURCES.filter(r => {
+  const results = resources.filter(r => {
     const matchCat = filter==="all" || r.category===filter;
     const q = search.toLowerCase();
     const matchSearch = !q || r.name.toLowerCase().includes(q) || r.tags.some(tag=>tag.toLowerCase().includes(q));
@@ -1057,6 +1100,8 @@ function NotifOverlay({ onClose, lang }) {
 /* ── APP SHELL ── */
 export default function App() {
   injectCSS();
+  const { resources, usingCache } = usePublicResourceCache(PHILLY_RESOURCE_CACHE_KEY, RESOURCES);
+  const online = useOnlineStatus();
   const [tab,setTab]=useState("home"), [detail,setDetail]=useState(null);
   const [showDonate,setShowDonate]=useState(false), [showNotif,setShowNotif]=useState(false);
   const [showEmergency,setShowEmergency]=useState(false), [notifCount,setNotifCount]=useState(4);
@@ -1076,8 +1121,8 @@ export default function App() {
   function handleNav(t) { setTab(t); setDetail(null); }
 
   const screens={
-    home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
-    find:<FindScreen onResource={setDetail} lang={lang}/>,
+    home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang} resources={resources}/>,
+    find:<FindScreen onResource={setDetail} lang={lang} resources={resources}/>,
     benefits:<BenefitsScreen lang={lang}/>,
     health:<HealthScreen/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
@@ -1119,7 +1164,8 @@ export default function App() {
           </div>
         </div>
         <div className="dh-sc">
-          {detail?<DetailView r={detail} onBack={()=>setDetail(null)} onDonate={()=>setShowDonate(true)} lang={lang}/>:screens[tab]||screens.home}
+          {usingCache&&<SavedResourceBanner lang={lang}/>}
+          {detail?<DetailView r={detail} onBack={()=>setDetail(null)} onDonate={()=>setShowDonate(true)} lang={lang} online={online}/>:screens[tab]||screens.home}
         </div>
         <nav className="dh-nav">
           {tabs.map(t=>(
@@ -1135,7 +1181,7 @@ export default function App() {
             Terms · Privacy · Disclaimer · © 2026 CieroLink LLC
           </button>
         </div>
-        {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang}/>}
+        {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang} resources={resources}/>}
         {showNotif&&<NotifOverlay onClose={()=>setShowNotif(false)} lang={lang}/>}
         {showDonate&&<DonateModal onClose={()=>setShowDonate(false)} lang={lang}/>}
       </div>

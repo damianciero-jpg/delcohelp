@@ -7,6 +7,7 @@ import TrustCheck from "./TrustCheck";
 import SJCApp from "./SJC";
 import Philadelphia from "./Philadelphia";
 import { translateResourceText } from "./resourceTranslations";
+import { cachePublicResources, getInitialPublicResources } from "./resourceCache";
 import { DELCO_CRISIS, DELCO_HOUSING_ENTRY, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
 import { trackEvent as trackImpactEvent, trackFlyerVisit } from "./utils/analytics";
 import {
@@ -39,6 +40,7 @@ const THEME = {
 };
 
 const APP_VERSION = "restored-delco-blue-philly-2026-05-05";
+const DELCO_RESOURCE_CACHE_KEY = "delcohelp_cached_resources_v1";
 
 /* ── TRANSLATIONS ── */
 const T = {
@@ -81,15 +83,15 @@ const T = {
     findResources:"Buscar Recursos", foodHelpMore:"Comida, ayuda y más", benefits:"Beneficios", snapWic:"SNAP, WIC y más",
     emergency:"Emergencia", hotlinesCrisis:"Líneas de crisis", volunteer:"Voluntario", askAI:"Preguntar IA",
     openNow:"Abierto Ahora", opensLater:"Abre Más Tarde Hoy", allResources:"Todos los Recursos",
-    supportPantries:"Apoya los Bancos de Alimentos", donateDesc:"Tu donación mantiene abastecidos los bancos de alimentos. Cada $10 alimenta a una familia por una semana.",
+    supportPantries:"Apoya las despensas de alimentos", donateDesc:"Tu donación mantiene abastecidas las despensas de alimentos. Cada $10 alimenta a una familia por una semana.",
     back:"← Atrás", about:"Acerca de", hours:"Horario", whatToKnow:"Lo que debes saber", call:"Llamar", directions:"🗺️ Mapa",
-    donatePantry:"💛 Donar para Apoyar este Banco", openRightNow:"● Abierto Ahora", opensLaterToday:"◐ Abre Más Tarde", closedToday:"○ Cerrado Hoy",
+    donatePantry:"💛 Donar para apoyar esta despensa de alimentos", openRightNow:"● Abierto Ahora", opensLaterToday:"◐ Abre Más Tarde", closedToday:"○ Cerrado Hoy",
     home:"Inicio", find:"Buscar", hotline:"Línea de Crisis",
     searchPlaceholder:"Buscar comida, pañales, ayuda legal…", sortedByDistance:"recursos · ordenados por distancia",
     benefitsNav:"Navegador de Beneficios", benefitsDesc:"Encuentra programas para los que puedes calificar en Pennsylvania",
     quickEligibility:"Verificación Rápida de Elegibilidad", applyCompass:"Solicitar en PA COMPASS →",
     giveBack:"Devuelve a Tu Comunidad", volunteerDesc:"Oportunidades de voluntariado cerca de Wallingford, PA",
-    whyMatters:"💛 Por qué importa", volunteerImpact:"Todos los bancos son administrados por voluntarios. Un turno de 2 horas ayuda a 30–50 familias por semana.",
+    whyMatters:"💛 Por qué importa", volunteerImpact:"Todas las despensas de alimentos son administradas por voluntarios. Un turno de 2 horas ayuda a 30–50 familias por semana.",
     signUp:"Inscribirse", emergencyHotlines:"Líneas de Emergencia y Crisis", hotlinesDesc:"Gratis, confidencial, disponible 24/7",
     immediateEmergency:"🚨 Emergencia Inmediata", additionalResources:"Recursos Adicionales",
     confidentialNote:"Todas las llamadas son confidenciales. No tienes que dar tu nombre. La ayuda siempre está disponible — no estás solo.",
@@ -99,7 +101,7 @@ const T = {
     yourImpact:"Tu impacto:", done:"Listo", secure:"🔒 Seguro · 100% va a organizaciones locales",
     needHelpNow:"🚨 Necesito Ayuda Ahora", emergencyMode:"Modo de Emergencia", emergencyModeDesc:"Mostrando los 3 recursos abiertos más cercanos + líneas de crisis",
     noOpenResources:"No hay recursos abiertos ahora — llama a PA 211 (marcar 211) para ayuda inmediata.",
-    submitResource:"Enviar un Recurso", submitDesc:"¿Conoces un banco o servicio que nos falta? Agrégalo aquí.",
+    submitResource:"Enviar un Recurso", submitDesc:"¿Conoces una despensa de alimentos o servicio que nos falta? Agrégalo aquí.",
     orgName:"Nombre de la Organización", orgAddress:"Dirección", orgPhone:"Número de Teléfono", orgCategory:"Categoría",
     orgHours:"Horario / Días Abierto", orgNotes:"Notas Adicionales (opcional)", submit:"Enviar Recurso",
     submitThanks:"¡Gracias! Revisaremos y agregaremos este recurso en 24 horas.",
@@ -125,6 +127,8 @@ const UI_TRANSLATIONS = {
     reportIncorrectInfo:"Report incorrect info", lastUpdated:"Last updated", verified:"Verified",
     needsVerification:"Needs verification", emergency911:"If this is an emergency, call 911.",
     resourceInfoCanChange:"Resource information can change. Please call ahead when possible.",
+    savedResourceWarning:"You may be viewing saved resource information. Please call ahead when possible.",
+    directionsMayRequireInternet:"Directions may require internet",
     freeCommunityResource:"Free community resource",
     terms:"Terms", privacy:"Privacy", disclaimer:"Disclaimer", quickHelp:"Quick Help",
     foodCheckNutrition:"Food check & nutrition", openNearYouRightNow:"Open Near You Right Now",
@@ -150,7 +154,7 @@ const UI_TRANSLATIONS = {
     aboutDelcoHelp:"About DelcoHelp", aboutDelcoHelpBody:"Free community service connecting Delaware County residents to food pantries, benefits programs, and emergency resources. Built by CieroLink LLC.",
   },
   es: {
-    nutrition:"Nutrición", pantriesOpenNow:"Despensas abiertas ahora", snapWicMore:"SNAP, WIC y más",
+    nutrition:"Nutrición", pantriesOpenNow:"Despensas de alimentos abiertas ahora", snapWicMore:"SNAP, WIC y más",
     checkInfo:"Verificar info", scamBiasSignals:"Señales de estafa y sesgo", crisisLine:"Línea de crisis",
     freeConfidential:"Gratis y confidencial", housing:"Vivienda", shelterLegalAid:"Refugio y ayuda legal",
     noSmartphoneTextUs:"¿No tiene smartphone? Envíenos un texto", worksOnAnyPhone:"Funciona en cualquier teléfono, incluso teléfonos básicos",
@@ -158,6 +162,8 @@ const UI_TRANSLATIONS = {
     reportIncorrectInfo:"Reportar información incorrecta", lastUpdated:"Última actualización", verified:"Verificado",
     needsVerification:"Necesita verificación", emergency911:"Si es una emergencia, llame al 911.",
     resourceInfoCanChange:"La información puede cambiar. Llame antes cuando sea posible.",
+    savedResourceWarning:"Es posible que esté viendo información guardada. Llame antes cuando sea posible.",
+    directionsMayRequireInternet:"Las direcciones pueden requerir internet",
     freeCommunityResource:"Recurso comunitario gratuito", builtSupportedBy:"Construido y apoyado por CieroLink LLC",
     terms:"Términos", privacy:"Privacidad", disclaimer:"Aviso", quickHelp:"Ayuda rápida",
     foodCheckNutrition:"Revisión de comida y nutrición", openNearYouRightNow:"Abierto cerca de usted ahora",
@@ -180,7 +186,7 @@ const UI_TRANSLATIONS = {
     whyFreeBody:"DelcoHelp es gratis y siempre mantendrá gratuitos los recursos básicos de ayuda. CieroLink LLC apoya este proyecto para que familias encuentren ayuda confiable más rápido.",
     textKeyword:"Enviar {keyword}", replyZip:"Responda con su código postal para recursos cercanos",
     resourceSubmitted:"¡Recurso enviado!", contactUs:"Contáctenos", questionsFeedback:"¿Preguntas o comentarios?",
-    aboutDelcoHelp:"Acerca de DelcoHelp", aboutDelcoHelpBody:"Servicio comunitario gratuito que conecta residentes del Condado de Delaware con despensas, beneficios y recursos de emergencia. Creado por CieroLink LLC.",
+    aboutDelcoHelp:"Acerca de DelcoHelp", aboutDelcoHelpBody:"Servicio comunitario gratuito que conecta residentes del Condado de Delaware con despensas de alimentos, beneficios y recursos de emergencia. Creado por CieroLink LLC.",
   },
   vi: {
     home:"Trang chủ", find:"Tìm", benefits:"Phúc lợi", nutrition:"Dinh dưỡng", hotline:"Đường dây nóng", askAI:"Hỏi AI",
@@ -431,6 +437,44 @@ function getImpactStats() {
 
 function isOpenNow(r) { const now=new Date(),day=now.getDay(),hour=now.getHours()+now.getMinutes()/60; return r.openDays.includes(day)&&hour>=r.openStart&&hour<r.openEnd; }
 function isOpenToday(r) { return r.openDays.includes(new Date().getDay()); }
+
+function usePublicResourceCache(cacheKey, sourceResources) {
+  const [state, setState] = useState(() => getInitialPublicResources(cacheKey, sourceResources));
+
+  useEffect(() => {
+    if (Array.isArray(sourceResources) && sourceResources.length > 0) {
+      cachePublicResources(cacheKey, sourceResources);
+      setState({ resources: sourceResources, usingCache: false });
+      return;
+    }
+    setState(getInitialPublicResources(cacheKey, sourceResources));
+  }, [cacheKey, sourceResources]);
+
+  return state;
+}
+
+function useOnlineStatus() {
+  const [online, setOnline] = useState(() => typeof navigator === "undefined" ? true : navigator.onLine);
+  useEffect(() => {
+    const update = () => setOnline(navigator.onLine);
+    window.addEventListener("online", update);
+    window.addEventListener("offline", update);
+    return () => {
+      window.removeEventListener("online", update);
+      window.removeEventListener("offline", update);
+    };
+  }, []);
+  return online;
+}
+
+function SavedResourceBanner({ lang }) {
+  const t = getT(lang);
+  return (
+    <div style={{background:"#FFF7D6",border:"1px solid rgba(242,201,76,0.55)",borderRadius:14,padding:12,margin:"0 24px 12px",color:"#92400E",fontSize:12,lineHeight:1.45,fontWeight:650}}>
+      {t.savedResourceWarning}
+    </div>
+  );
+}
 const rt = (value, lang) => translateResourceText(value, lang);
 
 /* ── CSS ── */
@@ -559,7 +603,7 @@ function ResourceCard({ r, onClick, lang }) {
 }
 
 /* ── DETAIL VIEW ── */
-function DetailView({ r, onBack, onDonate, lang }) {
+function DetailView({ r, onBack, onDonate, lang, online=true }) {
   const open=isOpenNow(r), today=isOpenToday(r), t=getT(lang);
   const zip = (r.address.match(/\d{5}/) || ["19086"])[0];
   return (
@@ -604,7 +648,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
           <button className="dh-btn-primary" onClick={()=>{trackImpactEvent("call_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_phone:r.phone});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
-          <button className="dh-btn-outline" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_address:r.address});window.open(r.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
+          <button className="dh-btn-outline" disabled={!online} title={!online?t.directionsMayRequireInternet:undefined} onClick={()=>{if(!online)return;trackImpactEvent("directions_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_address:r.address});window.open(r.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{online?t.directions:t.directionsMayRequireInternet}</button>
         </div>
         {r.website&&<button className="dh-btn-outline" style={{marginBottom:8}} onClick={()=>{trackImpactEvent("website_click",{resource_name:r.name,category:r.category||"unknown"});window.open(r.website,"_blank");}}>{t.website}</button>}
         {/* Save + I Found Help */}
@@ -622,9 +666,9 @@ function DetailView({ r, onBack, onDonate, lang }) {
 }
 
 /* ── EMERGENCY MODE ── */
-function EmergencyMode({ onClose, lang }) {
+function EmergencyMode({ onClose, lang, resources=RESOURCES }) {
   const t=getT(lang);
-  const openNow=RESOURCES.filter(r=>isOpenNow(r)).slice(0,3);
+  const openNow=resources.filter(r=>isOpenNow(r)).slice(0,3);
   const urgentLines=HOTLINES.filter(h=>h.urgent);
   trackEvent("emergency_mode_activated");
   return (
@@ -702,11 +746,11 @@ function SupportTrustCard({ lang }) {
   );
 }
 
-function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
+function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=RESOURCES }) {
   const t=getT(lang);
-  const openNow=RESOURCES.filter(r=>isOpenNow(r));
+  const openNow=resources.filter(r=>isOpenNow(r));
   const savedIds = getSavedResources().map(s=>s.id);
-  const savedResources = RESOURCES.filter(r=>savedIds.includes(r.id));
+  const savedResources = resources.filter(r=>savedIds.includes(r.id));
   return (
     <div className="dfi">
       <div className="header" style={{background:"#12355B",padding:"16px 24px 24px",borderRadius:"0 0 28px 28px",marginBottom:16,color:"white"}}>
@@ -782,7 +826,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
 }
 
 /* ── FIND SCREEN ── */
-function FindScreen({ onResource, lang, initialFilter="all" }) {
+function FindScreen({ onResource, lang, initialFilter="all", resources=RESOURCES }) {
   const [search,setSearch]=useState(""), [filter,setFilter]=useState(initialFilter), [dietary,setDietary]=useState([]);
   const [zip,setZip]=useState(""), [zipInput,setZipInput]=useState(""), [locating,setLocating]=useState(false);
   const t=getT(lang);
@@ -817,7 +861,7 @@ function FindScreen({ onResource, lang, initialFilter="all" }) {
   }
 
   // Calculate distances from user zip and filter
-  const results = RESOURCES.filter(r => {
+  const results = resources.filter(r => {
     const matchCat = filter==="all" || r.category===filter;
     const q = search.toLowerCase();
     const matchSearch = !q || r.name.toLowerCase().includes(q) || r.tags.some(tag=>tag.toLowerCase().includes(q));
@@ -1408,6 +1452,8 @@ function AuthModal({ onClose, user, onSignIn, onSignOut }) {
 
 function DelcoApp() {
   injectCSS();
+  const { resources, usingCache } = usePublicResourceCache(DELCO_RESOURCE_CACHE_KEY, RESOURCES);
+  const online = useOnlineStatus();
   const [tab,setTab]=useState(()=>window.location.pathname==="/trust-check"?"trust":"home"), [detail,setDetail]=useState(null);
   const [findFilter,setFindFilter]=useState("all");
   const [showDonate,setShowDonate]=useState(false), [showNotif,setShowNotif]=useState(false);
@@ -1475,8 +1521,8 @@ function DelcoApp() {
   ];
 
   const screens={
-    home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
-    find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
+    home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang} resources={resources}/>,
+    find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang} resources={resources}/>,
     benefits:<BenefitsScreen lang={lang}/>,
     nutrition:<NutritionFoodCheck variant="delco" lang={lang}/>,
     trust:<TrustCheck lang={lang}/>,
@@ -1528,7 +1574,8 @@ function DelcoApp() {
           </div>
         </div>
         <div className="dh-sc">
-          {detail?<DetailView r={detail} onBack={()=>setDetail(null)} onDonate={()=>setShowDonate(true)} lang={lang}/>:screens[tab]||screens.home}
+          {usingCache&&<SavedResourceBanner lang={lang}/>}
+          {detail?<DetailView r={detail} onBack={()=>setDetail(null)} onDonate={()=>setShowDonate(true)} lang={lang} online={online}/>:screens[tab]||screens.home}
         </div>
         <nav className="dh-nav">
           {tabs.map(t=>(
@@ -1545,7 +1592,7 @@ function DelcoApp() {
           </button>
           <div style={{fontSize:8,color:"#9BA8A0",fontFamily:"'DM Sans',sans-serif",paddingBottom:2}}>DelcoHelp version: {APP_VERSION}</div>
         </div>
-        {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang}/>}
+        {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang} resources={resources}/>}
         {showNotif&&<NotifOverlay onClose={()=>setShowNotif(false)} lang={lang}/>}
         {showDonate&&<DonateModal onClose={()=>setShowDonate(false)} lang={lang}/>}
       </div>
