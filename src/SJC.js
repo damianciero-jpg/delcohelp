@@ -1,18 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { auth, db, googleProvider, FIREBASE_ENABLED } from "./firebase";
-import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import NutritionFoodCheck from "./NutritionFoodCheck";
-import TrustCheck from "./TrustCheck";
-import { DELCO_CRISIS, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
-import { trackEvent as trackImpactEvent, trackFlyerVisit } from "./utils/analytics";
-import { EXTRA_TRANSLATIONS, InstallPrompt, SMSAccessCard, EligibilityQuiz,
+import { EXTRA_TRANSLATIONS, InstallPrompt, StoriesSection, SMSAccessCard, EligibilityQuiz,
   PantryStatusWidget, TransitHelper, DietaryFilters, trackEvent,
   PantryInventoryWidget, IAmGoingButton, SaveResourceButton, FoundHelpButton,
-  // eslint-disable-next-line no-unused-vars
-  StoriesSection, LanguageSelector, HealthScreen,
-  // eslint-disable-next-line no-unused-vars
-  DocumentChecklist, SNAPAssistant, CrisisEscapePlan, FamilyResourcePlan,
+  DocumentChecklist, SNAPAssistant, CrisisEscapePlan,
   FamilyProfileSetup, getFamilyProfile, getSavedResources, LegalScreen,
   TrustBadge, ReportIssueButton } from "./features";
 
@@ -127,53 +117,14 @@ const T = {
 
 // Add Vietnamese and Chinese translations
 Object.assign(T, EXTRA_TRANSLATIONS);
-
-const SJC_UI_TRANSLATIONS = {
-  en: {
-    nutrition:"Nutrition", pantriesOpenNow:"Pantries open now", snapWicMore:"SNAP, WIC & more",
-    checkInfo:"Check Info", scamBiasSignals:"Scam & bias signals", crisisLine:"Crisis Line",
-    freeConfidential:"Free & confidential", housing:"Housing", shelterLegalAid:"Shelter & legal aid",
-    reportIncorrectInfo:"Report incorrect info", lastUpdated:"Last updated", verified:"Verified",
-    needsVerification:"Needs verification", food:"Food", foodCheckNutrition:"Food check & nutrition", terms:"Terms", privacy:"Privacy", disclaimer:"Disclaimer",
-    text:"Text", callCrisisLine:"Call Crisis Line", textPA:"Text PA", crisisLines:"Crisis Lines",
-  },
-  es: {
-    nutrition:"Nutrición", pantriesOpenNow:"Despensas abiertas ahora", snapWicMore:"SNAP, WIC y más",
-    checkInfo:"Verificar info", scamBiasSignals:"Señales de estafa y sesgo", crisisLine:"Línea de crisis",
-    freeConfidential:"Gratis y confidencial", housing:"Vivienda", shelterLegalAid:"Refugio y ayuda legal",
-    reportIncorrectInfo:"Reportar información incorrecta", lastUpdated:"Última actualización", verified:"Verificado",
-    needsVerification:"Necesita verificación", food:"Comida", foodCheckNutrition:"Revisión de comida y nutrición", terms:"Términos", privacy:"Privacidad", disclaimer:"Aviso",
-    text:"Texto", callCrisisLine:"Llamar a la línea de crisis", textPA:"Texto PA", crisisLines:"Líneas de crisis",
-  },
-  vi: {
-    nutrition:"Dinh dưỡng", pantriesOpenNow:"Kho thực phẩm đang mở", snapWicMore:"SNAP, WIC và thêm nữa",
-    checkInfo:"Kiểm tra thông tin", scamBiasSignals:"Dấu hiệu lừa đảo và thiên lệch", crisisLine:"Đường dây khủng hoảng",
-    freeConfidential:"Miễn phí & bảo mật", housing:"Nhà ở", shelterLegalAid:"Nơi trú ẩn & trợ giúp pháp lý",
-    reportIncorrectInfo:"Báo thông tin sai", lastUpdated:"Cập nhật lần cuối", verified:"Đã xác minh",
-    needsVerification:"Cần xác minh", food:"Thực phẩm", foodCheckNutrition:"Kiểm tra thực phẩm & dinh dưỡng", terms:"Điều khoản", privacy:"Quyền riêng tư", disclaimer:"Tuyên bố miễn trừ",
-    text:"Nhắn tin", callCrisisLine:"Gọi đường dây khủng hoảng", textPA:"Nhắn PA", crisisLines:"Đường dây khủng hoảng",
-  },
-  zh: {
-    nutrition:"营养", pantriesOpenNow:"现在开放的食品 pantry", snapWicMore:"SNAP、WIC 等",
-    checkInfo:"检查信息", scamBiasSignals:"诈骗和偏见信号", crisisLine:"危机热线",
-    freeConfidential:"免费且保密", housing:"住房", shelterLegalAid:"庇护所和法律援助",
-    reportIncorrectInfo:"报告错误信息", lastUpdated:"最后更新", verified:"已验证",
-    needsVerification:"需要验证", food:"食物", foodCheckNutrition:"食品和营养检查", terms:"条款", privacy:"隐私", disclaimer:"免责声明",
-    text:"短信", callCrisisLine:"拨打危机热线", textPA:"发送 PA", crisisLines:"危机热线",
-  },
-};
-
-Object.entries(SJC_UI_TRANSLATIONS).forEach(([lang, values]) => {
-  T[lang] = { ...(T.en || {}), ...(T[lang] || {}), ...values };
+// Deep fill: any key missing in vi/zh falls back to English value
+["vi","zh"].forEach(lang => {
+  if (T[lang]) {
+    Object.keys(T.en).forEach(key => {
+      if (T[lang][key] === undefined) T[lang][key] = T.en[key];
+    });
+  }
 });
-
-function translate(lang, key) {
-  return T[lang]?.[key] || T.en?.[key] || key;
-}
-
-function getT(lang) {
-  return new Proxy(T.en, { get: (_target, key) => translate(lang, key) });
-}
 
 // Google Analytics event helper — fires to G-NZRTH3H74B
 function gaEvent(eventName, params = {}) {
@@ -202,8 +153,7 @@ function calcDistance(zip1, zip2) {
 /* ── SJC-SPECIFIC RESOURCES ── */
 const RESOURCES = [
   { id:1, category:"parish", name:"SJC Parish Office", address:"615 S. Providence Rd., Wallingford PA 19086", phone:"610-874-3418", miles:0.1, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["pastoral care","counseling referrals","community support"], color:BRAND.primary, description:"The SJC Parish Office connects parishioners and community members with pastoral care, counseling referrals, and local support resources. Contact Mary Chollet for community assistance.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
-  { id:2, category:"food", name:"Lifewerks Food Pantry", address:"25 Cedar Road, Wallingford PA 19086", phone:"610-872-3344", miles:0.3, hours:[{day:"Tuesday",time:"6:00 PM – 8:00 PM"}], tags:["choice pantry","no appointment needed","0.3 mi from SJC"], color:"#2D6A4F", description:"A choice pantry — you shop like a store, picking what your family actually needs. Located right here in Wallingford, less than a mile from SJC.", openDays:[2], openStart:18, openEnd:20 },
-  { id:3, category:"food", name:"DIFAN Wallingford", address:"25 Cedar Road, Wallingford PA 19086", phone:"484-326-5362", miles:0.3, hours:[{day:"Tuesday",time:"6:30 PM – 8:00 PM"},{day:"Friday",time:"4:00 PM – 6:00 PM"}], tags:["interfaith network","3 meals/day × 5 days"], color:"#40916C", description:"Delaware County's Interfaith Food Assistance Network. Each visit provides enough food for 3 meals a day, 5 days for every household member.", openDays:[2,5], openStart:16, openEnd:20 },
+  { id:2, category:"food", name:"Lifewerks Food Pantry", address:"28 Walnut Road, Wallingford PA 19086", mapsUrl:"https://www.google.com/maps/search/?api=1&query=28%20Walnut%20Road%20Wallingford%20PA", phone:"610-872-3344", miles:0.3, hours:[{day:"Tuesday",time:"6:00 PM – 8:00 PM"}], tags:["choice pantry","no appointment needed","0.3 mi from SJC"], color:"#2D6A4F", description:"A choice pantry — you shop like a store, picking what your family actually needs. Located right here in Wallingford, less than a mile from SJC.", openDays:[2], openStart:18, openEnd:20, lastUpdated:"2026-05-05", verified:true, verifiedBy:"Community correction" },
   { id:4, category:"food", name:"Media Food Bank", address:"350 W. State St, Media PA 19063", phone:"610-566-3172", miles:2.4, hours:[{day:"Thursday",time:"6:00 PM – 8:00 PM"},{day:"Sunday",time:"1:00 PM – 2:00 PM"}], tags:["donations accepted daily 2–4 PM"], color:"#1B4332", description:"Provides food and essential items to Delaware County residents. Drop off donations daily between 2–4 PM.", openDays:[4,0], openStart:13, openEnd:20 },
   { id:5, category:"food", name:"Loaves & Fishes Food Pantry", address:"703 Lincoln Ave, Prospect Park PA 19076", phone:"610-532-9000", miles:2.8, hours:[{day:"Tuesday",time:"11:00 AM – 2:00 PM & 5–7 PM"},{day:"Thursday",time:"1:00 PM – 4:00 PM"}], tags:["twice weekly","extended hours"], color:"#74C69D", description:"Baptist church pantry with generous hours twice a week including evening access for working families.", openDays:[2,4], openStart:11, openEnd:19 },
   { id:6, category:"assistance", name:"Catholic Social Services", address:"Delaware County, PA", phone:"267-331-2490", miles:5.0, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["housing help","rent support","counseling","legal aid"], color:BRAND.accent, description:"Catholic Social Services offers food pantries, housing and rent support, counseling, and legal aid — aligned with SJC's Catholic mission of serving those in need.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
@@ -222,29 +172,16 @@ const BENEFITS = [
 
 const HOTLINES = [
   { id:1, name:"911 Emergency", sub:"Police, Fire, Medical", number:"911", color:"#D62828", bg:"#FFF0F0", icon:"🚨", urgent:true },
-  { id:2, name:PA_CRISIS_TEXT.displayText, sub:PA_CRISIS_TEXT.description, number:PA_CRISIS_TEXT.phone, actionLabel:"Text PA", actionHref:PA_CRISIS_TEXT.phoneHref, color:"#D62828", bg:"#FFF0F0", icon:"💬", urgent:true, isText:true, verified:PA_CRISIS_TEXT.verified, verifiedBy:PA_CRISIS_TEXT.verifiedBy, lastUpdated:PA_CRISIS_TEXT.lastUpdated },
+  { id:2, name:"Crisis Text Line", sub:"Text HOME to 741741 — 24/7", number:"741741", color:"#D62828", bg:"#FFF0F0", icon:"💬", urgent:true, isText:true },
   { id:3, name:"988 Suicide & Crisis", sub:"Call or text 988 — 24/7 free", number:"988", color:"#7B2D8B", bg:"#F8F0FF", icon:"🧠", urgent:true },
   { id:4, name:"SJC Parish Office", sub:"Pastoral care & referrals", number:"610-874-3418", color:BRAND.primary, bg:"#F0F4FF", icon:"✝" },
   { id:5, name:"PA 211 Helpline", sub:"All social services — dial 2-1-1", number:"211", color:"#2D6A4F", bg:"#F0FBF4", icon:"📞" },
   { id:6, name:"Domestic Violence Hotline", sub:"PA DV Hotline — 24/7 confidential", number:"1-800-799-7233", color:"#9D4EDD", bg:"#F8F0FF", icon:"🏠" },
-  { id:7, name:DELCO_CRISIS.displayName, sub:DELCO_CRISIS.description, number:DELCO_CRISIS.phone, actionLabel:"Call Crisis Line", actionHref:DELCO_CRISIS.phoneHref, color:"#023E8A", bg:"#F0F4FF", icon:"🧩", urgent:true, verified:DELCO_CRISIS.verified, verifiedBy:DELCO_CRISIS.verifiedBy, lastUpdated:DELCO_CRISIS.lastUpdated },
+  { id:7, name:"Delaware County Crisis", sub:"Mental health emergency line", number:"610-565-4300", color:"#023E8A", bg:"#F0F4FF", icon:"🧩" },
   { id:8, name:"Hunger Hotline", sub:"Find food near you right now", number:"1-866-348-6479", color:"#40916C", bg:"#F0FBF4", icon:"🥫" },
   { id:9, name:"Poison Control", sub:"24/7 medical emergency", number:"1-800-222-1222", color:"#E76F51", bg:"#FFF6F0", icon:"⚠️" },
   { id:10, name:"Child Abuse Hotline", sub:"PA ChildLine — 24/7 reporting", number:"1-800-932-0313", color:"#D62828", bg:"#FFF0F0", icon:"👶" },
 ];
-
-function openHotlineAction(h) {
-  trackImpactEvent("crisis_line_click", {
-    crisis_resource_name: h.name || "Delaware County Crisis Connections Team",
-    phone_number: h.number,
-  });
-  const href = h.actionHref || `${h.isText ? "sms" : "tel"}:${h.number}`;
-  if (href.startsWith("sms:")) {
-    window.location.href = href;
-  } else {
-    window.open(href);
-  }
-}
 
 const CATEGORY_LABELS = { food:"Food Pantry", assistance:"Family Assistance", legal:"Legal Aid", parish:"Parish Ministry" };
 // eslint-disable-next-line no-unused-vars
@@ -253,44 +190,8 @@ const CATEGORY_COLORS = { food:"#2D6A4F", assistance:"#E76F51", legal:"#023E8A",
 const VOLUNTEER_OPPS = [
   { org:"Lifewerks Food Pantry", role:"Pantry Volunteer", time:"Tuesdays 5:30–8:30 PM", icon:"🥫", color:"#2D6A4F" },
   { org:"SJC Parish Outreach", role:"Community Visitor", time:"Flexible — contact parish office", icon:"✝", color:BRAND.primary },
-  { org:"DIFAN Network", role:"Food Distributor", time:"Tuesdays & Fridays", icon:"📦", color:"#40916C" },
   { org:"Catholic Social Services", role:"Case Aid Volunteer", time:"Weekdays flexible", icon:"🤝", color:BRAND.accent },
   { org:"Media Food Bank", role:"Donation Sorter", time:"Thursdays 5–8 PM", icon:"🗂️", color:"#1B4332" },
-];
-
-const SJC_OFFICIAL_LINKS = [
-  { title:"Weekly Bulletin", icon:"PDF", description:"Read the current bulletin and browse the official parish bulletin archive.", url:"https://sjcparish.org/bulletins" },
-  { title:"Parish Calendar", icon:"CAL", description:"Check upcoming parish events, meetings, liturgies, and calendar updates.", url:"https://sjcparish.org/google-calendar" },
-  { title:"Mass & Confession Times", icon:"MASS", description:"Confirm regular Mass, Confession, Adoration, Holy Day, and accessibility information.", url:"https://sjcparish.org/mass-times" },
-  { title:"Watch Mass", icon:"LIVE", description:"Find SJC livestream options and recorded Masses on the official parish page.", url:"https://sjcparish.org/mass-online" },
-  { title:"Mass & Podcasts", icon:"AUDIO", description:"Explore worship information, Mass resources, and parish podcast links.", url:"https://sjcparish.org/mass" },
-  { title:"Parish Newsletter / The Angelus", icon:"NEWS", description:"Open The Angelus parish newsletter page and recent newsletter archive.", url:"https://sjcparish.org/parish-newsletter" },
-  { title:"Parish Life", icon:"LIFE", description:"Learn about parish organizations, ministries, and ways to get involved.", url:"https://sjcparish.org/parish-life" },
-  { title:"Community Service", icon:"HELP", description:"Find service ministries and community outreach opportunities through SJC.", url:"https://sjcparish.org/ministries" },
-  { title:"Youth Group", icon:"YOUTH", description:"View youth group information and official updates for young parishioners.", url:"https://sjcparish.org/youth-group" },
-  { title:"Contact & Directions", icon:"INFO", description:"Contact the Parish House, find staff information, and confirm office details.", url:"https://sjcparish.org/contact-clergy-staff" },
-];
-
-const SJC_LATEST_ITEMS = [
-  { title:"Weekly Bulletin", date:"Update weekly", description:"Open the official bulletin page for the newest bulletin and archived issues.", url:"https://sjcparish.org/bulletins" },
-  { title:"Parish Calendar", date:"Check before attending", description:"Use the official calendar for the latest parish events, meetings, and schedule notes.", url:"https://sjcparish.org/google-calendar" },
-  { title:"Parish Newsletter", date:"Spring / Fall", description:"Read The Angelus newsletter and review the official newsletter archive.", url:"https://sjcparish.org/parish-newsletter" },
-];
-
-const SJC_COMMUNITY_FILTERS = [
-  { id:"announcements", label:"Announcements" },
-  { id:"events", label:"Events" },
-  { id:"prayer", label:"Prayer Requests" },
-  { id:"volunteer", label:"Volunteer Needs" },
-  { id:"help", label:"Community Help" },
-];
-
-const SJC_COMMUNITY_POSTS = [
-  { type:"announcements", typeLabel:"Announcement", title:"Weekly Bulletin Available", message:"Read the latest parish bulletin and upcoming events.", date:"This week", source:"SJC Parish Hub", button:"Open Bulletin", url:"https://sjcparish.org/bulletins" },
-  { type:"prayer", typeLabel:"Prayer Request", title:"Prayer Request", message:"Please keep our parish families and neighbors in your prayers this week.", date:"This week", source:"Community sample", button:"I prayed" },
-  { type:"volunteer", typeLabel:"Volunteer Need", title:"Volunteers Needed", message:"Help is needed for upcoming parish and community events.", date:"This week", source:"Community sample", button:"I can help" },
-  { type:"events", typeLabel:"Event", title:"Upcoming Parish Event", message:"Check the parish calendar for this week's events.", date:"This week", source:"Official calendar", button:"View Calendar", url:"https://sjcparish.org/google-calendar" },
-  { type:"help", typeLabel:"Community Help", title:"Neighbor Support", message:"Share reviewed needs for rides, meals, outreach, or local support through the request form.", date:"Sample", source:"Community sample", button:"Submit a Request" },
 ];
 
 const IMPACT_STATS = [
@@ -332,15 +233,6 @@ const CSS = `
   .sjc-btn-out:hover { background:rgba(27,58,107,0.06); }
   .sjc-card { background:white; border-radius:18px; padding:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04); cursor:pointer; transition:all 0.18s; }
   .sjc-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
-  .sjc-link-card { background:white; border-radius:16px; padding:15px; box-shadow:0 2px 12px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04); }
-  .sjc-link-icon { width:42px; height:42px; border-radius:12px; background:${BRAND.primary}12; color:${BRAND.primary}; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; letter-spacing:0.02em; flex-shrink:0; }
-  .sjc-official-btn { display:flex; align-items:center; justify-content:center; min-height:46px; width:100%; border-radius:13px; background:${BRAND.primary}; color:white; text-decoration:none; font-size:13px; font-weight:700; font-family:'Source Sans 3',sans-serif; margin-top:12px; transition:all 0.18s; }
-  .sjc-official-btn:hover { background:${BRAND.dark}; transform:translateY(-1px); }
-  .sjc-community-tabs { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; margin-bottom:10px; }
-  .sjc-community-tabs::-webkit-scrollbar { display:none; }
-  .sjc-community-tab { white-space:nowrap; border:none; border-radius:999px; padding:8px 12px; font-family:'Source Sans 3',sans-serif; font-size:12px; font-weight:800; cursor:pointer; }
-  .sjc-community-tab.active { background:${BRAND.primary}; color:white; }
-  .sjc-community-tab.inactive { background:white; color:${BRAND.primary}; box-shadow:0 0 0 1px rgba(27,58,107,0.18) inset; }
   .sjc-tag { background:#EEE9DC; border-radius:8px; padding:3px 8px; font-size:11px; color:#5A4A30; font-weight:500; }
   .sjc-input { width:100%; background:white; border:1.5px solid rgba(0,0,0,0.1); border-radius:14px; padding:12px 16px 12px 42px; font-family:'Source Sans 3',sans-serif; font-size:14px; color:#1A1A2E; outline:none; transition:border-color 0.18s; }
   .sjc-input:focus { border-color:${BRAND.primary}; }
@@ -409,7 +301,7 @@ function ResourceCard({ r, onClick, lang }) {
 
 /* ── DETAIL VIEW ── */
 function DetailView({ r, onBack, onDonate, lang }) {
-  const open=isOpenNow(r), today=isOpenToday(r), t=getT(lang);
+  const open=isOpenNow(r), today=isOpenToday(r), t=T[lang]||T.en;
   const zip = (r.address.match(/\d{5}/) || ["19086"])[0];
   return (
     <div className="dfi">
@@ -449,17 +341,16 @@ function DetailView({ r, onBack, onDonate, lang }) {
         {r.tags.length>0&&<div style={{marginBottom:16,marginTop:12}}><div style={{fontSize:12,fontWeight:700,color:"#6B7080",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.whatToKnow}</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{r.tags.map(tag=><span key={tag} className="sjc-tag" style={{fontSize:12,padding:"5px 10px"}}>✓ {tag}</span>)}</div></div>}
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
-          <button className="sjc-btn" onClick={()=>{trackImpactEvent("call_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_phone:r.phone});window.open(`tel:${r.phone}`);}}>📞 {t.call} {r.phone}</button>
-          <button className="sjc-btn-out" onClick={()=>{trackImpactEvent("directions_click",{resource_name:r.name,resource_category:r.category||"unknown",resource_address:r.address});window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`);}}>{t.directions}</button>
+          <button className="sjc-btn" onClick={()=>window.open(`tel:${r.phone}`)}>📞 {t.call} {r.phone}</button>
+          <button className="sjc-btn-out" onClick={()=>window.open(r.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(r.address)}`)}>{t.directions}</button>
         </div>
-        {r.website&&<button className="sjc-btn-out" style={{marginBottom:8}} onClick={()=>{trackImpactEvent("website_click",{resource_name:r.name,category:r.category||"unknown"});window.open(r.website,"_blank");}}>{t.website}</button>}
         <div style={{display:"flex",gap:8,marginBottom:12}}>
           <SaveResourceButton resource={r}/>
           <FoundHelpButton resource={r}/>
         </div>
         <button onClick={onDonate} className="sjc-btn-gold" style={{marginBottom:12}}>{t.donatePantry}</button>
         <div style={{textAlign:"center",paddingBottom:16}}>
-          <ReportIssueButton resource={r} t={t}/>
+          <ReportIssueButton resource={r}/>
         </div>
       </div>
     </div>
@@ -468,7 +359,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
 
 /* ── EMERGENCY OVERLAY ── */
 function EmergencyMode({ onClose, lang }) {
-  const t=getT(lang), urgent=HOTLINES.filter(h=>h.urgent), openNow=RESOURCES.filter(r=>isOpenNow(r)).slice(0,3);
+  const t=T[lang]||T.en, urgent=HOTLINES.filter(h=>h.urgent), openNow=RESOURCES.filter(r=>isOpenNow(r)).slice(0,3);
   return (
     <div className="emerg-overlay">
       <div style={{padding:"24px",flexShrink:0}}>
@@ -479,15 +370,12 @@ function EmergencyMode({ onClose, lang }) {
           </div>
           <button onClick={onClose} style={{background:"rgba(255,255,255,0.2)",border:"none",borderRadius:50,width:34,height:34,color:"white",fontSize:18,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
         </div>
-        <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>{t.crisisLines}</div>
-        <div style={{background:"rgba(255,255,255,0.15)",borderRadius:12,padding:12,color:"white",fontSize:12,lineHeight:1.5,marginBottom:10}}>
-          {DELCO_CRISIS.emergencyDisclaimer} {DELCO_CRISIS.callToConfirm}
-        </div>
+        <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>🚨 Crisis Lines</div>
         {urgent.map(h=>(
           <div key={h.id} style={{background:"rgba(255,255,255,0.15)",borderRadius:14,padding:"12px 14px",marginBottom:8,display:"flex",alignItems:"center",gap:10}}>
             <span style={{fontSize:20}}>{h.icon}</span>
             <div style={{flex:1}}><div style={{fontSize:13,fontWeight:700,color:"white"}}>{h.name}</div><div style={{fontSize:11,color:"rgba(255,255,255,0.7)"}}>{h.sub}</div></div>
-            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?t.text:t.call} ${h.number}`}</button>
+            <button style={{background:"white",color:"#D62828",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(`tel:${h.number}`)}>{h.isText?"Text":"Call"} {h.number}</button>
           </div>
         ))}
         <div style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",margin:"14px 0 8px"}}>📍 Open Near You Now</div>
@@ -507,157 +395,8 @@ function EmergencyMode({ onClose, lang }) {
 }
 
 /* ── HOME ── */
-function SJCParishHub() {
-  const [communityFilter,setCommunityFilter]=useState("announcements");
-  const [showRequestForm,setShowRequestForm]=useState(false);
-  const [request,setRequest]=useState({name:"",email:"",type:"Announcement",message:"",phone:"",review:false});
-  const visiblePosts=SJC_COMMUNITY_POSTS.filter(post=>post.type===communityFilter);
-  function communityButtonAction(post) {
-    if (post.url) {
-      window.open(post.url,"_blank","noopener,noreferrer");
-      return;
-    }
-    if (post.button==="Submit a Request" || post.button==="I can help") {
-      setShowRequestForm(true);
-    }
-  }
-  function submitCommunityRequest(e) {
-    e.preventDefault();
-    if (!request.review) return;
-    const subject=encodeURIComponent(`SJC Parish Hub ${request.type} Request`);
-    const body=encodeURIComponent([
-      "SJC Parish Hub submission",
-      "",
-      `Name: ${request.name}`,
-      `Email: ${request.email}`,
-      `Post type: ${request.type}`,
-      `Phone: ${request.phone || "Not provided"}`,
-      "",
-      "Message:",
-      request.message,
-      "",
-      "Review acknowledgement: I understand this will be reviewed before being posted."
-    ].join("\n"));
-    window.location.href=`mailto:cierolink@gmail.com?subject=${subject}&body=${body}`;
-  }
-  return (
-    <>
-      <section style={{marginBottom:18}}>
-        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:10}}>
-          <div>
-            <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"#1A1A2E",lineHeight:1.2,marginBottom:4}}>SJC Parish Hub</div>
-            <div style={{fontSize:13,color:"#5F6673",lineHeight:1.45}}>Quick links to parish news, Mass times, bulletins, events, and community resources.</div>
-          </div>
-          <a href="https://sjcparish.org/" target="_blank" rel="noreferrer" style={{flexShrink:0,textDecoration:"none",background:`${BRAND.secondary}22`,color:"#5A4000",border:`1px solid ${BRAND.secondary}55`,borderRadius:12,padding:"8px 10px",fontSize:11,fontWeight:800}}>sjcparish.org</a>
-        </div>
-        <div style={{background:`${BRAND.primary}08`,border:`1px solid ${BRAND.primary}18`,borderRadius:14,padding:12,fontSize:12,color:"#465064",lineHeight:1.5,marginBottom:12}}>
-          This page is a community shortcut to public SJC parish resources. Please confirm details with the official parish website.
-        </div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr",gap:10}}>
-          {SJC_OFFICIAL_LINKS.map(link=>(
-            <article key={link.title} className="sjc-link-card">
-              <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
-                <div className="sjc-link-icon">{link.icon}</div>
-                <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:15,fontWeight:800,color:"#1A1A2E",lineHeight:1.25,marginBottom:4}}>{link.title}</div>
-                  <div style={{fontSize:12,color:"#5F6673",lineHeight:1.45}}>{link.description}</div>
-                </div>
-              </div>
-              <a className="sjc-official-btn" href={link.url} target="_blank" rel="noreferrer">Open Official Page</a>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section style={{marginBottom:18}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:10}}>
-          <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:18,color:"#1A1A2E"}}>Latest from SJC</div>
-          <div style={{fontSize:10,fontWeight:800,color:"#8A7350",textTransform:"uppercase",letterSpacing:"0.06em"}}>Manual updates</div>
-        </div>
-        {SJC_LATEST_ITEMS.map(item=>(
-          <article key={item.title} className="sjc-link-card" style={{marginBottom:10}}>
-            <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",marginBottom:6}}>
-              <div style={{fontSize:14,fontWeight:800,color:"#1A1A2E",lineHeight:1.25}}>{item.title}</div>
-              <span style={{background:`${BRAND.secondary}22`,color:"#6B5418",borderRadius:8,padding:"3px 7px",fontSize:10,fontWeight:800,whiteSpace:"nowrap"}}>{item.date}</span>
-            </div>
-            <div style={{fontSize:12,color:"#5F6673",lineHeight:1.5,marginBottom:10}}>{item.description}</div>
-            <a href={item.url} target="_blank" rel="noreferrer" style={{color:BRAND.primary,fontSize:12,fontWeight:800,textDecoration:"none"}}>Open official link</a>
-          </article>
-        ))}
-        <div style={{background:"white",borderRadius:14,padding:13,border:"1px solid rgba(0,0,0,0.06)",fontSize:12,color:"#5F6673",lineHeight:1.45}}>
-          Want something added or corrected? Email <a href="mailto:cierolink@gmail.com" style={{color:BRAND.primary,fontWeight:800,textDecoration:"none"}}>cierolink@gmail.com</a>
-        </div>
-      </section>
-
-      <section style={{marginBottom:18}}>
-        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:12,marginBottom:10}}>
-          <div>
-            <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"#1A1A2E",lineHeight:1.2,marginBottom:4}}>Parish Community</div>
-            <div style={{fontSize:13,color:"#5F6673",lineHeight:1.45}}>Stay connected with announcements, prayer requests, events, and ways to help.</div>
-          </div>
-        </div>
-        <div style={{background:`${BRAND.secondary}18`,border:`1px solid ${BRAND.secondary}44`,borderRadius:14,padding:12,fontSize:12,color:"#604A12",lineHeight:1.5,marginBottom:12}}>
-          This is a community shortcut page and submitted content may be reviewed before posting. Submitted items are reviewed before appearing publicly.
-        </div>
-        <div className="sjc-community-tabs" aria-label="Parish community filters">
-          {SJC_COMMUNITY_FILTERS.map(filter=>(
-            <button key={filter.id} type="button" className={`sjc-community-tab ${communityFilter===filter.id?"active":"inactive"}`} onClick={()=>setCommunityFilter(filter.id)}>
-              {filter.label}
-            </button>
-          ))}
-        </div>
-        {visiblePosts.map(post=>(
-          <article key={`${post.type}-${post.title}`} className="sjc-link-card" style={{marginBottom:10}}>
-            <div style={{display:"flex",justifyContent:"space-between",gap:10,alignItems:"flex-start",marginBottom:8}}>
-              <span style={{background:`${BRAND.primary}12`,color:BRAND.primary,borderRadius:8,padding:"3px 7px",fontSize:10,fontWeight:800}}>{post.typeLabel}</span>
-              <span style={{fontSize:11,color:"#7A8190",fontWeight:700,whiteSpace:"nowrap"}}>{post.date}</span>
-            </div>
-            <div style={{fontSize:15,fontWeight:800,color:"#1A1A2E",lineHeight:1.25,marginBottom:5}}>{post.title}</div>
-            <div style={{fontSize:12,color:"#5F6673",lineHeight:1.5,marginBottom:10}}>{post.message}</div>
-            <div style={{fontSize:11,color:"#8A7350",fontWeight:700,marginBottom:10}}>Source: {post.source}</div>
-            <div style={{display:"grid",gridTemplateColumns:post.button?"1fr 1fr":"1fr",gap:8}}>
-              {post.button&&(
-                <button type="button" onClick={()=>communityButtonAction(post)} style={{background:BRAND.primary,color:"white",border:"none",borderRadius:12,padding:"11px 10px",fontFamily:"'Source Sans 3',sans-serif",fontSize:12,fontWeight:800,cursor:"pointer"}}>
-                  {post.button}
-                </button>
-              )}
-              <a href={`mailto:cierolink@gmail.com?subject=${encodeURIComponent("Report issue with SJC Parish Hub post")}&body=${encodeURIComponent(`Post: ${post.title}\nType: ${post.typeLabel}\n\nIssue:`)}`} style={{display:"flex",alignItems:"center",justifyContent:"center",border:`1.5px solid ${BRAND.primary}55`,borderRadius:12,padding:"10px",fontSize:12,fontWeight:800,color:BRAND.primary,textDecoration:"none"}}>
-                Report issue
-              </a>
-            </div>
-          </article>
-        ))}
-        <button className="sjc-btn" type="button" style={{marginBottom:showRequestForm?12:8}} onClick={()=>setShowRequestForm(v=>!v)}>
-          Submit a Request
-        </button>
-        {showRequestForm&&(
-          <form onSubmit={submitCommunityRequest} className="sjc-link-card" style={{marginBottom:10}}>
-            <div style={{fontSize:14,fontWeight:800,color:"#1A1A2E",marginBottom:4}}>Submit a Request</div>
-            <div style={{fontSize:12,color:"#5F6673",lineHeight:1.45,marginBottom:12}}>Requests are sent by email for review. Nothing is posted automatically.</div>
-            <input required className="sjc-input-plain" placeholder="Name" value={request.name} onChange={e=>setRequest({...request,name:e.target.value})} style={{paddingLeft:16}}/>
-            <input required type="email" className="sjc-input-plain" placeholder="Email" value={request.email} onChange={e=>setRequest({...request,email:e.target.value})} style={{paddingLeft:16}}/>
-            <select className="sjc-input-plain" value={request.type} onChange={e=>setRequest({...request,type:e.target.value})} style={{paddingLeft:16}}>
-              {["Announcement","Event","Prayer Request","Volunteer Need","Community Help"].map(type=><option key={type}>{type}</option>)}
-            </select>
-            <textarea required className="sjc-input-plain" placeholder="Message" rows={4} value={request.message} onChange={e=>setRequest({...request,message:e.target.value})} style={{paddingLeft:16,resize:"none"}}/>
-            <input className="sjc-input-plain" placeholder="Optional phone number" value={request.phone} onChange={e=>setRequest({...request,phone:e.target.value})} style={{paddingLeft:16}}/>
-            <label style={{display:"flex",alignItems:"flex-start",gap:10,fontSize:12,color:"#465064",lineHeight:1.4,margin:"2px 0 12px",cursor:"pointer"}}>
-              <input required type="checkbox" checked={request.review} onChange={e=>setRequest({...request,review:e.target.checked})} style={{marginTop:2,flexShrink:0}}/>
-              <span>I understand this will be reviewed before being posted.</span>
-            </label>
-            <button className="sjc-btn" type="submit">Email for Review</button>
-          </form>
-        )}
-        <div style={{fontSize:11,color:"#7A8190",lineHeight:1.5}}>
-          This is not an open comment board. Public items should be approved before appearing here.
-        </div>
-      </section>
-    </>
-  );
-}
-
 function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
-  const t=getT(lang), openNow=RESOURCES.filter(r=>isOpenNow(r));
+  const t=T[lang]||T.en, openNow=RESOURCES.filter(r=>isOpenNow(r)), openToday=RESOURCES.filter(r=>!isOpenNow(r)&&isOpenToday(r));
   const savedIds = getSavedResources().map(s=>s.id);
   const savedResources = RESOURCES.filter(r=>savedIds.includes(r.id));
   return (
@@ -672,23 +411,15 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
         </div>
         <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"white",lineHeight:1.3,marginBottom:4}}>{t.tagline}</div>
         <div style={{fontSize:11,color:`${BRAND.secondary}`,fontStyle:"italic",marginBottom:16,lineHeight:1.5}}>{BRAND.missionVerse}</div>
-        <button onClick={()=>{trackEvent("emergency_button_tapped");gaEvent("emergency_button_tapped");trackImpactEvent("help_now_click",{source:"home"});onEmergency();}} style={{width:"100%",background:"#D62828",border:"2px solid rgba(255,255,255,0.3)",borderRadius:14,padding:"12px",fontFamily:"'Source Sans 3',sans-serif",fontSize:14,fontWeight:700,color:"white",cursor:"pointer",marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
+        <button onClick={()=>{trackEvent("emergency_button_tapped");gaEvent("emergency_button_tapped");onEmergency();}} style={{width:"100%",background:"#D62828",border:"2px solid rgba(255,255,255,0.3)",borderRadius:14,padding:"12px",fontFamily:"'Source Sans 3',sans-serif",fontSize:14,fontWeight:700,color:"white",cursor:"pointer",marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           {t.needHelpNow}
         </button>
-        <div style={{fontSize:10,fontWeight:700,color:"rgba(255,255,255,0.6)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:8}}>What do you need?</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-          {[
-            {icon:"🍽",label:t.food || "Food",sub:t.pantriesOpenNow,nav:"find",filter:"food",category:"food"},
-            {icon:"📋",label:t.benefits,sub:t.snapWicMore,nav:"benefits",category:"benefits"},
-            {icon:"🍎",label:t.nutrition,sub:t.foodCheckNutrition || "Food check & nutrition",nav:"nutrition",category:"nutrition"},
-            {icon:"🔍",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust",category:"check_info"},
-            {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline",category:"crisis"},
-            {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance",category:"housing"},
-          ].map(a=>(
-            <div key={a.label} onClick={()=>{trackImpactEvent("category_click",{category:a.category});onNav(a.nav,a.filter);}} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(10px)",borderRadius:14,padding:"12px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.2)"}}>
-              <div style={{fontSize:24,marginBottom:4}}>{a.icon}</div>
-              <div style={{fontSize:13,fontWeight:700,color:"white",lineHeight:1.2}}>{a.label}</div>
-              <div style={{fontSize:10,color:"rgba(255,255,255,0.65)",marginTop:2}}>{a.sub}</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
+          {[{icon:"🔍",label:t.findResources,sub:t.foodHelpMore,nav:"find"},{icon:"📋",label:t.benefits,sub:t.snapWic,nav:"benefits"},{icon:"🤖",label:t.askAI,sub:"Powered by Claude",nav:"ai"},{icon:"💛",label:"Volunteer",sub:"Serve your neighbor",nav:"volunteer"},{icon:"📨",label:"News",sub:"Parish bulletin",nav:"news"},{icon:"📅",label:"Events",sub:"Calendar & RSVP",nav:"events"}].map(a=>(
+            <div key={a.nav} onClick={()=>onNav(a.nav)} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(10px)",borderRadius:14,padding:"10px 8px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.2)",textAlign:"center"}}>
+              <div style={{fontSize:20,marginBottom:3}}>{a.icon}</div>
+              <div style={{fontSize:11,fontWeight:600,color:"white",lineHeight:1.2}}>{a.label}</div>
+              <div style={{fontSize:9,color:"rgba(255,255,255,0.6)",marginTop:1}}>{a.sub}</div>
             </div>
           ))}
         </div>
@@ -700,37 +431,29 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             <div style={{width:8,height:8,borderRadius:"50%",background:"#40916C"}} className="pulse"/>
             <div style={{fontSize:13,fontWeight:700,color:"#1B4332"}}>{t.openNow} ({openNow.length})</div>
           </div>
-          {openNow.slice(0,2).map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
-          {openNow.length>2&&<button className="sjc-btn-out" style={{marginBottom:8}} onClick={()=>onNav("find","food")}>See all {openNow.length} open now →</button>}
+          {openNow.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
           <div style={{height:6}}/>
         </>}
-        {savedResources.length>0&&(
-          <div style={{marginBottom:12}}>
-            <div style={{fontSize:13,fontWeight:700,color:"#7B5800",marginBottom:8}}>⭐ My Saved Resources ({savedResources.length})</div>
-            {savedResources.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
-          </div>
-        )}
-        <div className="sjc-card" style={{marginBottom:12,cursor:"pointer",border:`1px solid ${BRAND.primary}30`}} onClick={()=>onNav("trust")}>
-          <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-            <div style={{width:44,height:44,borderRadius:12,background:`${BRAND.primary}18`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,fontWeight:800,color:BRAND.primary,flexShrink:0}}>
-              🔍
-            </div>
-            <div style={{flex:1,minWidth:0}}>
-              <div style={{fontSize:16,fontWeight:800,color:BRAND.dark,lineHeight:1.25,marginBottom:4}}>Check This Info</div>
-              <div style={{fontSize:12,color:"#334155",lineHeight:1.45,marginBottom:12}}>
-                Paste a link, article, message, job post, or rental listing to check for scam signals, bias signals, and AI-writing signals.
-              </div>
-              <button className="sjc-btn" style={{minHeight:44,padding:"11px 16px"}} onClick={(event)=>{event.stopPropagation();onNav("trust");}}>
-                Check Now
-              </button>
-            </div>
-          </div>
-        </div>
-        <SMSAccessCard/>
+        {openToday.length>0&&<>
+          <div style={{fontSize:13,fontWeight:700,color:"#7B5800",marginBottom:10}}>🕐 {t.opensLater} ({openToday.length})</div>
+          {openToday.slice(0,2).map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
+          <div style={{height:6}}/>
+        </>}
+        <div style={{fontSize:13,fontWeight:700,color:"#6B7080",marginBottom:10}}>{t.allResources} ({RESOURCES.length})</div>
+        {RESOURCES.filter(r=>!isOpenNow(r)&&!isOpenToday(r)).slice(0,2).map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
+        <button className="sjc-btn-out" style={{marginBottom:12}} onClick={()=>onNav("find")}>See all {RESOURCES.length} resources →</button>
+
         <div style={{background:`linear-gradient(135deg,${BRAND.secondary}22,${BRAND.secondary}10)`,borderRadius:16,padding:14,marginBottom:12,border:`1px solid ${BRAND.secondary}44`,cursor:"pointer"}} onClick={onDonate}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{fontSize:28}}>💛</div>
             <div><div style={{fontSize:13,fontWeight:700,color:"#5A4000",marginBottom:2}}>{t.supportPantries}</div><div style={{fontSize:11,color:"#7B5800",lineHeight:1.4}}>{t.donateDesc}</div></div>
+          </div>
+        </div>
+
+        <div style={{background:`${BRAND.primary}08`,borderRadius:16,padding:14,marginBottom:20,border:`1px solid ${BRAND.primary}18`,cursor:"pointer"}} onClick={()=>onNav("impact")}>
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <div style={{fontSize:28}}>📊</div>
+            <div><div style={{fontSize:13,fontWeight:700,color:BRAND.primary,marginBottom:2}}>{t.impactDashboard}</div><div style={{fontSize:11,color:BRAND.gradEnd,lineHeight:1.4}}>{t.impactDesc}</div></div>
           </div>
         </div>
 
@@ -753,6 +476,17 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
             </div>
           </a>
         )}
+
+        {/* Powered by DelcoHelp — platform credit */}
+        {/* Saved resources */}
+        {savedResources.length > 0 && (
+          <div style={{marginBottom:12}}>
+            <div style={{fontSize:13,fontWeight:700,color:"#7B5800",marginBottom:8}}>⭐ My Saved Resources ({savedResources.length})</div>
+            {savedResources.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
+          </div>
+        )}
+        <StoriesSection/>
+        <SMSAccessCard phoneNumber=""/>
         <a href="https://delcohelp.org" target="_blank" rel="noreferrer" style={{
           display:"block", textDecoration:"none", textAlign:"center",
           padding:"14px 12px", marginBottom:20, borderTop:"1px solid rgba(0,0,0,0.05)"
@@ -776,11 +510,11 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang }) {
 }
 
 /* ── FIND ── */
-function FindScreen({ onResource, lang, initialFilter="all" }) {
-  const [search,setSearch]=useState(""), [filter,setFilter]=useState(initialFilter);
+function FindScreen({ onResource, lang }) {
+  const [search,setSearch]=useState(""), [filter,setFilter]=useState("all");
   const [dietary,setDietary]=useState([]);
   const [zip,setZip]=useState(""), [zipInput,setZipInput]=useState(""), [locating,setLocating]=useState(false);
-  const t=getT(lang);
+  const t=T[lang]||T.en;
   const filters=[{id:"all",label:"All"},{id:"parish",label:"✝ Parish"},{id:"food",label:"🥫 Food"},{id:"assistance",label:"🤝 Help"},{id:"legal",label:"⚖️ Legal"}];
 
   function applyZip(z) {
@@ -847,7 +581,7 @@ function FindScreen({ onResource, lang, initialFilter="all" }) {
 function BenefitsScreen({ lang }) {
   const [expanded,setExpanded]=useState(null), [showQuiz,setShowQuiz]=useState(false);
   const [showSNAP,setShowSNAP]=useState(false), [showChecklist,setShowChecklist]=useState(false);
-  const t=getT(lang);
+  const t=T[lang]||T.en;
   const eligibility=[
     {q:"Family of 4 with income under $3,250/month?",programs:["SNAP","Medicaid","CHIP"]},
     {q:"Pregnant or have a child under 5?",programs:["WIC","CHIP","Medicaid"]},
@@ -862,7 +596,7 @@ function BenefitsScreen({ lang }) {
       <div style={{padding:"16px 24px 0"}}>
         <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:22,color:"#1A1A2E",marginBottom:4}}>{t.benefitsNav}</div>
         <div style={{fontSize:13,color:"#6B7080",marginBottom:12}}>{t.benefitsDesc}</div>
-        <button onClick={()=>{trackEvent("eligibility_quiz_opened",{app:"sjc"});gaEvent("eligibility_quiz_opened");trackImpactEvent("benefits_click",{benefit_type:"eligibility_check"});setShowQuiz(true);}} style={{width:"100%",background:BRAND.primary,color:"white",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:700,cursor:"pointer",marginBottom:8,fontFamily:"'Source Sans 3',sans-serif"}}>
+        <button onClick={()=>{trackEvent("eligibility_quiz_opened",{app:"sjc"});gaEvent("eligibility_quiz_opened");setShowQuiz(true);}} style={{width:"100%",background:BRAND.primary,color:"white",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:700,cursor:"pointer",marginBottom:8,fontFamily:"'Source Sans 3',sans-serif"}}>
           Check My Eligibility in 60 Seconds →
         </button>
         <button onClick={()=>setShowSNAP(true)} style={{width:"100%",background:"white",color:BRAND.primary,border:`1.5px solid ${BRAND.primary}44`,borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:8,fontFamily:"'Source Sans 3',sans-serif"}}>
@@ -901,7 +635,7 @@ function BenefitsScreen({ lang }) {
 
 /* ── HOTLINE ── */
 function HotlineScreen({ lang, onEscape }) {
-  const t=getT(lang), urgent=HOTLINES.filter(h=>h.urgent), rest=HOTLINES.filter(h=>!h.urgent);
+  const t=T[lang]||T.en, urgent=HOTLINES.filter(h=>h.urgent), rest=HOTLINES.filter(h=>!h.urgent);
   return (
     <div className="dfi">
       <div style={{background:"linear-gradient(160deg,#D62828 0%,#9B1C1C 100%)",padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
@@ -910,16 +644,12 @@ function HotlineScreen({ lang, onEscape }) {
         {onEscape && <button onClick={onEscape} style={{background:"rgba(255,255,255,0.2)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:10,padding:"6px 12px",color:"white",fontSize:11,fontWeight:600,cursor:"pointer",marginTop:10,fontFamily:"'Source Sans 3',sans-serif"}}>🔒 Set Up My Safety Plan</button>}
       </div>
       <div style={{padding:"0 24px"}}>
-        <div style={{background:"#FFF0F0",borderRadius:14,padding:12,border:"1px solid rgba(214,40,40,0.2)",marginBottom:12}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#D62828",marginBottom:4}}>{DELCO_CRISIS.emergencyDisclaimer}</div>
-          <div style={{fontSize:12,color:"#7f1d1d",lineHeight:1.5}}>{DELCO_CRISIS.callToConfirm}</div>
-        </div>
         <div style={{fontSize:12,fontWeight:700,color:"#D62828",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.immediateEmergency}</div>
         {urgent.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>{t.lastUpdated}: {h.lastUpdated} - {h.verified?t.verified:t.needsVerification}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>{t.reportIncorrectInfo}</a></div>
-            <button className="hotline-btn" style={{background:h.color,color:"white"}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||`${h.isText?t.text:t.call} ${h.number}`}</button>
+            <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div></div>
+            <button className="hotline-btn" style={{background:h.color,color:"white"}} onClick={()=>window.open(`tel:${h.number}`)}>{h.isText?"Text":"Call"} {h.number}</button>
           </div>
         ))}
         <div style={{height:12}}/>
@@ -927,8 +657,8 @@ function HotlineScreen({ lang, onEscape }) {
         {rest.map(h=>(
           <div key={h.id} className="hotline-card" style={{background:h.bg,border:`1px solid ${h.color}22`}}>
             <div style={{width:42,height:42,borderRadius:12,background:h.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>{h.icon}</div>
-            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div>{h.lastUpdated&&<div style={{fontSize:10,color:"#6B7080",marginTop:4}}>{t.lastUpdated}: {h.lastUpdated} - {h.verified?t.verified:t.needsVerification}</div>}<a href={correctionMailto(h.name)} style={{fontSize:10,color:h.color,fontWeight:700,textDecoration:"none"}}>{t.reportIncorrectInfo}</a></div>
-            <button className="hotline-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>openHotlineAction(h)}>{h.actionLabel||h.number}</button>
+            <div style={{flex:1}}><div style={{fontSize:13,fontWeight:600,color:"#1A1A2E"}}>{h.name}</div><div style={{fontSize:11,color:"#6B7080",marginTop:2}}>{h.sub}</div></div>
+            <button className="hotline-btn" style={{background:h.color+"15",color:h.color}} onClick={()=>window.open(`tel:${h.number}`)}>{h.number}</button>
           </div>
         ))}
         <div style={{background:`${BRAND.primary}08`,borderRadius:16,padding:14,marginTop:8,marginBottom:24,border:`1px solid ${BRAND.primary}15`}}>
@@ -961,7 +691,7 @@ function saveVolunteerData(data) {
 }
 
 function VolunteerScreen({ lang, tier, onUpgrade }) {
-  const t=getT(lang);
+  const t=T[lang]||T.en;
   const [data, setData] = useState(getVolunteerData);
   const [view, setView] = useState("opportunities"); // opportunities | signup | mytracker | profile
   const [selectedOpp, setSelectedOpp] = useState(null);
@@ -1235,7 +965,7 @@ function saveEventRSVPs(rsvps) {
 const PARISH_EVENTS = [
   { id:1, title:"Sunday Mass — Vigil", date:"2026-04-26", time:"4:00 PM", duration:"1 hour", category:"worship", location:"SJC Main Sanctuary", description:"Weekly Saturday vigil Mass. All are welcome.", icon:"✝", rsvpRequired:false },
   { id:2, title:"Easter Egg Hunt — Family Event", date:"2026-04-27", time:"11:00 AM", duration:"2 hours", category:"community", location:"SJC Front Lawn", description:"Annual Easter Egg Hunt for children ages 2–12. Refreshments will be served. Rain or shine!", icon:"🥚", rsvpRequired:true, capacity:150, rsvpCount:87 },
-  { id:3, title:"Lifewerks Food Pantry Volunteer Night", date:"2026-04-29", time:"5:30 PM", duration:"3 hours", category:"service", location:"25 Cedar Rd, Wallingford", description:"Help sort donations and distribute food to ~80 families. No experience needed. Pizza provided after!", icon:"🥫", rsvpRequired:true, capacity:20, rsvpCount:14 },
+  { id:3, title:"Lifewerks Food Pantry Volunteer Night", date:"2026-04-29", time:"5:30 PM", duration:"3 hours", category:"service", location:"28 Walnut Road, Wallingford", description:"Help sort donations and distribute food to ~80 families. No experience needed. Pizza provided after!", icon:"🥫", rsvpRequired:true, capacity:20, rsvpCount:14 },
   { id:4, title:"Parish Council Meeting", date:"2026-05-01", time:"7:00 PM", duration:"90 min", category:"ministry", location:"Parish Hall", description:"Open meeting. Agenda includes outreach funding vote and summer retreat planning.", icon:"👥", rsvpRequired:false },
   { id:5, title:"First Friday Adoration", date:"2026-05-02", time:"12:30 PM", duration:"2 hours", category:"worship", location:"SJC Chapel", description:"Eucharistic Adoration and reflection. Drop in any time.", icon:"🙏", rsvpRequired:false },
   { id:6, title:"Diaper Drive — Delco Helping Hands", date:"2026-05-04", time:"All Day", duration:"Drop off anytime", category:"service", location:"Parish Office Lobby", description:"Collecting size 3–6 diapers for families across Delaware County. Most-needed sizes: 4 and 5.", icon:"👶", rsvpRequired:false },
@@ -1254,9 +984,7 @@ const EVENT_CATEGORY_COLORS = {
   formation: { bg:"#FFF0F0", text:"#9B1C1C", label:"Formation" },
 };
 
-function EventCalendarScreen({ lang, tier, onUpgrade }) {
-  // eslint-disable-next-line no-unused-vars
-  const t=getT(lang);
+function EventCalendarScreen({ tier, onUpgrade }) {
   const [rsvps, setRsvps] = useState(getEventRSVPs);
   const [filter, setFilter] = useState("all");
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -1530,10 +1258,10 @@ function EventCalendarScreen({ lang, tier, onUpgrade }) {
 
 /* ── IMPACT DASHBOARD ── */
 function ImpactScreen({ lang }) {
-  const t=getT(lang);
+  const t=T[lang]||T.en;
   const monthly=[{m:"Nov",v:680},{m:"Dec",v:790},{m:"Jan",v:900},{m:"Feb",v:1050},{m:"Mar",v:1160},{m:"Apr",v:1240}];
   const max=Math.max(...monthly.map(m=>m.v));
-  const ministries=["SJC Parish Office","Lifewerks Food Pantry","DIFAN Network","Catholic Social Services","Delco Helping Hands"];
+  const ministries=["SJC Parish Office","Lifewerks Food Pantry","Catholic Social Services","Delco Helping Hands"];
   return (
     <div className="dfi">
       <div style={{background:`linear-gradient(160deg,${BRAND.dark} 0%,${BRAND.primary} 100%)`,padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
@@ -1648,7 +1376,7 @@ function incrementSJCAIUsage() {
 
 /* ── AI CHAT ── */
 function AIScreen({ lang }) {
-  const t=getT(lang);
+  const t=T[lang]||T.en;
   const [messages,setMessages]=useState([{role:"ai",text:`✝ Welcome! I'm the ${BRAND.fullName} Community AI. Ask me anything about local resources, parish services, or getting help in Wallingford and Delaware County.`}]);
   const [input,setInput]=useState(""), [loading,setLoading]=useState(false);
   const [usageCount,setUsageCount]=useState(getSJCAIUsage());
@@ -1677,15 +1405,14 @@ Parish info:
 - Mass: Sat 4PM vigil, Sun 8AM/9:30AM/11:30AM
 
 Local resources:
-- Lifewerks Food Pantry: 25 Cedar Rd, Wallingford — Tues 6–8 PM, 610-872-3344 (0.3 mi)
-- DIFAN Wallingford: 25 Cedar Rd — Tues 6:30–8 PM, Fri 4–6 PM, 484-326-5362
+- Lifewerks Food Pantry: 28 Walnut Road, Wallingford — Tues 6–8 PM, 610-872-3344 (0.3 mi)
 - Media Food Bank: 350 W State St Media — Thurs 6–8 PM, Sun 1–2 PM, 610-566-3172
 - Catholic Social Services: 267-331-2490
 - Legal Aid of SE PA: free legal help, 877-429-5994
 - Delco Helping Hands: diapers, supplies, 484-474-0590
 - PA 211: dial 211 for any social service
 
-Keep responses warm, pastoral, and brief. Include phone numbers. If someone seems in immediate danger, lead with 911. For Delaware County crisis support, use ${DELCO_CRISIS.phone}. For text support, say text PA to 741741. Reflect the Catholic mission of serving those in need with dignity.`;
+Keep responses warm, pastoral, and brief. Include phone numbers. In crisis situations, lead with 988 or 911. Reflect the Catholic mission of serving those in need with dignity.`;
       const res=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[...messages.filter((_,i)=>i>0).map(m=>({role:m.role==="ai"?"assistant":"user",content:m.text})),{role:"user",content:userMsg}]})});
       const data=await res.json();
       setMessages(m=>[...m,{role:"ai",text:data.content?.[0]?.text||"Please call our parish office at 610-874-3418 for assistance."}]);
@@ -1919,7 +1646,7 @@ function ReportsScreen({ lang, onNav }) {
   const [scheduleSet, setScheduleSet] = useState(false);
 
   const monthlyData = [
-    { month:"November 2025", users:680, resources:3200, donations:"$1,840", families:280, highlight:"Launched DIFAN partnership" },
+    { month:"November 2025", users:680, resources:3200, donations:"$1,840", families:280, highlight:"Expanded local pantry outreach" },
     { month:"December 2025", users:790, resources:3740, donations:"$2,100", families:318, highlight:"Holiday food drive +40% donations" },
     { month:"January 2026", users:900, resources:4290, donations:"$2,380", families:360, highlight:"Added LIHEAP benefits navigator" },
     { month:"February 2026", users:1050, resources:4980, donations:"$2,750", families:420, highlight:"Spanish translation launched" },
@@ -2071,7 +1798,7 @@ function ReportsScreen({ lang, onNav }) {
 
 /* ── NOTIFICATIONS ── */
 function NotifOverlay({ onClose, lang }) {
-  const t=getT(lang);
+  const t=T[lang]||T.en;
   const notifs=[
     {icon:"✝",bg:BRAND.primary,title:"Sunday Mass — 9:30 AM tomorrow",body:"Join us at St. John Chrysostom · 615 S. Providence Rd",time:"now"},
     {icon:"🥫",bg:"#2D6A4F",title:"Lifewerks opens tonight!",body:"Food pantry open 6–8 PM · 0.3 mi from SJC",time:"3h"},
@@ -2285,7 +2012,7 @@ function NewsletterScreen({ tier, onUpgrade }) {
     { title:"April 20 — Easter Season Continues", date:"Apr 20", preview:"This week we celebrate the joy of the Resurrection. Join us for our parish picnic on Saturday at 11 AM. Fr. Hallinan's homily reflection on John 20:19-31...", tag:"Weekly Bulletin" },
     { title:"Holy Week Schedule & Special Events", date:"Apr 6", preview:"Complete schedule for Palm Sunday, Holy Thursday, Good Friday, and Easter Vigil. Volunteers needed for the Easter Egg Hunt on April 13th...", tag:"Special Edition" },
     { title:"March 30 — Lenten Reflection Series", date:"Mar 30", preview:"Week 5 of our Lenten journey. This week's reflection: 'Let go and let God.' The RCIA candidates will receive the Sacraments at Easter Vigil...", tag:"Weekly Bulletin" },
-    { title:"Community Outreach Update — March 2026", date:"Mar 15", preview:"Lifewerks Food Pantry served 89 families this month. Our volunteer team logged 240 hours of service. DIFAN partnership expansion coming soon...", tag:"Outreach Report" },
+    { title:"Community Outreach Update — March 2026", date:"Mar 15", preview:"Lifewerks Food Pantry served 89 families this month. Our volunteer team logged 240 hours of service.", tag:"Outreach Report" },
   ];
 
   if (tier==="free") return (
@@ -3074,73 +2801,6 @@ export default function App() {
   return <PublicApp />;
 }
 
-/* ── FIREBASE SYNC (SJC) ── */
-const SYNC_KEYS = [
-  { ls:"dh_saved_resources", fs:"saved" },
-  { ls:"dh_family_profile",  fs:"profile" },
-  { ls:"dh_found_help",      fs:"found_help" },
-  { ls:"dh_going_tonight",   fs:"going_tonight" },
-];
-async function pullSync(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  if (snap.exists()) {
-    SYNC_KEYS.forEach(({ ls, fs }) => { const v=snap.data()[fs]; if(v!==undefined) localStorage.setItem(ls,JSON.stringify(v)); });
-  } else { await pushSync(uid); }
-}
-async function pushSync(uid) {
-  const data={};
-  SYNC_KEYS.forEach(({ls,fs})=>{ try{const v=localStorage.getItem(ls);if(v)data[fs]=JSON.parse(v);}catch{} });
-  if(Object.keys(data).length>0) await setDoc(doc(db,"users",uid),data,{merge:true});
-}
-
-/* ── AUTH MODAL (SJC) ── */
-function AuthModal({ onClose, user, onSignIn, onSignOut }) {
-  const GoogleIcon = () => (
-    <svg viewBox="0 0 24 24" width="18" height="18" style={{flexShrink:0}}>
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-    </svg>
-  );
-  if (user) return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
-        <div className="modal-handle"/>
-        <div style={{textAlign:"center",padding:"8px 0 20px"}}>
-          <div style={{width:60,height:60,borderRadius:"50%",background:`${BRAND.primary}18`,margin:"0 auto 12px",display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
-            {user.photoURL ? <img src={user.photoURL} style={{width:60,height:60,borderRadius:"50%"}} alt="" referrerPolicy="no-referrer"/> : <span style={{fontSize:28}}>👤</span>}
-          </div>
-          <div style={{fontSize:15,fontWeight:700,color:"#1C2B1E"}}>{user.displayName||"Signed in"}</div>
-          <div style={{fontSize:12,color:"#6B7C6E",marginTop:3}}>{user.email}</div>
-        </div>
-        <div style={{background:`${BRAND.primary}10`,borderRadius:14,padding:14,marginBottom:16,border:`1px solid ${BRAND.primary}25`}}>
-          <div style={{fontSize:13,color:BRAND.primary,lineHeight:1.8}}>✓ Saved resources synced across devices<br/>✓ Family profile synced<br/>✗ Crisis plan stays on this device only</div>
-        </div>
-        <button className="sjc-btn-outline" onClick={onSignOut} style={{marginBottom:8}}>Sign Out</button>
-        <button onClick={onClose} style={{width:"100%",background:"transparent",border:"none",color:"#6B7C6E",fontSize:13,cursor:"pointer",padding:8}}>Close</button>
-      </div>
-    </div>
-  );
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
-        <div className="modal-handle"/>
-        <div style={{fontFamily:"'Libre Baskerville',serif",fontSize:20,color:"#1C2B1E",marginBottom:4}}>Sign In — Optional</div>
-        <div style={{fontSize:13,color:"#6B7C6E",marginBottom:16,lineHeight:1.6}}>Sync your saved resources and family profile across devices. The full app works without an account.</div>
-        <div style={{background:`${BRAND.primary}10`,borderRadius:14,padding:14,marginBottom:16,border:`1px solid ${BRAND.primary}25`}}>
-          <div style={{fontSize:12,fontWeight:700,color:BRAND.primary,marginBottom:8,textTransform:"uppercase",letterSpacing:"0.06em"}}>What syncs to your account</div>
-          <div style={{fontSize:13,color:"#3D4F40",lineHeight:1.8}}>✓ Saved resources<br/>✓ Family profile<br/>✓ "I Found Help" history<br/>✗ Crisis Escape Plan (stays on this device — never uploaded)</div>
-        </div>
-        <button className="sjc-btn-primary" onClick={onSignIn} style={{marginBottom:10,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
-          <GoogleIcon/> Continue with Google
-        </button>
-        <button onClick={onClose} style={{width:"100%",background:"transparent",border:"none",color:"#6B7C6E",fontSize:13,cursor:"pointer",padding:8}}>Continue without account</button>
-      </div>
-    </div>
-  );
-}
-
 function PublicApp() {
   injectCSS();
 
@@ -3158,11 +2818,7 @@ function PublicApp() {
     gtag("js", new Date());
     gtag("config", "G-NZRTH3H74B");
   }, []);
-  useEffect(() => {
-    trackFlyerVisit();
-  }, []);
   const [tab,setTab]=useState("home"), [detail,setDetail]=useState(null);
-  const [findFilter,setFindFilter]=useState("all");
   const [showDonate,setShowDonate]=useState(false), [showNotif,setShowNotif]=useState(false);
   const [showEmergency,setShowEmergency]=useState(false), [notifCount,setNotifCount]=useState(3);
   const [showUpgrade,setShowUpgrade]=useState(false);
@@ -3170,16 +2826,6 @@ function PublicApp() {
   const [showEscape,setShowEscape]=useState(false);
   const [showProfile,setShowProfile]=useState(()=>!getFamilyProfile());
   const [showLegal,setShowLegal]=useState(false);
-  const [user,setUser]=useState(null);
-  const [showAuth,setShowAuth]=useState(false);
-  const [clock,setClock]=useState(()=>{const n=new Date();return `${n.getHours()}:${String(n.getMinutes()).padStart(2,"0")}`;});
-  useEffect(()=>{const id=setInterval(()=>{const n=new Date();setClock(`${n.getHours()}:${String(n.getMinutes()).padStart(2,"0")}`);},30000);return()=>clearInterval(id);},[]);
-  useEffect(()=>{
-    if(!FIREBASE_ENABLED)return;
-    return onAuthStateChanged(auth,async u=>{setUser(u);if(u){try{await pullSync(u.uid);}catch{}}});
-  },[]);
-  async function handleSignIn(){try{await signInWithPopup(auth,googleProvider);setShowAuth(false);}catch{}}
-  async function handleSignOut(){try{if(auth.currentUser)await pushSync(auth.currentUser.uid);}catch{}await signOut(auth);setShowAuth(false);}
 
   // Tier is admin-controlled only — loaded from localStorage, defaults to elite (premium)
   // Admin changes this from /sjc/admin dashboard; regular users cannot upgrade themselves
@@ -3203,35 +2849,21 @@ function PublicApp() {
     setShowSponsor(false);
   }
 
-  // eslint-disable-next-line no-unused-vars
-  const tierColors={"free":"#6B7080","basic":BRAND.primary,"pro":"#7B2D8B","elite":BRAND.secondary};
-  // eslint-disable-next-line no-unused-vars
-  const tierBadges={"free":"FREE","basic":"BASIC","pro":"PRO","elite":"ELITE"};
-
   const tabs=[
     {id:"home",icon:"✝",label:"Home"},
-    {id:"hub",icon:"✝",label:"Parish Hub"},
     {id:"find",icon:"🔍",label:"Find"},
-    {id:"nutrition",icon:"🍎",label:"Nutrition"},
     {id:"youtube",icon:"▶️",label:"Masses"},
     {id:"events",icon:"📅",label:"Events"},
     {id:"reports",icon:"📊",label:"Impact"},
   ];
 
-  function handleNav(t,filter) {
-    if (t === "nutrition") trackImpactEvent("nutrition_open");
-    if (t === "benefits") trackImpactEvent("benefits_click", { benefit_type: "overview" });
-    setTab(t); setDetail(null); if(filter) setFindFilter(filter); if(FIREBASE_ENABLED&&auth.currentUser)pushSync(auth.currentUser.uid).catch(()=>{});
-  }
+  function handleNav(t) { setTab(t); setDetail(null); }
   function handleUpgrade(newTier) { setTier(newTier); }
 
   const screens={
-    hub:<div className="dfi" style={{padding:"16px 24px 20px"}}><SJCParishHub/></div>,
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang}/>,
-    find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang}/>,
+    find:<FindScreen onResource={setDetail} lang={lang}/>,
     benefits:<BenefitsScreen lang={lang}/>,
-    nutrition:<NutritionFoodCheck variant="sjc" lang={lang}/>,
-    trust:<TrustCheck lang={lang}/>,
     hotline:<HotlineScreen lang={lang} onEscape={()=>setShowEscape(true)}/>,
     volunteer:<VolunteerScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,
     events:<EventCalendarScreen lang={lang} tier={tier} onUpgrade={()=>setShowUpgrade(true)}/>,
@@ -3250,28 +2882,22 @@ function PublicApp() {
       {showProfile && <FamilyProfileSetup onComplete={()=>setShowProfile(false)}/>}
       {showEscape && <CrisisEscapePlan onClose={()=>setShowEscape(false)}/>}
       {showLegal && <LegalScreen appName="SJC Community" companyName="CieroLink LLC" appUrl="delcohelp.org/sjc" onClose={()=>setShowLegal(false)}/>}
-      {showAuth && <AuthModal onClose={()=>setShowAuth(false)} user={user} onSignIn={handleSignIn} onSignOut={handleSignOut}/>}
       <div className="sjc">
         <div className="sjc-sb">
-          <span>{clock}</span>
+          <span>9:41</span>
           <div style={{display:"flex",alignItems:"center",gap:6}}>
             <span style={{fontFamily:"'Libre Baskerville',serif",fontSize:11,fontWeight:700,color:BRAND.primary}}>SJC Community</span>
           </div>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <div className="lang-toggle" style={{background:`${BRAND.primary}15`}}>
-              <button className={`lang-btn ${lang==="en"?"active":"inactive"}`} style={{color:lang==="en"?BRAND.primary:"#6B7080",background:lang==="en"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"en"});setLang("en");}}>EN</button>
-              <button className={`lang-btn ${lang==="es"?"active":"inactive"}`} style={{color:lang==="es"?BRAND.primary:"#6B7080",background:lang==="es"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"es"});setLang("es");}}>ES</button>
-              <button className={`lang-btn ${lang==="vi"?"active":"inactive"}`} style={{color:lang==="vi"?BRAND.primary:"#6B7080",background:lang==="vi"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"vi"});setLang("vi");}}>VI</button>
-              <button className={`lang-btn ${lang==="zh"?"active":"inactive"}`} style={{color:lang==="zh"?BRAND.primary:"#6B7080",background:lang==="zh"?"white":"transparent"}} onClick={()=>{trackImpactEvent("language_change",{language:"zh"});setLang("zh");}}>中</button>
+              <button className={`lang-btn ${lang==="en"?"active":"inactive"}`} style={{color:lang==="en"?BRAND.primary:"#6B7080",background:lang==="en"?"white":"transparent"}} onClick={()=>setLang("en")}>EN</button>
+              <button className={`lang-btn ${lang==="es"?"active":"inactive"}`} style={{color:lang==="es"?BRAND.primary:"#6B7080",background:lang==="es"?"white":"transparent"}} onClick={()=>setLang("es")}>ES</button>
+              <button className={`lang-btn ${lang==="vi"?"active":"inactive"}`} style={{color:lang==="vi"?BRAND.primary:"#6B7080",background:lang==="vi"?"white":"transparent"}} onClick={()=>setLang("vi")}>VI</button>
+              <button className={`lang-btn ${lang==="zh"?"active":"inactive"}`} style={{color:lang==="zh"?BRAND.primary:"#6B7080",background:lang==="zh"?"white":"transparent"}} onClick={()=>setLang("zh")}>中</button>
             </div>
             <div onClick={()=>{setShowNotif(true);setNotifCount(0);}} style={{position:"relative",cursor:"pointer",fontSize:14,opacity:0.7}}>
               🔔{notifCount>0&&<div style={{position:"absolute",top:-4,right:-4,width:14,height:14,background:"#D62828",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,fontWeight:700,color:"white",border:"2px solid #F5F2EB"}}>{notifCount}</div>}
             </div>
-            {FIREBASE_ENABLED&&(
-              <div onClick={()=>setShowAuth(true)} style={{cursor:"pointer",width:20,height:20,borderRadius:"50%",overflow:"hidden",background:user?BRAND.primary:"rgba(0,0,0,0.08)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                {user?.photoURL ? <img src={user.photoURL} style={{width:20,height:20}} alt="" referrerPolicy="no-referrer"/> : <span style={{fontSize:user?10:12,color:user?"white":"#6B7C6E",fontWeight:700,lineHeight:1}}>{user?user.displayName?.[0]||"U":"👤"}</span>}
-              </div>
-            )}
           </div>
         </div>
         <div className="sjc-sc">
@@ -3288,7 +2914,7 @@ function PublicApp() {
         {/* Legal footer */}
         <div style={{textAlign:"center",padding:"4px 0 2px",borderTop:"1px solid rgba(0,0,0,0.04)"}}>
           <button onClick={()=>setShowLegal(true)} style={{background:"transparent",border:"none",color:"#9BA8A0",fontSize:9,cursor:"pointer",fontFamily:"'Source Sans 3',sans-serif",padding:"2px 8px"}}>
-            {getT(lang).terms} · {getT(lang).privacy} · {getT(lang).disclaimer} · © 2026 CieroLink LLC
+            Terms · Privacy · Disclaimer · © 2026 CieroLink LLC
           </button>
         </div>
         {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang}/>}

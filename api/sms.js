@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     const keyword = String(rawMessage).trim().toUpperCase().split(/\s+/)[0];
 
     const responses = {
-      FOOD: "DELCOHELP FOOD PANTRIES:\n1. Lifewerks (Wallingford) - Tues 6-8 PM - 610-872-3344\n2. DIFAN Wallingford - Tues/Fri - 484-326-5362\n3. Media Food Bank - Thurs/Sun - 610-566-3172\n\nReply with zip for closest to you.",
+      FOOD: "DELCOHELP FOOD PANTRIES:\n1. Lifewerks (28 Walnut Road, Wallingford) - Tues 6-8 PM - 610-872-3344\n2. Media Food Bank - Thurs/Sun - 610-566-3172\n\nReply with zip for closest to you.",
 
       HELP: "DELCOHELP RESOURCES:\n- Food: text FOOD\n- Benefits (SNAP/WIC): text SNAP\n- Crisis help: text CRISIS\n- Housing: text HOUSING\n- All: visit delcohelp.org",
       INFO: "DELCOHELP RESOURCES:\n- Food: text FOOD\n- Benefits (SNAP/WIC): text SNAP\n- Crisis help: text CRISIS\n- Housing: text HOUSING\n- All: visit delcohelp.org",
