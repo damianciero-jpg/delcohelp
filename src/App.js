@@ -9,6 +9,8 @@ import {
 } from "./features";
 import TrustCheck from "./TrustCheck";
 
+const APP_VERSION = "2026-05-05-cache-fix";
+
 // Simple path router
 if (window.location.pathname.startsWith("/sjc")) {
   document.getElementById("root").innerHTML = "";
@@ -1146,6 +1148,7 @@ export default function App() {
           <button onClick={()=>setShowLegal(true)} style={{background:"transparent",border:"none",color:"#9BA8A0",fontSize:9,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",padding:"2px 8px"}}>
             Terms · Privacy · Disclaimer · © 2026 CieroLink LLC
           </button>
+          <div style={{fontSize:8,color:"#9BA8A0",fontFamily:"'DM Sans',sans-serif",paddingBottom:2}}>DelcoHelp version: {APP_VERSION}</div>
         </div>
         {showEmergency&&<EmergencyMode onClose={()=>setShowEmergency(false)} lang={lang}/>}
         {showNotif&&<NotifOverlay onClose={()=>setShowNotif(false)} lang={lang}/>}
