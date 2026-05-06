@@ -6,6 +6,7 @@ import NutritionFoodCheck from "./NutritionFoodCheck";
 import TrustCheck from "./TrustCheck";
 import SJCApp from "./SJC";
 import Philadelphia from "./Philadelphia";
+import CieroLink from "./CieroLink";
 import { translateResourceText } from "./resourceTranslations";
 import { cachePublicResources, getInitialPublicResources } from "./resourceCache";
 import { DELCO_CRISIS, DELCO_HOUSING_ENTRY, PA_CRISIS_TEXT, correctionMailto } from "./delcoSafetyInfo";
@@ -752,6 +753,10 @@ function SupportTrustCard({ lang }) {
       <p className="support-line">
         {t.builtSupportedBy}
       </p>
+
+      <a href="/cierolink" style={{display:"inline-flex",fontSize:12,fontWeight:800,color:"#1E5A8A",textDecoration:"none",marginBottom:10}}>
+        Learn about CieroLink
+      </a>
 
       <div className="trust-points">
         <span>{t.freeToUse}</span>
@@ -1631,5 +1636,6 @@ export default function App() {
   const path = window.location.pathname.toLowerCase();
   if (path.startsWith("/sjc")) return <SJCApp />;
   if (path === "/philadelphia" || path === "/philly") return <Philadelphia />;
+  if (path === "/cierolink") return <CieroLink />;
   return <DelcoApp />;
 }
