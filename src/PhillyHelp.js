@@ -151,17 +151,17 @@ function calcDistance(zip1, zip2) {
 }
 
 const RESOURCES = [
-  { id:1, zip:"19121", category:"food", name:"Sunday Breakfast Rescue Mission", address:"302 N 13th St, Philadelphia PA 19107", phone:"215-922-6400", miles:0.8, hours:[{day:"Daily",time:"7:00 AM – 8:00 AM"}], tags:["hot meals","daily","walk-in"], color:"#003594", description:"Philadelphia's oldest rescue mission serving hot meals daily. No registration required.", openDays:[0,1,2,3,4,5,6], openStart:7, openEnd:8 },
+  { id:1, zip:"19121", category:"food", name:"Sunday Breakfast Rescue Mission", address:"302 N 13th St, Philadelphia PA 19107", phone:"215-922-6400", miles:0.8, hours:[{day:"Daily",time:"7:00 AM – 8:00 AM"}], tags:["hot meals","daily","walk-in"], color:"#003594", description:"Philadelphia's oldest rescue mission serving hot meals daily. No registration required.", openDays:[0,1,2,3,4,5,6], openStart:7, openEnd:8, appointmentRequired:false, walkInAvailable:true, notes:"No registration required." },
   { id:2, zip:"19121", category:"food", name:"Philabundance Community Kitchen", address:"3616 S Galloway St, Philadelphia PA 19148", phone:"215-339-0900", miles:1.2, hours:[{day:"Monday–Friday",time:"8:00 AM – 4:00 PM"}], tags:["Philadelphia's largest food bank","partner network","fresh produce"], color:"#003594", description:"Philadelphia's largest hunger relief organization distributing to 350+ agencies citywide.", openDays:[1,2,3,4,5], openStart:8, openEnd:16 },
-  { id:3, zip:"19132", category:"food", name:"Strawberry Mansion Community Pantry", address:"2900 W Diamond St, Philadelphia PA 19121", phone:"215-978-1000", miles:0.5, hours:[{day:"Wednesday",time:"10:00 AM – 1:00 PM"},{day:"Saturday",time:"9:00 AM – 11:00 AM"}], tags:["North Philly","twice weekly","no ID required"], color:"#003594", description:"Neighborhood pantry serving Strawberry Mansion and surrounding blocks. No documentation required.", openDays:[3,6], openStart:9, openEnd:13 },
+  { id:3, zip:"19132", category:"food", name:"Strawberry Mansion Community Pantry", address:"2900 W Diamond St, Philadelphia PA 19121", phone:"215-978-1000", miles:0.5, hours:[{day:"Wednesday",time:"10:00 AM – 1:00 PM"},{day:"Saturday",time:"9:00 AM – 11:00 AM"}], tags:["North Philly","twice weekly","no ID required"], color:"#003594", description:"Neighborhood pantry serving Strawberry Mansion and surrounding blocks. No documentation required.", openDays:[3,6], openStart:9, openEnd:13, requiresID:false, requiresProofOfAddress:false, notes:"No documentation required." },
   { id:4, zip:"19139", category:"food", name:"West Philadelphia Food Pantry", address:"51 N 52nd St, Philadelphia PA 19139", phone:"215-747-0500", miles:0.4, hours:[{day:"Tuesday",time:"10:00 AM – 1:00 PM"},{day:"Thursday",time:"4:00 PM – 6:00 PM"}], tags:["West Philly","evening hours","fresh produce"], color:"#0046AD", description:"Community pantry serving West Philadelphia families with fresh produce and pantry staples twice weekly.", openDays:[2,4], openStart:10, openEnd:18 },
-  { id:5, zip:"19143", category:"food", name:"Kingsessing Recreation Center Pantry", address:"1201 S 49th St, Philadelphia PA 19143", phone:"215-685-1565", miles:0.6, hours:[{day:"Friday",time:"11:00 AM – 2:00 PM"}], tags:["Kingsessing","city rec center","no appointment"], color:"#0046AD", description:"Weekly food distribution at Kingsessing Rec Center. Open to all Southwest Philadelphia families.", openDays:[5], openStart:11, openEnd:14 },
+  { id:5, zip:"19143", category:"food", name:"Kingsessing Recreation Center Pantry", address:"1201 S 49th St, Philadelphia PA 19143", phone:"215-685-1565", miles:0.6, hours:[{day:"Friday",time:"11:00 AM – 2:00 PM"}], tags:["Kingsessing","city rec center","no appointment"], color:"#0046AD", description:"Weekly food distribution at Kingsessing Rec Center. Open to all Southwest Philadelphia families.", openDays:[5], openStart:11, openEnd:14, appointmentRequired:false, walkInAvailable:true, notes:"No appointment listed." },
   { id:6, zip:"19139", category:"assistance", name:"People's Emergency Center", address:"325 N 39th St, Philadelphia PA 19104", phone:"215-382-7523", miles:0.9, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["housing","homelessness prevention","West Philly"], color:"#E76F51", description:"Housing stability, emergency shelter, and support services for West Philadelphia families.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
   { id:7, zip:"19134", category:"food", name:"Esperanza Food Pantry", address:"4261 N 5th St, Philadelphia PA 19140", phone:"215-324-0746", miles:0.7, hours:[{day:"Wednesday",time:"9:00 AM – 12:00 PM"}], tags:["bilingual","North Philly","Hispanic ministry"], color:"#003594", description:"Faith-based pantry serving the Hispanic and Latino community of North Philadelphia. Spanish-speaking staff on site.", openDays:[3], openStart:9, openEnd:12 },
   { id:8, zip:"19134", category:"food", name:"Prevention Point Philadelphia", address:"2913 Kensington Ave, Philadelphia PA 19134", phone:"215-634-5955", miles:0.3, hours:[{day:"Monday–Friday",time:"9:00 AM – 3:00 PM"}], tags:["Kensington","harm reduction","food + services"], color:"#0046AD", description:"Food, clean supplies, and services for Kensington residents including those experiencing addiction.", openDays:[1,2,3,4,5], openStart:9, openEnd:15 },
   { id:9, zip:"19125", category:"food", name:"Fishtown Community Food Pantry", address:"1001 E Berks St, Philadelphia PA 19125", phone:"215-425-3892", miles:0.5, hours:[{day:"Saturday",time:"9:00 AM – 12:00 PM"}], tags:["Fishtown","Saturday only","choice pantry"], color:"#003594", description:"Choice-style Saturday pantry in Fishtown. Families select what they need from available stock.", openDays:[6], openStart:9, openEnd:12 },
-  { id:10, zip:"19144", category:"food", name:"Germantown Salvation Army Pantry", address:"55 E Chelten Ave, Philadelphia PA 19144", phone:"215-438-3304", miles:0.4, hours:[{day:"Monday–Thursday",time:"9:00 AM – 12:00 PM"}], tags:["Germantown","4 days/week","daily staples"], color:"#D62828", description:"Food assistance four days a week in Germantown. No appointment needed for first visit.", openDays:[1,2,3,4], openStart:9, openEnd:12 },
-  { id:11, zip:"19145", category:"food", name:"South Philadelphia Food Pantry", address:"2200 S Broad St, Philadelphia PA 19145", phone:"215-467-1700", miles:0.5, hours:[{day:"Monday",time:"10:00 AM – 12:00 PM"},{day:"Thursday",time:"4:00 PM – 6:00 PM"}], tags:["South Philly","twice weekly","no ID required"], color:"#003594", description:"Serves South Philadelphia's diverse community with food and essential items twice per week.", openDays:[1,4], openStart:10, openEnd:18 },
+  { id:10, zip:"19144", category:"food", name:"Germantown Salvation Army Pantry", address:"55 E Chelten Ave, Philadelphia PA 19144", phone:"215-438-3304", miles:0.4, hours:[{day:"Monday–Thursday",time:"9:00 AM – 12:00 PM"}], tags:["Germantown","4 days/week","daily staples"], color:"#D62828", description:"Food assistance four days a week in Germantown. No appointment needed for first visit.", openDays:[1,2,3,4], openStart:9, openEnd:12, appointmentRequired:false, walkInAvailable:true, notes:"No appointment needed for first visit." },
+  { id:11, zip:"19145", category:"food", name:"South Philadelphia Food Pantry", address:"2200 S Broad St, Philadelphia PA 19145", phone:"215-467-1700", miles:0.5, hours:[{day:"Monday",time:"10:00 AM – 12:00 PM"},{day:"Thursday",time:"4:00 PM – 6:00 PM"}], tags:["South Philly","twice weekly","no ID required"], color:"#003594", description:"Serves South Philadelphia's diverse community with food and essential items twice per week.", openDays:[1,4], openStart:10, openEnd:18, requiresID:false },
   { id:12, zip:"19148", category:"food", name:"St. Thomas Aquinas Church Pantry", address:"1719 Morris St, Philadelphia PA 19145", phone:"215-755-5123", miles:0.6, hours:[{day:"Wednesday",time:"10:00 AM – 12:00 PM"},{day:"Saturday",time:"9:00 AM – 11:00 AM"}], tags:["South Philly","Catholic outreach","Pennsport area"], color:"#003594", description:"Catholic parish pantry open to all South Philadelphia neighbors regardless of affiliation.", openDays:[3,6], openStart:9, openEnd:12 },
   { id:13, zip:"19146", category:"food", name:"Point Breeze Community Pantry", address:"2100 Federal St, Philadelphia PA 19146", phone:"215-545-4822", miles:0.4, hours:[{day:"Tuesday",time:"11:00 AM – 1:00 PM"}], tags:["Point Breeze","Tuesday","walk-in"], color:"#0046AD", description:"Neighborhood pantry serving Point Breeze families with food and household essentials weekly.", openDays:[2], openStart:11, openEnd:13 },
   { id:14, zip:"19141", category:"food", name:"Logan Community Food Pantry", address:"4930 N Broad St, Philadelphia PA 19141", phone:"215-324-3100", miles:0.3, hours:[{day:"Monday",time:"10:00 AM – 12:00 PM"},{day:"Wednesday",time:"10:00 AM – 12:00 PM"},{day:"Friday",time:"10:00 AM – 12:00 PM"}], tags:["Logan","3x weekly","large distribution"], color:"#003594", description:"One of North Philadelphia's most active pantries — open three times weekly serving Logan and Olney families.", openDays:[1,3,5], openStart:10, openEnd:12 },
@@ -250,6 +250,72 @@ function SavedResourceBanner({ lang }) {
   return (
     <div style={{background:"#FFF8F0",border:"1px solid rgba(244,162,97,0.35)",borderRadius:14,padding:12,margin:"0 24px 12px",color:"#7B4B00",fontSize:12,lineHeight:1.45,fontWeight:650}}>
       {message}
+    </div>
+  );
+}
+
+function reqText(lang, key) {
+  const es = {
+    idRequired:"Identificación requerida",
+    proofRequired:"Comprobante de dirección requerido",
+    appointment:"Cita requerida",
+    walkIns:"Se aceptan visitas sin cita",
+    callAhead:"Se recomienda llamar antes",
+    requirements:"Requisitos",
+    transportation:"Accesibilidad y transporte",
+    busRoute:"Ruta de autobús",
+    transitStop:"Parada de transporte",
+    comingSoon:"La información de transporte estará disponible pronto.",
+  };
+  const en = {
+    idRequired:"ID Required",
+    proofRequired:"Proof of Address Required",
+    appointment:"Appointment Required",
+    walkIns:"Walk-ins Welcome",
+    callAhead:"Call Ahead Recommended",
+    requirements:"Requirements",
+    transportation:"Accessibility & Transportation",
+    busRoute:"Bus route",
+    transitStop:"Transit stop",
+    comingSoon:"Transportation information coming soon.",
+  };
+  return (lang === "es" ? es : en)[key];
+}
+
+function getRequirementLabels(resource, lang) {
+  const labels = [];
+  if (resource.requiresID === true) labels.push(reqText(lang, "idRequired"));
+  if (resource.requiresProofOfAddress === true) labels.push(reqText(lang, "proofRequired"));
+  if (resource.appointmentRequired === true) labels.push(reqText(lang, "appointment"));
+  if (resource.appointmentRequired === false || resource.walkInAvailable === true) labels.push(reqText(lang, "walkIns"));
+  if (resource.residencyRestrictions) labels.push(resource.residencyRestrictions);
+  if (resource.requiresID === undefined && resource.appointmentRequired === undefined && !resource.residencyRestrictions) labels.push(reqText(lang, "callAhead"));
+  return labels;
+}
+
+function RequirementChips({ resource, lang }) {
+  const labels = getRequirementLabels(resource, lang);
+  return labels.length ? (
+    <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>
+      {labels.slice(0,3).map(label => <span key={label} className="dh-tag">{label}</span>)}
+    </div>
+  ) : null;
+}
+
+function AccessibilityTransportation({ resource, lang }) {
+  const hasTransit = resource.nearestBusRoute || resource.nearestTransitStop || resource.transitNotes;
+  return (
+    <div style={{background:"white",borderRadius:14,padding:16,marginBottom:16,boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#6B7C6E",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{reqText(lang, "transportation")}</div>
+      {hasTransit ? (
+        <div style={{fontSize:13,color:"#3D4F40",lineHeight:1.6}}>
+          {resource.nearestBusRoute && <div><strong>{reqText(lang, "busRoute")}:</strong> {resource.nearestBusRoute}</div>}
+          {resource.nearestTransitStop && <div><strong>{reqText(lang, "transitStop")}:</strong> {resource.nearestTransitStop}</div>}
+          {resource.transitNotes && <div>{resource.transitNotes}</div>}
+        </div>
+      ) : (
+        <div style={{fontSize:13,color:"#6B7C6E",lineHeight:1.6}}>{reqText(lang, "comingSoon")}</div>
+      )}
     </div>
   );
 }
@@ -350,6 +416,7 @@ function ResourceCard({ r, onClick, lang }) {
         </div>
       </div>
       {r.tags.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>{r.tags.slice(0,3).map(tag=><span key={tag} className="dh-tag">{rt(tag)}</span>)}</div>}
+      <RequirementChips resource={r} lang={lang}/>
     </div>
   );
 }
@@ -385,6 +452,13 @@ function DetailView({ r, onBack, onDonate, lang, online=true }) {
           <div style={{fontSize:14,color:"#3D4F40",lineHeight:1.6}}>{rt(r.description)}</div>
         </div>
         <div style={{background:"white",borderRadius:14,padding:16,marginBottom:16,boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#6B7C6E",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{reqText(lang, "requirements")}</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:r.notes?10:0}}>
+            {getRequirementLabels(r, lang).map(label=><span key={label} className="dh-tag" style={{fontSize:12,padding:"5px 10px"}}>{label}</span>)}
+          </div>
+          {r.notes&&<div style={{fontSize:13,color:"#3D4F40",lineHeight:1.5}}>{r.notes}</div>}
+        </div>
+        <div style={{background:"white",borderRadius:14,padding:16,marginBottom:16,boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
           <div style={{fontSize:12,fontWeight:700,color:"#6B7C6E",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.hours}</div>
           {r.hours.map((h,i)=>(
             <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:i<r.hours.length-1?"1px solid rgba(0,0,0,0.05)":"none"}}>
@@ -396,6 +470,7 @@ function DetailView({ r, onBack, onDonate, lang, online=true }) {
         {/* Community status + inventory */}
         <PantryStatusWidget pantryId={r.id}/>
         <PantryInventoryWidget pantryId={r.id}/>
+        <AccessibilityTransportation resource={r} lang={lang}/>
         {/* SEPTA transit info */}
         <TransitHelper resourceZip={zip} resourceName={r.name}/>
         {r.tags.length>0&&<div style={{marginBottom:16,marginTop:12}}><div style={{fontSize:12,fontWeight:700,color:"#6B7C6E",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.whatToKnow}</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{r.tags.map(tag=><span key={tag} className="dh-tag" style={{fontSize:12,padding:"5px 10px"}}>✓ {rt(tag)}</span>)}</div></div>}

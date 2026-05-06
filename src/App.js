@@ -130,6 +130,15 @@ const UI_TRANSLATIONS = {
     resourceInfoCanChange:"Resource information can change. Please call ahead when possible.",
     savedResourceWarning:"You may be viewing saved resource information. Please call ahead when possible.",
     directionsMayRequireInternet:"Directions may require internet",
+    idRequired:"ID Required",
+    proofOfAddressRequired:"Proof of Address Required",
+    appointmentRequired:"Appointment Required",
+    walkInsWelcome:"Walk-ins Welcome",
+    callAheadRecommended:"Call Ahead Recommended",
+    accessibilityTransportation:"Accessibility & Transportation",
+    busRoute:"Bus route",
+    transitStop:"Transit stop",
+    transportationComingSoon:"Transportation information coming soon.",
     freeCommunityResource:"Free community resource",
     terms:"Terms", privacy:"Privacy", disclaimer:"Disclaimer", quickHelp:"Quick Help",
     foodCheckNutrition:"Food check & nutrition", openNearYouRightNow:"Open Near You Right Now",
@@ -169,6 +178,15 @@ const UI_TRANSLATIONS = {
     resourceInfoCanChange:"La información puede cambiar. Llame antes cuando sea posible.",
     savedResourceWarning:"Es posible que esté viendo información guardada. Llame antes cuando sea posible.",
     directionsMayRequireInternet:"Las direcciones pueden requerir internet",
+    idRequired:"Identificación requerida",
+    proofOfAddressRequired:"Comprobante de dirección requerido",
+    appointmentRequired:"Cita requerida",
+    walkInsWelcome:"Se aceptan visitas sin cita",
+    callAheadRecommended:"Se recomienda llamar antes",
+    accessibilityTransportation:"Accesibilidad y transporte",
+    busRoute:"Ruta de autobús",
+    transitStop:"Parada de transporte",
+    transportationComingSoon:"La información de transporte estará disponible pronto.",
     freeCommunityResource:"Recurso comunitario gratuito", builtSupportedBy:"Construido y apoyado por CieroLink LLC",
     terms:"Términos", privacy:"Privacidad", disclaimer:"Aviso", quickHelp:"Ayuda rápida",
     foodCheckNutrition:"Revisión de comida y nutrición", openNearYouRightNow:"Abierto cerca de usted ahora",
@@ -335,7 +353,7 @@ function calcDistance(zip1, zip2) {
 
 const RESOURCES = [
   // Wallingford 19086
-  { id:1, zip:"19086", category:"food", name:"Lifewerks Food Pantry", address:"28 Walnut Road, Wallingford PA 19086", mapsUrl:"https://www.google.com/maps/search/?api=1&query=28%20Walnut%20Road%20Wallingford%20PA", phone:"610-872-3344", miles:0.3, hours:[{day:"Tuesday",time:"6:00 PM – 8:00 PM"}], tags:["choice pantry","no appointment needed"], color:"#1E5A8A", description:"A choice pantry — you shop like a store, picking what your family actually needs. Dignified and welcoming.", openDays:[2], openStart:18, openEnd:20, lastUpdated:"2026-05-05", verified:true, verifiedBy:"Community correction" },
+  { id:1, zip:"19086", category:"food", name:"Lifewerks Food Pantry", address:"28 Walnut Road, Wallingford PA 19086", mapsUrl:"https://www.google.com/maps/search/?api=1&query=28%20Walnut%20Road%20Wallingford%20PA", phone:"610-872-3344", miles:0.3, hours:[{day:"Tuesday",time:"6:00 PM – 8:00 PM"}], tags:["choice pantry","no appointment needed"], color:"#1E5A8A", description:"A choice pantry — you shop like a store, picking what your family actually needs. Dignified and welcoming.", openDays:[2], openStart:18, openEnd:20, appointmentRequired:false, walkInAvailable:true, notes:"No appointment needed.", lastUpdated:"2026-05-05", verified:true, verifiedBy:"Community correction" },
 
   // Brookhaven 19015
   { id:3, zip:"19015", category:"food", name:"Brookhaven Porch Pantry", address:"1780 Chichester Ave, Brookhaven PA 19015", phone:"267-322-0991", miles:2.2, hours:[{day:"4th Wednesday",time:"11:00 AM – 12:00 PM"}], tags:["no paperwork","no fee","self-pickup"], color:"#1E5A8A", description:"Bags left on the church porch for self-pickup. No fee, no paperwork — boxes packed for a family of four.", openDays:[3], openStart:11, openEnd:12 },
@@ -349,23 +367,23 @@ const RESOURCES = [
   { id:5, zip:"19076", category:"food", name:"Loaves & Fishes Food Pantry", address:"703 Lincoln Ave, Prospect Park PA 19076", phone:"610-532-9000", miles:2.8, hours:[{day:"Tuesday",time:"11:00 AM – 2:00 PM & 5:00–7:00 PM"},{day:"Thursday",time:"1:00 PM – 4:00 PM"}], tags:["twice weekly","extended hours"], color:"#1E5A8A", description:"Baptist church pantry with generous hours twice a week including evening access for working families.", openDays:[2,4], openStart:11, openEnd:19 },
 
   // Upper Darby 19082
-  { id:6, zip:"19082", category:"food", name:"Murphy's Giving Market", address:"7408 West Chester Pike, Upper Darby PA 19082", phone:"610-271-8105", miles:4.1, hours:[{day:"Monday (55+)",time:"9:00 AM – 11:00 AM"},{day:"Tuesday",time:"10:00 AM – 12:00 PM"},{day:"Saturday",time:"10:00 AM – 12:00 PM"}], tags:["seniors 55+","register by 10 AM"], color:"#EFF6FF", description:"Dedicated senior hours Monday mornings. General hours Tuesdays. Must register by 10 AM.", openDays:[1,2,6], openStart:9, openEnd:12 },
-  { id:22, zip:"19082", category:"food", name:"Upper Darby Food Cupboard", address:"7 S. Lansdowne Ave, Upper Darby PA 19082", phone:"610-352-1888", miles:4.2, hours:[{day:"Wednesday",time:"10:00 AM – 12:00 PM"},{day:"Saturday",time:"9:00 AM – 11:00 AM"}], tags:["emergency food","no residency requirement"], color:"#1E5A8A", description:"Emergency food assistance for Upper Darby area families. No residency proof required for first visit.", openDays:[3,6], openStart:9, openEnd:12 },
+  { id:6, zip:"19082", category:"food", name:"Murphy's Giving Market", address:"7408 West Chester Pike, Upper Darby PA 19082", phone:"610-271-8105", miles:4.1, hours:[{day:"Monday (55+)",time:"9:00 AM – 11:00 AM"},{day:"Tuesday",time:"10:00 AM – 12:00 PM"},{day:"Saturday",time:"10:00 AM – 12:00 PM"}], tags:["seniors 55+","register by 10 AM"], color:"#EFF6FF", description:"Dedicated senior hours Monday mornings. General hours Tuesdays. Must register by 10 AM.", openDays:[1,2,6], openStart:9, openEnd:12, appointmentRequired:true, residencyRestrictions:"55+ senior hours Monday", notes:"Must register by 10 AM." },
+  { id:22, zip:"19082", category:"food", name:"Upper Darby Food Cupboard", address:"7 S. Lansdowne Ave, Upper Darby PA 19082", phone:"610-352-1888", miles:4.2, hours:[{day:"Wednesday",time:"10:00 AM – 12:00 PM"},{day:"Saturday",time:"9:00 AM – 11:00 AM"}], tags:["emergency food","no residency requirement"], color:"#1E5A8A", description:"Emergency food assistance for Upper Darby area families. No residency proof required for first visit.", openDays:[3,6], openStart:9, openEnd:12, requiresProofOfAddress:false, notes:"No residency proof required for first visit." },
   { id:23, zip:"19082", category:"assistance", name:"Upper Darby Township Social Services", address:"100 Garrett Rd, Upper Darby PA 19082", phone:"610-713-2000", miles:4.0, hours:[{day:"Monday–Friday",time:"8:30 AM – 4:30 PM"}], tags:["township services","emergency assistance","referrals"], color:"#1E5A8A", description:"Township social services office providing emergency assistance, utility help, and referrals for Upper Darby residents.", openDays:[1,2,3,4,5], openStart:8, openEnd:16 },
 
   // Chester 19013
-  { id:24, zip:"19013", category:"food", name:"Chester Community Connections", address:"522 Welsh St, Chester PA 19013", phone:"610-874-8451", miles:5.1, hours:[{day:"Monday",time:"10:00 AM – 12:00 PM"},{day:"Wednesday",time:"10:00 AM – 12:00 PM"},{day:"Friday",time:"10:00 AM – 12:00 PM"}], tags:["walk-in","fresh produce","no ID required"], color:"#1E5A8A", description:"Three-days-a-week community pantry in Chester with fresh produce when available. No ID or documentation required.", openDays:[1,3,5], openStart:10, openEnd:12 },
+  { id:24, zip:"19013", category:"food", name:"Chester Community Connections", address:"522 Welsh St, Chester PA 19013", phone:"610-874-8451", miles:5.1, hours:[{day:"Monday",time:"10:00 AM – 12:00 PM"},{day:"Wednesday",time:"10:00 AM – 12:00 PM"},{day:"Friday",time:"10:00 AM – 12:00 PM"}], tags:["walk-in","fresh produce","no ID required"], color:"#1E5A8A", description:"Three-days-a-week community pantry in Chester with fresh produce when available. No ID or documentation required.", openDays:[1,3,5], openStart:10, openEnd:12, requiresID:false, requiresProofOfAddress:false, appointmentRequired:false, walkInAvailable:true, notes:"No ID or documentation required." },
   { id:25, zip:"19013", category:"food", name:"Chester YMCA Food Pantry", address:"526 Welsh St, Chester PA 19013", phone:"610-876-3706", miles:5.1, hours:[{day:"Tuesday",time:"5:00 PM – 7:00 PM"},{day:"Thursday",time:"12:00 PM – 2:00 PM"}], tags:["evening hours","Chester families"], color:"#12355B", description:"YMCA food pantry serving Chester families with evening and daytime hours for working parents.", openDays:[2,4], openStart:12, openEnd:19 },
   { id:26, zip:"19013", category:"assistance", name:"CAADC Community Action", address:"33 W. 5th St, Chester PA 19013", phone:"610-874-8451", miles:5.0, hours:[{day:"Monday–Friday",time:"8:00 AM – 4:00 PM"}], tags:["SNAP enrollment","utility assistance","employment"], color:"#F2C94C", description:"Community action agency helping Chester residents navigate SNAP, LIHEAP, and employment programs. Spanish speakers on staff.", openDays:[1,2,3,4,5], openStart:8, openEnd:16 },
   { id:27, zip:"19013", category:"food", name:"Salvation Army Chester", address:"901 Madison St, Chester PA 19013", phone:"610-876-3735", miles:5.3, hours:[{day:"Monday–Friday",time:"9:00 AM – 11:30 AM"}], tags:["daily service","hot meals","clothing"], color:"#1E5A8A", description:"Salvation Army providing daily food service, hot meals, and clothing assistance to Chester-area families.", openDays:[1,2,3,4,5], openStart:9, openEnd:11 },
   { id:28, zip:"19013", category:"legal", name:"Widener University Free Legal Clinic", address:"3800 Vartan Way, Chester PA 19013", phone:"610-499-4312", miles:5.2, hours:[{day:"Wednesday",time:"5:00 PM – 8:00 PM"}], tags:["free legal help","housing","family law"], color:"#1E5A8A", description:"Law students supervised by attorneys provide free legal consultations for Chester-area low-income residents.", openDays:[3], openStart:17, openEnd:20 },
 
   // Darby 19023
-  { id:29, zip:"19023", category:"food", name:"Darby Borough Food Pantry", address:"611 Main St, Darby PA 19023", phone:"610-583-4000", miles:3.8, hours:[{day:"Wednesday",time:"10:00 AM – 12:00 PM"}], tags:["borough residents","no appointment"], color:"#1E5A8A", description:"Weekly community pantry for Darby borough residents. Photo ID and proof of Darby address required.", openDays:[3], openStart:10, openEnd:12 },
+  { id:29, zip:"19023", category:"food", name:"Darby Borough Food Pantry", address:"611 Main St, Darby PA 19023", phone:"610-583-4000", miles:3.8, hours:[{day:"Wednesday",time:"10:00 AM – 12:00 PM"}], tags:["borough residents","no appointment"], color:"#1E5A8A", description:"Weekly community pantry for Darby borough residents. Photo ID and proof of Darby address required.", openDays:[3], openStart:10, openEnd:12, requiresID:true, requiresProofOfAddress:true, appointmentRequired:false, residencyRestrictions:"Darby borough residents", notes:"Photo ID and proof of Darby address required." },
   { id:30, zip:"19023", category:"assistance", name:"Darby Township Social Services", address:"Darby, PA 19023", phone:"610-586-2233", miles:3.7, hours:[{day:"Monday–Friday",time:"9:00 AM – 4:00 PM"}], tags:["emergency assistance","senior services"], color:"#1E5A8A", description:"Local social services for Darby Township residents including emergency assistance and senior support programs.", openDays:[1,2,3,4,5], openStart:9, openEnd:16 },
 
   // Lansdowne 19050
-  { id:31, zip:"19050", category:"food", name:"Lansdowne Food Cupboard", address:"100 W. Baltimore Ave, Lansdowne PA 19050", phone:"610-259-0800", miles:3.4, hours:[{day:"Saturday",time:"9:00 AM – 11:30 AM"}], tags:["Saturday pantry","Lansdowne residents"], color:"#1E5A8A", description:"Saturday morning food distribution for Lansdowne and surrounding community. No appointment needed.", openDays:[6], openStart:9, openEnd:11 },
+  { id:31, zip:"19050", category:"food", name:"Lansdowne Food Cupboard", address:"100 W. Baltimore Ave, Lansdowne PA 19050", phone:"610-259-0800", miles:3.4, hours:[{day:"Saturday",time:"9:00 AM – 11:30 AM"}], tags:["Saturday pantry","Lansdowne residents"], color:"#1E5A8A", description:"Saturday morning food distribution for Lansdowne and surrounding community. No appointment needed.", openDays:[6], openStart:9, openEnd:11, appointmentRequired:false, walkInAvailable:true, residencyRestrictions:"Lansdowne residents", notes:"No appointment needed." },
   { id:32, zip:"19050", category:"assistance", name:"Lansdowne Economic Development", address:"Lansdowne, PA 19050", phone:"610-623-9000", miles:3.3, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["job training","housing","financial counseling"], color:"#1E5A8A", description:"Economic development office offering workforce training, housing assistance, and financial literacy programs.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
 
   // Ridley Park 19078
@@ -379,7 +397,7 @@ const RESOURCES = [
   { id:36, zip:"19081", category:"food", name:"Swarthmore Presbyterian Food Ministry", address:"727 Harvard Ave, Swarthmore PA 19081", phone:"610-543-4712", miles:1.5, hours:[{day:"First and Third Saturday",time:"9:00 AM – 11:00 AM"}], tags:["twice monthly","Swarthmore area"], color:"#1E5A8A", description:"Bi-monthly food distribution through Swarthmore Presbyterian Church's community outreach program.", openDays:[6], openStart:9, openEnd:11 },
 
   // Havertown 19083
-  { id:37, zip:"19083", category:"food", name:"Haverford Township Food Cupboard", address:"1014 Darby Rd, Havertown PA 19083", phone:"610-853-1000", miles:5.5, hours:[{day:"Monday",time:"10:00 AM – 12:00 PM"},{day:"Thursday",time:"6:00 PM – 8:00 PM"}], tags:["township residents","no appointment"], color:"#1E5A8A", description:"Haverford Township's community food cupboard with morning and evening hours to serve working families.", openDays:[1,4], openStart:10, openEnd:20 },
+  { id:37, zip:"19083", category:"food", name:"Haverford Township Food Cupboard", address:"1014 Darby Rd, Havertown PA 19083", phone:"610-853-1000", miles:5.5, hours:[{day:"Monday",time:"10:00 AM – 12:00 PM"},{day:"Thursday",time:"6:00 PM – 8:00 PM"}], tags:["township residents","no appointment"], color:"#1E5A8A", description:"Haverford Township's community food cupboard with morning and evening hours to serve working families.", openDays:[1,4], openStart:10, openEnd:20, appointmentRequired:false, walkInAvailable:true, residencyRestrictions:"Haverford Township residents", notes:"No appointment needed." },
 
   // Drexel Hill 19026
   { id:38, zip:"19026", category:"food", name:"Drexel Hill United Methodist Pantry", address:"4001 State Rd, Drexel Hill PA 19026", phone:"610-623-8880", miles:3.9, hours:[{day:"Wednesday",time:"6:00 PM – 8:00 PM"}], tags:["Drexel Hill","evening hours"], color:"#12355B", description:"Wednesday evening food pantry serving Drexel Hill and Upper Darby-area families through United Methodist outreach.", openDays:[3], openStart:18, openEnd:20 },
@@ -482,6 +500,47 @@ function SavedResourceBanner({ lang }) {
   return (
     <div style={{background:"#FFF7D6",border:"1px solid rgba(242,201,76,0.55)",borderRadius:14,padding:12,margin:"0 24px 12px",color:"#92400E",fontSize:12,lineHeight:1.45,fontWeight:650}}>
       {t.savedResourceWarning}
+    </div>
+  );
+}
+
+function getRequirementLabels(resource, t) {
+  const labels = [];
+  if (resource.requiresID === true) labels.push(t.idRequired || "ID Required");
+  if (resource.requiresProofOfAddress === true) labels.push(t.proofOfAddressRequired || "Proof of Address Required");
+  if (resource.appointmentRequired === true) labels.push(t.appointmentRequired || "Appointment Required");
+  if (resource.appointmentRequired === false || resource.walkInAvailable === true) labels.push(t.walkInsWelcome || "Walk-ins Welcome");
+  if (resource.residencyRestrictions) labels.push(resource.residencyRestrictions);
+  if (resource.requiresID === undefined && resource.appointmentRequired === undefined && !resource.residencyRestrictions) {
+    labels.push(t.callAheadRecommended || "Call Ahead Recommended");
+  }
+  return labels;
+}
+
+function RequirementChips({ resource, t }) {
+  const labels = getRequirementLabels(resource, t);
+  if (!labels.length) return null;
+  return (
+    <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>
+      {labels.slice(0,3).map(label => <span key={label} className="dh-tag">{label}</span>)}
+    </div>
+  );
+}
+
+function AccessibilityTransportation({ resource, t }) {
+  const hasTransit = resource.nearestBusRoute || resource.nearestTransitStop || resource.transitNotes;
+  return (
+    <div style={{background:"white",borderRadius:14,padding:16,marginBottom:16,boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
+      <div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.accessibilityTransportation || "Accessibility & Transportation"}</div>
+      {hasTransit ? (
+        <div style={{fontSize:13,color:"#334155",lineHeight:1.6}}>
+          {resource.nearestBusRoute && <div><strong>{t.busRoute || "Bus route"}:</strong> {resource.nearestBusRoute}</div>}
+          {resource.nearestTransitStop && <div><strong>{t.transitStop || "Transit stop"}:</strong> {resource.nearestTransitStop}</div>}
+          {resource.transitNotes && <div>{resource.transitNotes}</div>}
+        </div>
+      ) : (
+        <div style={{fontSize:13,color:"#475569",lineHeight:1.6}}>{t.transportationComingSoon || "Transportation information coming soon."}</div>
+      )}
     </div>
   );
 }
@@ -621,6 +680,7 @@ function ResourceCard({ r, onClick, lang }) {
         </div>
       </div>
       {r.tags.length>0&&<div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:10}}>{r.tags.slice(0,3).map(tag=><span key={tag} className="dh-tag">{rt(tag, lang)}</span>)}</div>}
+      <RequirementChips resource={r} t={t}/>
     </div>
   );
 }
@@ -653,6 +713,13 @@ function DetailView({ r, onBack, onDonate, lang, online=true }) {
           <div style={{fontSize:14,color:"#334155",lineHeight:1.6}}>{rt(r.description, lang)}</div>
         </div>
         <div style={{background:"white",borderRadius:14,padding:16,marginBottom:16,boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
+          <div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>Requirements</div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:r.notes?10:0}}>
+            {getRequirementLabels(r, t).map(label=><span key={label} className="dh-tag" style={{fontSize:12,padding:"5px 10px"}}>{label}</span>)}
+          </div>
+          {r.notes&&<div style={{fontSize:13,color:"#334155",lineHeight:1.5}}>{r.notes}</div>}
+        </div>
+        <div style={{background:"white",borderRadius:14,padding:16,marginBottom:16,boxShadow:"0 1px 6px rgba(0,0,0,0.06)"}}>
           <div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.hours}</div>
           {r.hours.map((h,i)=>(
             <div key={i} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:i<r.hours.length-1?"1px solid rgba(0,0,0,0.05)":"none"}}>
@@ -664,6 +731,7 @@ function DetailView({ r, onBack, onDonate, lang, online=true }) {
         {/* Community status + inventory */}
         <PantryStatusWidget pantryId={r.id}/>
         <PantryInventoryWidget pantryId={r.id}/>
+        <AccessibilityTransportation resource={r} t={t}/>
         {/* SEPTA transit info */}
         <TransitHelper resourceZip={zip} resourceName={r.name}/>
         {r.tags.length>0&&<div style={{marginBottom:16,marginTop:12}}><div style={{fontSize:12,fontWeight:700,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.whatToKnow}</div><div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{r.tags.map(tag=><span key={tag} className="dh-tag" style={{fontSize:12,padding:"5px 10px"}}>✓ {rt(tag, lang)}</span>)}</div></div>}
