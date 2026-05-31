@@ -128,7 +128,6 @@
 **Sample volunteer opportunities (SJC/RPPC):**
 - Lifewerks Food Pantry — Tuesdays 5–8 PM
 - Parish Outreach Committee — flexible
-- DIFAN Wallingford — Tuesdays and Fridays
 - Catholic Social Services — weekdays
 - Media Food Bank — Thursdays
 

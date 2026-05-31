@@ -133,8 +133,7 @@ function calcDistance(zip1, zip2) {
 
 const RESOURCES = [
   // Wallingford 19086
-  { id:1, zip:"19086", category:"food", name:"Lifewerks Food Pantry", address:"25 Cedar Road, Wallingford PA 19086", phone:"610-872-3344", miles:0.3, hours:[{day:"Tuesday",time:"6:00 PM – 8:00 PM"}], tags:["choice pantry","no appointment needed"], color:"#2D6A4F", description:"A choice pantry — you shop like a store, picking what your family actually needs. Dignified and welcoming.", openDays:[2], openStart:18, openEnd:20 },
-  { id:2, zip:"19086", category:"food", name:"DIFAN Wallingford", address:"25 Cedar Road, Wallingford PA 19086", phone:"484-326-5362", miles:0.3, hours:[{day:"Tuesday",time:"6:30 PM – 8:00 PM"},{day:"Friday",time:"4:00 PM – 6:00 PM"}], tags:["interfaith network","3 meals/day × 5 days per member"], color:"#40916C", description:"Part of Delaware County's Interfaith Food Assistance Network. Each visit provides enough food for 3 meals a day, 5 days for every household member.", openDays:[2,5], openStart:16, openEnd:20 },
+  { id:1, zip:"19086", category:"food", name:"Lifewerks Food Pantry", address:"28 Walnut Road, Wallingford PA 19086", mapsUrl:"https://www.google.com/maps/search/?api=1&query=28%20Walnut%20Road%20Wallingford%20PA", phone:"610-872-3344", miles:0.3, hours:[{day:"Tuesday",time:"6:00 PM – 8:00 PM"}], tags:["choice pantry","no appointment needed"], color:"#2D6A4F", description:"A choice pantry — you shop like a store, picking what your family actually needs. Dignified and welcoming.", openDays:[2], openStart:18, openEnd:20, lastUpdated:"2026-05-04", verified:true, verifiedBy:"Community correction" },
 
   // Brookhaven 19015
   { id:3, zip:"19015", category:"food", name:"Brookhaven Porch Pantry", address:"1780 Chichester Ave, Brookhaven PA 19015", phone:"267-322-0991", miles:2.2, hours:[{day:"4th Wednesday",time:"11:00 AM – 12:00 PM"}], tags:["no paperwork","no fee","self-pickup"], color:"#52B788", description:"Bags left on the church porch for self-pickup. No fee, no paperwork — boxes packed for a family of four.", openDays:[3], openStart:11, openEnd:12 },
@@ -189,7 +188,6 @@ const RESOURCES = [
   { id:9, zip:"19086", category:"legal", name:"Legal Aid of Southeastern PA", address:"Delaware County, PA", phone:"877-429-5994", miles:4.5, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["free legal help","eviction defense","benefits access"], color:"#023E8A", description:"Free legal representation for low-income residents — housing, evictions, employment, family law, and access to public benefits.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
   { id:10, zip:"19086", category:"assistance", name:"Women's Resource Center", address:"Delaware County, PA", phone:"610-687-6391", miles:6.0, hours:[{day:"Monday–Friday",time:"9:00 AM – 5:00 PM"}], tags:["women","housing instability","financial hardship","counseling"], color:"#9D4EDD", description:"Supports women facing housing instability or financial hardship with counseling, legal advocacy, and educational services.", openDays:[1,2,3,4,5], openStart:9, openEnd:17 },
   { id:39, zip:"19013", category:"assistance", name:"PA 211 Delaware County Office", address:"Delaware County, PA", phone:"211", miles:0.0, hours:[{day:"24/7",time:"Dial 2-1-1"}], tags:["all services","24/7","bilingual"], color:"#2D6A4F", description:"Dial 211 from any phone for immediate connection to food, housing, utility, health, and crisis resources anywhere in Delaware County.", openDays:[0,1,2,3,4,5,6], openStart:0, openEnd:24 },
-  { id:40, zip:"19086", category:"food", name:"DIFAN Network — All Locations", address:"Multiple locations, Delaware County PA", phone:"484-326-5362", miles:1.0, hours:[{day:"Multiple days",time:"See specific location"}], tags:["14 locations","interfaith","countywide"], color:"#40916C", description:"DIFAN operates 14 food distribution sites across Delaware County. Call for the nearest location to you.", openDays:[0,1,2,3,4,5,6], openStart:9, openEnd:20 },
 ];
 
 const BENEFITS = [
@@ -382,7 +380,7 @@ function DetailView({ r, onBack, onDonate, lang }) {
         <IAmGoingButton resource={r}/>
         <div style={{display:"flex",gap:10,marginBottom:8,marginTop:10}}>
           <button className="dh-btn-primary" onClick={()=>window.open(`tel:${r.phone}`)}>📞 {t.call} {r.phone}</button>
-          <button className="dh-btn-outline" onClick={()=>window.open(`https://maps.google.com/?q=${encodeURIComponent(r.address)}`)}>{t.directions}</button>
+          <button className="dh-btn-outline" onClick={()=>window.open(r.mapsUrl || `https://maps.google.com/?q=${encodeURIComponent(r.address)}`)}>{t.directions}</button>
         </div>
         {/* Save + I Found Help */}
         <div style={{display:"flex",gap:8,marginBottom:12}}>
@@ -749,7 +747,6 @@ function VolunteerScreen({ lang }) {
   const t=T[lang]||T.en;
   const opps=[
     {org:"Lifewerks Food Pantry",role:"Pantry Volunteer",time:"Tuesdays 5:30–8:30 PM",icon:"🍽",color:"#2D6A4F"},
-    {org:"DIFAN Network",role:"Food Distributor",time:"Tuesdays & Fridays",icon:"📦",color:"#40916C"},
     {org:"Media Food Bank",role:"Donation Sorter",time:"Thursdays 5–8 PM",icon:"🏪️",color:"#1B4332"},
     {org:"Delco Helping Hands",role:"Driver / Delivery",time:"Flexible scheduling",icon:"🚗",color:"#F4A261"},
     {org:"Catholic Social Services",role:"Case Aid Volunteer",time:"Weekdays flexible",icon:"🤝",color:"#E76F51"},
@@ -941,8 +938,7 @@ function AIScreen({ lang }) {
       const systemPrompt=`You are DelcoHelp AI, a friendly assistant helping low-income families in Delaware County, PA (near Wallingford, zip 19086) find local resources.
 
 Key local resources:
-- Lifewerks Food Pantry: 25 Cedar Rd, Wallingford — Tuesdays 6–8 PM, choice pantry, 610-872-3344
-- DIFAN Wallingford: 25 Cedar Rd — Tues 6:30–8 PM, Fri 4–6 PM, 484-326-5362
+- Lifewerks Food Pantry: 28 Walnut Road, Wallingford — Tuesdays 6–8 PM, choice pantry, 610-872-3344
 - Media Food Bank: 350 W State St Media — Thurs 6–8 PM, Sun 1–2 PM, 610-566-3172
 - Delco Helping Hands: diapers, pet supplies, referrals, 484-474-0590
 - Legal Aid of SE PA: free legal help, 877-429-5994
@@ -1021,7 +1017,6 @@ function DonateModal({ onClose, lang }) {
   const amts=["$10","$25","$50","$100","$250","Custom"];
   const orgs=[
     {name:"Lifewerks Food Pantry",icon:"🍽",desc:"Choice pantry · Wallingford"},
-    {name:"DIFAN Wallingford",icon:"📦",desc:"Interfaith food network"},
     {name:"Media Food Bank",icon:"🏪",desc:"Media, PA · Thurs & Sun"},
     {name:"Delco Helping Hands",icon:"🤝",desc:"Diapers, supplies, referrals"},
     {name:"General Delco Fund",icon:"💛",desc:"Split across all partners"},

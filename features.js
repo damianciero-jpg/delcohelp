@@ -1267,7 +1267,7 @@ export function CrisisEscapePlan({ onClose }) {
         <div style={{ fontSize: 12, color: "#6B7080", marginBottom: 16, lineHeight: 1.5 }}>Fill this out when you're calm. It will be here when you need it — even offline.</div>
         {[
           { key: "step1", label: "Step 1 — First call I make", placeholder: "e.g. Call 855-889-7827, call 988, or text PA to 741741" },
-          { key: "step2", label: "Step 2 — First place I go", placeholder: "e.g. 25 Cedar Rd, Wallingford (Lifewerks)" },
+          { key: "step2", label: "Step 2 — First place I go", placeholder: "e.g. 28 Walnut Road, Wallingford (Lifewerks)" },
           { key: "step3", label: "Step 3 — What I say when I get there", placeholder: "e.g. I need emergency help, I'm not safe at home" },
           { key: "safeContact", label: "My trusted contact", placeholder: "e.g. Sister Maria" },
           { key: "safeContactPhone", label: "Their phone number", placeholder: "e.g. 610-555-0000" },
@@ -1630,6 +1630,9 @@ export function ReportIssueButton({ resource }) {
   const [showForm, setShowForm] = useState(false);
   const [issue, setIssue] = useState("");
   const [issueType, setIssueType] = useState("hours");
+  const correctionSubject = `DelcoHelp correction needed: ${resource.name}`;
+  const correctionBody = `Resource: ${resource.name}\nIssue:\nCorrect information:\nSource if available:`;
+  const correctionHref = `mailto:cierolink@gmail.com?subject=${encodeURIComponent(correctionSubject)}&body=${encodeURIComponent(correctionBody)}`;
 
   const issueTypes = [
     { id: "hours", label: "Wrong hours" },
@@ -1693,12 +1696,21 @@ export function ReportIssueButton({ resource }) {
   );
 
   return (
-    <button onClick={() => setShowForm(true)} style={{
-      background: "transparent", border: "none", color: "#9BA8A0",
-      fontSize: 11, cursor: "pointer", padding: "4px 0", textDecoration: "underline",
-      fontFamily: "sans-serif"
-    }}>
-      ⚑ Report incorrect information
-    </button>
+    <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
+      <a href={correctionHref} style={{
+        background: "transparent", border: "none", color: "#9BA8A0",
+        fontSize: 11, cursor: "pointer", padding: "4px 0", textDecoration: "underline",
+        fontFamily: "sans-serif"
+      }}>
+        Report incorrect info
+      </a>
+      <button onClick={() => setShowForm(true)} style={{
+        background: "transparent", border: "none", color: "#9BA8A0",
+        fontSize: 11, cursor: "pointer", padding: "4px 0", textDecoration: "underline",
+        fontFamily: "sans-serif"
+      }}>
+        Quick report
+      </button>
+    </div>
   );
 }
