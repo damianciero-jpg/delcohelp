@@ -11,6 +11,11 @@ import { translateResourceText } from "./resourceTranslations";
 import { cachePublicResources, getInitialPublicResources } from "./resourceCache";
 
 const PHILLY_RESOURCE_CACHE_KEY = "delcohelp_cached_philly_resources_v1";
+const PHILLY_BLUE = "#0F4C81";
+const PHILLY_BLUE_DARK = "#083A63";
+const PHILLY_GOLD = "#F2C94C";
+const PHILLY_GOLD_DARK = "#D6A600";
+const PHILLY_WHITE = "#FFFFFF";
 
 // PhillyHelp — Philadelphia Community Resource App
 
@@ -188,25 +193,25 @@ const HOTLINES = [
   { id:1, name:"911 Emergency", sub:"Police, Fire, Medical", number:"911", color:"#D62828", bg:"#FFF0F0", icon:"🚨", urgent:true },
   { id:2, name:"Crisis Text Line", sub:"Text HOME to 741741 — 24/7", number:"741741", color:"#D62828", bg:"#FFF0F0", icon:"💬", urgent:true, isText:true },
   { id:3, name:"988 Suicide & Crisis", sub:"Call or text 988 — 24/7 free", number:"988", color:"#7B2D8B", bg:"#F8F0FF", icon:"🧠", urgent:true },
-  { id:4, name:"Philadelphia Crisis Line", sub:"Behavioral health emergency — 24/7", number:"215-685-6440", color:"#023E8A", bg:"#F0F4FF", icon:"🧩" },
+  { id:4, name:"Philadelphia Crisis Line", sub:"Behavioral health emergency — 24/7", number:"215-685-6440", color:PHILLY_BLUE_DARK, bg:"rgba(15,76,129,0.08)", icon:"🧩" },
   { id:5, name:"Domestic Violence Hotline", sub:"Women Against Abuse — 24/7", number:"1-866-723-3014", color:"#9D4EDD", bg:"#F8F0FF", icon:"🏠" },
-  { id:6, name:"Philadelphia 311", sub:"All city services — 24/7", number:"311", color:"#003594", bg:"#EEF3FF", icon:"📞" },
-  { id:7, name:"Hunger Hotline", sub:"Find food near you right now", number:"1-866-348-6479", color:"#0046AD", bg:"#EEF3FF", icon:"🍽" },
-  { id:8, name:"Poison Control", sub:"24/7 medical emergency", number:"1-800-222-1222", color:"#E76F51", bg:"#FFF6F0", icon:"⚠️" },
-  { id:9, name:"Homeless Outreach Hotline", sub:"Philadelphia shelter line", number:"215-232-1984", color:"#F4A261", bg:"#FFF8F0", icon:"🏠" },
+  { id:6, name:"Philadelphia 311", sub:"All city services — 24/7", number:"311", color:PHILLY_BLUE, bg:"rgba(15,76,129,0.08)", icon:"📞" },
+  { id:7, name:"Hunger Hotline", sub:"Find food near you right now", number:"1-866-348-6479", color:PHILLY_BLUE, bg:"rgba(15,76,129,0.08)", icon:"🍽" },
+  { id:8, name:"Poison Control", sub:"24/7 medical emergency", number:"1-800-222-1222", color:PHILLY_BLUE_DARK, bg:"rgba(242,201,76,0.18)", icon:"⚠️" },
+  { id:9, name:"Homeless Outreach Hotline", sub:"Philadelphia shelter line", number:"215-232-1984", color:PHILLY_BLUE_DARK, bg:"rgba(242,201,76,0.18)", icon:"🏠" },
   { id:10, name:"Child Abuse Hotline", sub:"PA ChildLine — 24/7 reporting", number:"1-800-932-0313", color:"#D62828", bg:"#FFF0F0", icon:"👶" },
 ];
 
 // eslint-disable-next-line no-unused-vars
 const CATEGORY_LABELS = { food:"Food Pantry", assistance:"Family Assistance", legal:"Legal Aid" };
 // eslint-disable-next-line no-unused-vars
-const CATEGORY_COLORS = { food:"#003594", assistance:"#E76F51", legal:"#023E8A" };
+const CATEGORY_COLORS = { food:PHILLY_BLUE, assistance:PHILLY_GOLD_DARK, legal:PHILLY_BLUE_DARK };
 
 const IMPACT_STATS = [
-  { label:"totalUsers", value:"2,847", trend:"+12% this month", icon:"👥", color:"#003594" },
-  { label:"resourcesFound", value:"14,392", trend:"+8% this month", icon:"🔍", color:"#0046AD" },
-  { label:"donationsGiven", value:"$8,240", trend:"+23% this month", icon:"💛", color:"#F4A261" },
-  { label:"familiesHelped", value:"1,203", trend:"+15% this month", icon:"🏠", color:"#E76F51" },
+  { label:"totalUsers", value:"2,847", trend:"+12% this month", icon:"👥", color:PHILLY_BLUE },
+  { label:"resourcesFound", value:"14,392", trend:"+8% this month", icon:"🔍", color:PHILLY_BLUE_DARK },
+  { label:"donationsGiven", value:"$8,240", trend:"+23% this month", icon:"💛", color:PHILLY_GOLD_DARK },
+  { label:"familiesHelped", value:"1,203", trend:"+15% this month", icon:"🏠", color:PHILLY_BLUE },
 ];
 
 const SPONSORS = ["Crozer Health","Main Line Health","TD Bank","Wawa Foundation","Philadelphia Government"];
@@ -324,63 +329,67 @@ function AccessibilityTransportation({ resource, lang }) {
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap');
   .dh * { box-sizing:border-box; margin:0; padding:0; }
-  .dh { width:390px; height:844px; margin:0 auto; background:#FAFAF7; overflow:hidden; display:flex; flex-direction:column; border-radius:44px; box-shadow:0 32px 64px rgba(0,0,0,0.18),0 0 0 1px rgba(0,0,0,0.06); font-family:'DM Sans',sans-serif; color:#1C2B1E; position:relative; }
+  .dh { width:390px; height:844px; margin:0 auto; background:${PHILLY_WHITE}; overflow:hidden; display:flex; flex-direction:column; border-radius:44px; box-shadow:0 32px 64px rgba(15,76,129,0.18),0 0 0 1px rgba(15,76,129,0.12); font-family:'DM Sans',sans-serif; color:#102A43; position:relative; }
   .dh-sb { display:flex; justify-content:space-between; align-items:center; padding:14px 24px 0; font-size:12px; font-weight:600; color:#1C2B1E; flex-shrink:0; }
   .dh-sc { flex:1; overflow-y:auto; overflow-x:hidden; scrollbar-width:none; }
   .dh-sc::-webkit-scrollbar { display:none; }
-  .dh-nav { display:flex; justify-content:space-around; align-items:center; padding:6px 0 16px; border-top:1px solid rgba(0,0,0,0.08); background:#FAFAF7; flex-shrink:0; }
+  .dh-nav { display:flex; justify-content:space-around; align-items:center; padding:6px 0 16px; border-top:1px solid rgba(15,76,129,0.16); background:${PHILLY_WHITE}; flex-shrink:0; }
   .dh-ni { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; padding:4px 8px; border-radius:12px; transition:all 0.18s; position:relative; }
-  .dh-ni:hover { background:rgba(0,53,148,0.07); }
+  .dh-ni:hover { background:rgba(15,76,129,0.08); }
   .dh-ni-ic { font-size:18px; opacity:0.35; transition:opacity 0.18s; }
   .dh-ni-lb { font-size:8px; font-weight:600; letter-spacing:0.05em; color:#6B7C6E; transition:color 0.18s; text-transform:uppercase; }
   .dh-ni.act .dh-ni-ic { opacity:1; }
-  .dh-ni.act .dh-ni-lb { color:#003594; }
+  .dh-ni.act .dh-ni-lb { color:${PHILLY_BLUE}; }
   .dfi { animation:dhFi 0.28s ease; }
   @keyframes dhFi { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
   .dh-chip { display:inline-flex; align-items:center; gap:4px; background:#F0F4F1; border-radius:20px; padding:4px 10px; font-size:11px; font-weight:500; color:#4A6B52; }
-  .dh-chip.open { background:#E0EAFF; color:#002060; }
+  .dh-chip.open { background:rgba(15,76,129,0.12); color:${PHILLY_BLUE_DARK}; }
   .dh-chip.closed { background:#FFE8E8; color:#9B1C1C; }
-  .dh-chip.today { background:#FFF3CD; color:#7B5800; }
-  .dh-btn-primary { background:#003594; color:white; border:none; border-radius:14px; padding:14px 20px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.18s; width:100%; }
-  .dh-btn-primary:hover { background:#002060; transform:translateY(-1px); }
-  .dh-btn-outline { background:transparent; color:#003594; border:1.5px solid #003594; border-radius:14px; padding:12px 20px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.18s; width:100%; }
-  .dh-btn-outline:hover { background:rgba(0,53,148,0.06); }
-  .dh-card { background:white; border-radius:18px; padding:16px; box-shadow:0 2px 12px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04); cursor:pointer; transition:all 0.18s; }
-  .dh-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,0.1); }
-  .dh-tag { background:#F0F4F1; border-radius:8px; padding:3px 8px; font-size:11px; color:#4A6B52; font-weight:500; }
-  .dh-divider { height:1px; background:rgba(0,0,0,0.07); margin:0 24px; }
+  .dh-chip.today { background:#FFF5CC; color:#5A4300; }
+  .dh-btn-primary { background:${PHILLY_BLUE}; color:${PHILLY_WHITE}; border:none; border-radius:14px; padding:14px 20px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.18s; width:100%; }
+  .dh-btn-primary:hover, .dh-btn-primary:focus-visible { background:${PHILLY_BLUE_DARK}; color:${PHILLY_WHITE}; transform:translateY(-1px); outline:2px solid ${PHILLY_GOLD}; outline-offset:2px; }
+  .dh-btn-secondary { background:${PHILLY_GOLD}; color:${PHILLY_BLUE_DARK}; border:none; border-radius:12px; padding:12px 20px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:800; cursor:pointer; transition:all 0.18s; width:100%; }
+  .dh-btn-secondary:hover, .dh-btn-secondary:focus-visible { background:${PHILLY_GOLD_DARK}; color:${PHILLY_BLUE_DARK}; transform:translateY(-1px); outline:2px solid ${PHILLY_BLUE}; outline-offset:2px; }
+  .dh-county-switch { margin-bottom:10px; display:block; text-align:center; text-decoration:none; background:${PHILLY_GOLD}; color:${PHILLY_BLUE_DARK}; border:1px solid rgba(255,255,255,0.8); box-shadow:0 2px 8px rgba(8,58,99,0.18); }
+  .dh-county-switch:hover, .dh-county-switch:focus-visible { background:${PHILLY_GOLD_DARK}; color:${PHILLY_BLUE_DARK}; text-decoration:none; }
+  .dh-btn-outline { background:transparent; color:${PHILLY_BLUE}; border:1.5px solid ${PHILLY_BLUE}; border-radius:14px; padding:12px 20px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.18s; width:100%; }
+  .dh-btn-outline:hover, .dh-btn-outline:focus-visible { background:rgba(15,76,129,0.08); color:${PHILLY_BLUE_DARK}; outline:2px solid ${PHILLY_GOLD}; outline-offset:2px; }
+  .dh-card { background:${PHILLY_WHITE}; border-radius:18px; padding:16px; box-shadow:0 2px 12px rgba(15,76,129,0.08),0 0 0 1px rgba(15,76,129,0.08); cursor:pointer; transition:all 0.18s; }
+  .dh-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(15,76,129,0.14); }
+  .dh-tag { background:rgba(242,201,76,0.22); border-radius:8px; padding:3px 8px; font-size:11px; color:${PHILLY_BLUE_DARK}; font-weight:600; }
+  .dh-divider { height:1px; background:rgba(15,76,129,0.12); margin:0 24px; }
   .dh-input { width:100%; background:white; border:1.5px solid rgba(0,0,0,0.1); border-radius:14px; padding:12px 16px 12px 42px; font-family:'DM Sans',sans-serif; font-size:14px; color:#1C2B1E; outline:none; transition:border-color 0.18s; }
-  .dh-input:focus { border-color:#003594; }
+  .dh-input:focus { border-color:${PHILLY_BLUE}; }
   .dh-input-plain { width:100%; background:white; border:1.5px solid rgba(0,0,0,0.1); border-radius:14px; padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:14px; color:#1C2B1E; outline:none; transition:border-color 0.18s; margin-bottom:10px; }
-  .dh-input-plain:focus { border-color:#003594; }
+  .dh-input-plain:focus { border-color:${PHILLY_BLUE}; }
   .dh-filter-pill { white-space:nowrap; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.18s; border:1.5px solid transparent; }
-  .dh-filter-pill.active { background:#003594; color:white; }
-  .dh-filter-pill.inactive { background:white; color:#4A6B52; border-color:rgba(0,53,148,0.25); }
-  .dh-back { display:flex; align-items:center; gap:6px; color:#003594; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:16px; }
+  .dh-filter-pill.active { background:${PHILLY_BLUE}; color:${PHILLY_WHITE}; }
+  .dh-filter-pill.inactive { background:${PHILLY_WHITE}; color:${PHILLY_BLUE_DARK}; border-color:rgba(15,76,129,0.25); }
+  .dh-back { display:flex; align-items:center; gap:6px; color:${PHILLY_BLUE}; font-size:13px; font-weight:600; cursor:pointer; margin-bottom:16px; }
   .pulse { animation:pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
   .notif-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.45); z-index:100; display:flex; flex-direction:column; justify-content:flex-start; padding:60px 20px 0; border-radius:44px; animation:dhFi 0.2s ease; }
   .notif-banner { background:rgba(255,255,255,0.97); backdrop-filter:blur(20px); border-radius:20px; padding:14px 16px; margin-bottom:10px; box-shadow:0 8px 32px rgba(0,0,0,0.2); display:flex; align-items:flex-start; gap:12px; }
   .modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.5); z-index:200; display:flex; align-items:flex-end; border-radius:44px; animation:dhFi 0.2s ease; }
-  .modal-sheet { background:#FAFAF7; border-radius:28px 28px 44px 44px; width:100%; max-height:90%; overflow-y:auto; padding:24px; animation:sheetUp 0.3s ease; scrollbar-width:none; }
+  .modal-sheet { background:${PHILLY_WHITE}; border-radius:28px 28px 44px 44px; width:100%; max-height:90%; overflow-y:auto; padding:24px; animation:sheetUp 0.3s ease; scrollbar-width:none; }
   .modal-sheet::-webkit-scrollbar { display:none; }
   @keyframes sheetUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
   .modal-handle { width:36px; height:4px; background:rgba(0,0,0,0.15); border-radius:2px; margin:0 auto 20px; }
-  .amt-pill { padding:10px 16px; border-radius:20px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.18s; border:1.5px solid rgba(0,53,148,0.25); background:white; color:#003594; }
-  .amt-pill.sel { background:#003594; color:white; border-color:#003594; }
+  .amt-pill { padding:10px 16px; border-radius:20px; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.18s; border:1.5px solid rgba(15,76,129,0.25); background:${PHILLY_WHITE}; color:${PHILLY_BLUE}; }
+  .amt-pill.sel { background:${PHILLY_BLUE}; color:${PHILLY_WHITE}; border-color:${PHILLY_BLUE}; }
   .hotline-card { border-radius:16px; padding:14px 16px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.18s; margin-bottom:8px; }
   .hotline-card:hover { transform:translateX(2px); }
   .hotline-call-btn { border:none; border-radius:10px; padding:8px 14px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.18s; white-space:nowrap; }
   .emerg-overlay { position:absolute; inset:0; background:rgba(214,40,40,0.97); z-index:300; display:flex; flex-direction:column; border-radius:44px; animation:dhFi 0.2s ease; overflow-y:auto; scrollbar-width:none; }
   .emerg-overlay::-webkit-scrollbar { display:none; }
-  .chat-bubble-user { background:#003594; color:white; border-radius:18px 18px 4px 18px; padding:10px 14px; font-size:13px; line-height:1.5; max-width:80%; align-self:flex-end; }
+  .chat-bubble-user { background:${PHILLY_BLUE}; color:${PHILLY_WHITE}; border-radius:18px 18px 4px 18px; padding:10px 14px; font-size:13px; line-height:1.5; max-width:80%; align-self:flex-end; }
   .chat-bubble-ai { background:white; color:#1C2B1E; border-radius:18px 18px 18px 4px; padding:10px 14px; font-size:13px; line-height:1.5; max-width:85%; align-self:flex-start; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
   .chat-input-row { display:flex; gap:8px; padding:12px 16px; background:white; border-top:1px solid rgba(0,0,0,0.08); flex-shrink:0; }
   .chat-input { flex:1; background:#F5F5F0; border:none; border-radius:20px; padding:10px 16px; font-family:'DM Sans',sans-serif; font-size:13px; outline:none; }
-  .chat-send-btn { background:#003594; color:white; border:none; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; flex-shrink:0; }
+  .chat-send-btn { background:${PHILLY_BLUE}; color:${PHILLY_WHITE}; border:none; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; flex-shrink:0; }
   .lang-toggle { display:flex; background:rgba(255,255,255,0.2); border-radius:20px; padding:2px; }
   .lang-btn { padding:4px 10px; border-radius:18px; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.18s; border:none; font-family:'DM Sans',sans-serif; }
-  .lang-btn.active { background:white; color:#003594; }
+  .lang-btn.active { background:${PHILLY_WHITE}; color:${PHILLY_BLUE}; }
   .lang-btn.inactive { background:transparent; color:rgba(255,255,255,0.8); }
   .impact-stat { background:white; border-radius:16px; padding:14px; flex:1; box-shadow:0 2px 8px rgba(0,0,0,0.06); text-align:center; }
   .sponsor-ticker { overflow:hidden; white-space:nowrap; }
@@ -401,7 +410,7 @@ function ResourceCard({ r, onClick, lang }) {
   return (
     <div className="dh-card" onClick={()=>{trackEvent("resource_viewed",{id:r.id,name:r.name,category:r.category});onClick(r);}} style={{marginBottom:10}}>
       <div style={{display:"flex",alignItems:"flex-start",gap:12}}>
-        <div style={{width:44,height:44,borderRadius:12,background:r.color+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
+        <div style={{width:44,height:44,borderRadius:12,background:CATEGORY_COLORS[r.category]+"18",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0}}>
           {r.category==="food"?"🍽":r.category==="legal"?"⚖️":"🤝"}
         </div>
         <div style={{flex:1,minWidth:0}}>
@@ -442,9 +451,9 @@ function DetailView({ r, onBack, onDonate, lang, online=true }) {
         <span style={{zIndex:1}}>📍</span>
       </div>
       <div style={{padding:"0 24px"}}>
-        <div style={{background:"#F0F4FF",borderRadius:14,padding:16,marginBottom:16,border:"1px solid rgba(0,53,148,0.12)"}}>
+        <div style={{background:"rgba(15,76,129,0.06)",borderRadius:14,padding:16,marginBottom:16,border:"1px solid rgba(15,76,129,0.14)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-            <div style={{fontSize:12,fontWeight:700,color:"#003594",textTransform:"uppercase",letterSpacing:"0.06em"}}>{t.about}</div>
+            <div style={{fontSize:12,fontWeight:700,color:PHILLY_BLUE,textTransform:"uppercase",letterSpacing:"0.06em"}}>{t.about}</div>
             <TrustBadge resourceId={r.id}/>
           </div>
           <div style={{fontSize:14,color:"#3D4F40",lineHeight:1.6}}>{rt(r.description)}</div>
@@ -483,7 +492,7 @@ function DetailView({ r, onBack, onDonate, lang, online=true }) {
           <SaveResourceButton resource={r}/>
           <FoundHelpButton resource={r}/>
         </div>
-        <button onClick={onDonate} style={{width:"100%",background:"linear-gradient(135deg,#F4A261,#E76F51)",border:"none",borderRadius:14,padding:14,fontFamily:"'DM Sans',sans-serif",fontSize:14,fontWeight:600,color:"white",cursor:"pointer",marginBottom:12}}>{t.donatePantry}</button>
+        <button onClick={onDonate} style={{width:"100%",background:PHILLY_GOLD,border:"none",borderRadius:14,padding:14,fontFamily:"'DM Sans',sans-serif",fontSize:14,fontWeight:800,color:PHILLY_BLUE_DARK,cursor:"pointer",marginBottom:12}}>{t.donatePantry}</button>
         <div style={{textAlign:"center",paddingBottom:16}}>
           <ReportIssueButton resource={r}/>
         </div>
@@ -531,7 +540,7 @@ function EmergencyMode({ onClose, lang, resources=RESOURCES }) {
               <div style={{fontSize:13,fontWeight:700,color:"white"}}>{r.name}</div>
               <div style={{fontSize:11,color:"rgba(255,255,255,0.7)"}}>{r.address.split(",")[0]} · {r.miles} mi</div>
             </div>
-            <button style={{background:"white",color:"#003594",border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(`tel:${r.phone}`)}>Call</button>
+            <button style={{background:PHILLY_WHITE,color:PHILLY_BLUE,border:"none",borderRadius:10,padding:"8px 12px",fontSize:12,fontWeight:700,cursor:"pointer"}} onClick={()=>window.open(`tel:${r.phone}`)}>Call</button>
           </div>
         ))}
         <div style={{height:24}}/>
@@ -549,7 +558,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=
   const savedResources = resources.filter(r=>savedIds.includes(r.id));
   return (
     <div className="dfi">
-      <div style={{background:"linear-gradient(160deg,#003594 0%,#0046AD 100%)",padding:"16px 24px 24px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
+      <div style={{background:`linear-gradient(160deg,${PHILLY_BLUE} 0%,${PHILLY_BLUE_DARK} 100%)`,padding:"16px 24px 24px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
         <div style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:4}}>{t.county}</div>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:24,color:"white",lineHeight:1.25,marginBottom:2}}>{t.tagline}</div>
         <div style={{fontSize:12,color:"rgba(255,255,255,0.75)",marginBottom:16}}>{t.zip}</div>
@@ -557,11 +566,10 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=
           {t.needHelpNow}
         </button>
         <a
-          className="dh-btn-secondary"
+          className="dh-btn-secondary dh-county-switch"
           href="https://www.delcohelp.org"
-          style={{ marginBottom:10, background:"#1E5A8A", border:"1px solid rgba(255,255,255,0.24)", display:"block", textAlign:"center", textDecoration:"none" }}
         >
-          Switch to Delaware County
+          Delaware County Resources
         </a>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
           {[{icon:"🔍",label:t.findResources,sub:t.foodHelpMore,nav:"find"},{icon:"📋",label:t.benefits,sub:t.snapWic,nav:"benefits"},{icon:"🥗",label:"Food Health",sub:"Scan to check",nav:"health"},{icon:"🤖",label:t.askAI,sub:"Powered by Claude",nav:"ai"},{icon:"🚨",label:t.emergency,sub:"Crisis hotlines",nav:"hotline"},{icon:"🏥",label:"Volunteer",sub:"Give back",nav:"volunteer"}].map(a=>(
@@ -576,8 +584,8 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=
       <div style={{padding:"0 24px"}}>
         {openNow.length>0&&<>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
-            <div style={{width:8,height:8,borderRadius:"50%",background:"#0046AD"}} className="pulse"/>
-            <div style={{fontSize:13,fontWeight:700,color:"#002060"}}>{t.openNow} ({openNow.length})</div>
+            <div style={{width:8,height:8,borderRadius:"50%",background:PHILLY_GOLD}} className="pulse"/>
+            <div style={{fontSize:13,fontWeight:700,color:PHILLY_BLUE_DARK}}>{t.openNow} ({openNow.length})</div>
           </div>
           {openNow.map(r=><ResourceCard key={r.id} r={r} onClick={onResource} lang={lang}/>)}
           <div style={{height:6}}/>
@@ -610,7 +618,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=
         <div style={{background:"linear-gradient(135deg,#F0F4FF,#E8EEFF)",borderRadius:16,padding:14,marginBottom:20,border:"1px solid rgba(2,62,138,0.12)",cursor:"pointer"}} onClick={()=>onNav("impact")}>
           <div style={{display:"flex",alignItems:"center",gap:12}}>
             <div style={{fontSize:28}}>📊</div>
-            <div><div style={{fontSize:13,fontWeight:700,color:"#023E8A",marginBottom:2}}>{t.impactDashboard}</div><div style={{fontSize:11,color:"#1A4A8A",lineHeight:1.4}}>{t.impactDesc}</div></div>
+            <div><div style={{fontSize:13,fontWeight:700,color:PHILLY_BLUE,marginBottom:2}}>{t.impactDashboard}</div><div style={{fontSize:11,color:PHILLY_BLUE_DARK,lineHeight:1.4}}>{t.impactDesc}</div></div>
           </div>
         </div>
       </div>
@@ -682,7 +690,7 @@ function FindScreen({ onResource, lang, resources=RESOURCES }) {
 
         {/* Zip code search */}
         <div style={{background:"#F0F9F4",borderRadius:14,padding:12,marginBottom:10,border:"1px solid rgba(0,53,148,0.15)"}}>
-          <div style={{fontSize:11,fontWeight:700,color:"#003594",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>📍 Your Location</div>
+          <div style={{fontSize:11,fontWeight:700,color:PHILLY_BLUE,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>📍 Your Location</div>
           <div style={{display:"flex",gap:8,alignItems:"center"}}>
             <input
               style={{flex:1,background:"white",border:"1.5px solid rgba(0,0,0,0.1)",borderRadius:10,padding:"10px 14px",fontFamily:"'DM Sans',sans-serif",fontSize:14,outline:"none"}}
@@ -692,7 +700,7 @@ function FindScreen({ onResource, lang, resources=RESOURCES }) {
               onBlur={e=>applyZip(e.target.value)}
               maxLength={5}
             />
-            <button onClick={useMyLocation} disabled={locating} style={{flexShrink:0,background:"#003594",color:"white",border:"none",borderRadius:10,padding:"10px 12px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
+            <button onClick={useMyLocation} disabled={locating} style={{flexShrink:0,background:PHILLY_BLUE,color:PHILLY_WHITE,border:"none",borderRadius:10,padding:"10px 12px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>
               {locating?"...":"📍 Near me"}
             </button>
             {zip.length===5 && (
@@ -703,11 +711,11 @@ function FindScreen({ onResource, lang, resources=RESOURCES }) {
             <div style={{fontSize:11,color:"#D62828",marginTop:6}}>Zip code not in Philadelphia — showing all resources</div>
           )}
           {zip.length===5 && ZIP_COORDS[zip] && (
-            <div style={{fontSize:11,color:"#003594",marginTop:6,fontWeight:600}}>Showing resources within 10 miles of {zip} · {ZIP_NEIGHBORHOODS[zip]}</div>
+            <div style={{fontSize:11,color:PHILLY_BLUE,marginTop:6,fontWeight:600}}>Showing resources within 10 miles of {zip} · {ZIP_NEIGHBORHOODS[zip]}</div>
           )}
           <div style={{display:"flex",gap:6,flexWrap:"wrap",marginTop:8}}>
             {Object.keys(ZIP_COORDS).map(z=>(
-              <button key={z} onClick={()=>applyZip(z)} style={{background:zip===z?"#003594":"white",color:zip===z?"white":"#003594",border:"1px solid rgba(0,53,148,0.2)",borderRadius:999,padding:"5px 8px",fontSize:10,fontWeight:700,cursor:"pointer"}}>
+              <button key={z} onClick={()=>applyZip(z)} style={{background:zip===z?PHILLY_BLUE:PHILLY_WHITE,color:zip===z?PHILLY_WHITE:PHILLY_BLUE,border:"1px solid rgba(15,76,129,0.22)",borderRadius:999,padding:"5px 8px",fontSize:10,fontWeight:700,cursor:"pointer"}}>
                 {z}
               </button>
             ))}
@@ -762,21 +770,21 @@ function BenefitsScreen({ lang }) {
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#1C2B1E",marginBottom:4}}>{t.benefitsNav}</div>
         <div style={{fontSize:13,color:"#6B7C6E",marginBottom:12}}>{t.benefitsDesc}</div>
         {/* Action buttons */}
-        <button onClick={()=>{trackEvent("eligibility_quiz_opened");setShowQuiz(true);}} style={{width:"100%",background:"#003594",color:"white",border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:700,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
+        <button onClick={()=>{trackEvent("eligibility_quiz_opened");setShowQuiz(true);}} style={{width:"100%",background:PHILLY_BLUE,color:PHILLY_WHITE,border:"none",borderRadius:12,padding:"14px",fontSize:14,fontWeight:700,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
           Check My Eligibility in 60 Seconds →
         </button>
-        <button onClick={()=>setShowSNAP(true)} style={{width:"100%",background:"white",color:"#003594",border:"1.5px solid rgba(0,53,148,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
+        <button onClick={()=>setShowSNAP(true)} style={{width:"100%",background:PHILLY_WHITE,color:PHILLY_BLUE,border:"1.5px solid rgba(15,76,129,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:8,fontFamily:"'DM Sans',sans-serif"}}>
           🥫 SNAP Application Step-by-Step Guide
         </button>
-        <button onClick={()=>{setChecklistPrograms(["snap","wic","liheap","medicaid"]);setShowChecklist(true);}} style={{width:"100%",background:"white",color:"#003594",border:"1.5px solid rgba(0,53,148,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:16,fontFamily:"'DM Sans',sans-serif"}}>
+        <button onClick={()=>{setChecklistPrograms(["snap","wic","liheap","medicaid"]);setShowChecklist(true);}} style={{width:"100%",background:PHILLY_WHITE,color:PHILLY_BLUE,border:"1.5px solid rgba(15,76,129,0.3)",borderRadius:12,padding:"12px",fontSize:13,fontWeight:600,cursor:"pointer",marginBottom:16,fontFamily:"'DM Sans',sans-serif"}}>
           📋 Build My Document Checklist
         </button>
-        <div style={{background:"#F0F9F4",borderRadius:16,padding:16,marginBottom:16,border:"1px solid rgba(0,53,148,0.15)"}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#003594",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.quickEligibility}</div>
+        <div style={{background:"rgba(242,201,76,0.16)",borderRadius:16,padding:16,marginBottom:16,border:"1px solid rgba(15,76,129,0.15)"}}>
+          <div style={{fontSize:12,fontWeight:700,color:PHILLY_BLUE,textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:10}}>{t.quickEligibility}</div>
           {eligibility.map((e,i)=>(
             <div key={i} style={{padding:"8px 0",borderBottom:i<eligibility.length-1?"1px solid rgba(0,53,148,0.1)":"none"}}>
               <div style={{fontSize:13,color:"#1C2B1E",marginBottom:6}}>{e.q}</div>
-              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{e.programs.map(p=><span key={p} style={{background:"#003594",color:"white",borderRadius:8,padding:"2px 8px",fontSize:11,fontWeight:600}}>{p}</span>)}</div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>{e.programs.map(p=><span key={p} style={{background:PHILLY_BLUE,color:PHILLY_WHITE,borderRadius:8,padding:"2px 8px",fontSize:11,fontWeight:600}}>{p}</span>)}</div>
             </div>
           ))}
         </div>
@@ -785,7 +793,7 @@ function BenefitsScreen({ lang }) {
             <div style={{display:"flex",alignItems:"center",gap:12}}>
               <div style={{fontSize:28,flexShrink:0}}>{b.icon}</div>
               <div style={{flex:1}}><div style={{fontSize:14,fontWeight:600}}>{b.name}</div><div style={{fontSize:12,color:"#6B7C6E",marginTop:2}}>{b.desc}</div></div>
-              <div style={{color:"#003594",fontSize:18,fontWeight:300}}>{expanded===b.id?"−":"+"}</div>
+              <div style={{color:PHILLY_BLUE,fontSize:18,fontWeight:300}}>{expanded===b.id?"−":"+"}</div>
             </div>
             {expanded===b.id&&<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid rgba(0,0,0,0.06)"}}>
               <div style={{fontSize:13,color:"#3D4F40",marginBottom:12}}>Apply online through PA's COMPASS portal — takes about 15 minutes.</div>
@@ -830,7 +838,7 @@ function HotlineScreen({ lang, onEscape }) {
           </div>
         ))}
         <div style={{background:"#F0F9F4",borderRadius:16,padding:14,marginTop:8,marginBottom:24,border:"1px solid rgba(0,53,148,0.15)"}}>
-          <div style={{fontSize:12,color:"#003594",lineHeight:1.6,textAlign:"center"}}>{t.confidentialNote}</div>
+          <div style={{fontSize:12,color:PHILLY_BLUE,lineHeight:1.6,textAlign:"center"}}>{t.confidentialNote}</div>
         </div>
       </div>
     </div>
@@ -841,20 +849,20 @@ function HotlineScreen({ lang, onEscape }) {
 function VolunteerScreen({ lang }) {
   const t=T[lang]||T.en;
   const opps=[
-    {org:"Philabundance Community Kitchen",role:"Pantry Volunteer",time:"Weekdays flexible",icon:"🍽",color:"#003594"},
-    {org:"Sunday Breakfast Rescue Mission",role:"Meal Service Volunteer",time:"Morning shifts",icon:"📦",color:"#0046AD"},
-    {org:"Community Legal Services",role:"Intake Support Volunteer",time:"Weekdays flexible",icon:"🏪️",color:"#002060"},
-    {org:"Philadelphia 311",role:"Resource Navigation Support",time:"Flexible scheduling",icon:"🚗",color:"#F4A261"},
-    {org:"Catholic Social Services",role:"Case Aid Volunteer",time:"Weekdays flexible",icon:"🤝",color:"#E76F51"},
+    {org:"Philabundance Community Kitchen",role:"Pantry Volunteer",time:"Weekdays flexible",icon:"🍽",color:PHILLY_BLUE},
+    {org:"Sunday Breakfast Rescue Mission",role:"Meal Service Volunteer",time:"Morning shifts",icon:"📦",color:PHILLY_BLUE_DARK},
+    {org:"Community Legal Services",role:"Intake Support Volunteer",time:"Weekdays flexible",icon:"🏪️",color:PHILLY_BLUE_DARK},
+    {org:"Philadelphia 311",role:"Resource Navigation Support",time:"Flexible scheduling",icon:"🚗",color:PHILLY_GOLD_DARK},
+    {org:"Catholic Social Services",role:"Case Aid Volunteer",time:"Weekdays flexible",icon:"🤝",color:PHILLY_BLUE},
   ];
   return (
     <div className="dfi">
-      <div style={{background:"linear-gradient(160deg,#E76F51 0%,#F4A261 100%)",padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
+      <div style={{background:`linear-gradient(160deg,${PHILLY_BLUE} 0%,${PHILLY_BLUE_DARK} 100%)`,padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"white",lineHeight:1.3,marginBottom:4}}>{t.giveBack}</div>
         <div style={{fontSize:13,color:"rgba(255,255,255,0.8)"}}>{t.volunteerDesc}</div>
       </div>
       <div style={{padding:"0 24px"}}>
-        <div style={{background:"#FFF8F5",borderRadius:16,padding:14,marginBottom:16,border:"1px solid rgba(231,111,81,0.2)"}}>
+        <div style={{background:"rgba(242,201,76,0.16)",borderRadius:16,padding:14,marginBottom:16,border:"1px solid rgba(15,76,129,0.14)"}}>
           <div style={{fontSize:13,fontWeight:600,color:"#C1440E",marginBottom:4}}>{t.whyMatters}</div>
           <div style={{fontSize:13,color:"#5A3020",lineHeight:1.6}}>{t.volunteerImpact}</div>
         </div>
@@ -880,7 +888,7 @@ function ImpactScreen({ lang }) {
   const maxVal=Math.max(...monthly.map(m=>m.users));
   return (
     <div className="dfi">
-      <div style={{background:"linear-gradient(160deg,#023E8A 0%,#0077B6 100%)",padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
+      <div style={{background:`linear-gradient(160deg,${PHILLY_BLUE} 0%,${PHILLY_BLUE_DARK} 100%)`,padding:"16px 24px 20px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"white",lineHeight:1.3,marginBottom:4}}>{t.impactDashboard}</div>
         <div style={{fontSize:13,color:"rgba(255,255,255,0.75)"}}>{t.impactDesc}</div>
       </div>
@@ -891,7 +899,7 @@ function ImpactScreen({ lang }) {
               <div style={{fontSize:24,marginBottom:4}}>{s.icon}</div>
               <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:s.color,lineHeight:1}}>{s.value}</div>
               <div style={{fontSize:11,fontWeight:600,color:"#1C2B1E",marginTop:4}}>{t[s.label]||s.label}</div>
-              <div style={{fontSize:10,color:"#0046AD",marginTop:2}}>{s.trend}</div>
+              <div style={{fontSize:10,color:PHILLY_BLUE,marginTop:2}}>{s.trend}</div>
             </div>
           ))}
         </div>
@@ -900,7 +908,7 @@ function ImpactScreen({ lang }) {
           <div style={{display:"flex",alignItems:"flex-end",gap:8,height:80}}>
             {monthly.map(m=>(
               <div key={m.month} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
-                <div style={{width:"100%",background:"linear-gradient(180deg,#0046AD,#003594)",borderRadius:"4px 4px 0 0",height:`${(m.users/maxVal)*70}px`,transition:"height 0.5s ease"}}/>
+                <div style={{width:"100%",background:`linear-gradient(180deg,${PHILLY_GOLD},${PHILLY_BLUE})`,borderRadius:"4px 4px 0 0",height:`${(m.users/maxVal)*70}px`,transition:"height 0.5s ease"}}/>
                 <div style={{fontSize:9,color:"#6B7C6E",fontWeight:600}}>{m.month}</div>
               </div>
             ))}
@@ -911,7 +919,7 @@ function ImpactScreen({ lang }) {
           <div className="sponsor-ticker">
             <div className="sponsor-inner">
               {[...SPONSORS,...SPONSORS].map((s,i)=>(
-                <span key={i} style={{display:"inline-block",background:"#F0F4F1",borderRadius:8,padding:"6px 12px",margin:"0 6px",fontSize:12,fontWeight:600,color:"#003594"}}>{s}</span>
+                <span key={i} style={{display:"inline-block",background:"rgba(242,201,76,0.22)",borderRadius:8,padding:"6px 12px",margin:"0 6px",fontSize:12,fontWeight:700,color:PHILLY_BLUE}}>{s}</span>
               ))}
             </div>
           </div>
@@ -1029,7 +1037,7 @@ Keep responses short, warm, and actionable. Always give a phone number when reco
     <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
       <div style={{background:"linear-gradient(160deg,#1A1A2E 0%,#16213E 100%)",padding:"16px 24px 16px",borderRadius:"0 0 24px 24px",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <div style={{width:36,height:36,borderRadius:10,background:"linear-gradient(135deg,#003594,#0046AD)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🤖</div>
+          <div style={{width:36,height:36,borderRadius:10,background:`linear-gradient(135deg,${PHILLY_BLUE},${PHILLY_GOLD})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>🤖</div>
           <div style={{flex:1}}>
             <div style={{fontFamily:"'DM Serif Display',serif",fontSize:16,color:"white"}}>{t.aiChat}</div>
             <div style={{fontSize:11,color:"rgba(255,255,255,0.6)"}}>{t.aiDesc}</div>
@@ -1048,18 +1056,18 @@ Keep responses short, warm, and actionable. Always give a phone number when reco
           <div key={i} className={m.role==="user"?"chat-bubble-user":"chat-bubble-ai"}>{m.text}</div>
         ))}
         {loading&&<div className="chat-bubble-ai" style={{display:"flex",gap:6,alignItems:"center"}}>
-          <div style={{width:6,height:6,borderRadius:"50%",background:"#003594",animation:"pulse 1s infinite"}}/>
-          <div style={{width:6,height:6,borderRadius:"50%",background:"#003594",animation:"pulse 1s infinite 0.2s"}}/>
-          <div style={{width:6,height:6,borderRadius:"50%",background:"#003594",animation:"pulse 1s infinite 0.4s"}}/>
+          <div style={{width:6,height:6,borderRadius:"50%",background:PHILLY_BLUE,animation:"pulse 1s infinite"}}/>
+          <div style={{width:6,height:6,borderRadius:"50%",background:PHILLY_BLUE,animation:"pulse 1s infinite 0.2s"}}/>
+          <div style={{width:6,height:6,borderRadius:"50%",background:PHILLY_BLUE,animation:"pulse 1s infinite 0.4s"}}/>
         </div>}
         {messages.length===1&&!atLimit&&<div style={{display:"flex",flexDirection:"column",gap:6,marginTop:8}}>
-          {suggestions.map((s,i)=><button key={i} onClick={()=>setInput(s)} style={{background:"#F0F9F4",border:"1px solid rgba(0,53,148,0.2)",borderRadius:12,padding:"8px 12px",fontSize:12,color:"#003594",cursor:"pointer",textAlign:"left",fontFamily:"'DM Sans',sans-serif"}}>{s}</button>)}
+          {suggestions.map((s,i)=><button key={i} onClick={()=>setInput(s)} style={{background:"rgba(242,201,76,0.16)",border:"1px solid rgba(15,76,129,0.2)",borderRadius:12,padding:"8px 12px",fontSize:12,color:PHILLY_BLUE,cursor:"pointer",textAlign:"left",fontFamily:"'DM Sans',sans-serif"}}>{s}</button>)}
         </div>}
         {atLimit&&<div style={{background:"#FFF8F0",borderRadius:16,padding:16,border:"1px solid rgba(244,162,97,0.3)",margin:"8px 0"}}>
           <div style={{fontSize:14,fontWeight:700,color:"#7B4B00",marginBottom:6}}>You've used your {AI_LIMIT} free AI messages today.</div>
           <div style={{fontSize:13,color:"#A06000",lineHeight:1.6,marginBottom:12}}>Your limit resets at midnight. In the meantime these resources can help right now:</div>
           <div style={{display:"flex",flexDirection:"column",gap:8}}>
-            <button onClick={()=>window.open("tel:211")} style={{background:"#003594",color:"white",border:"none",borderRadius:12,padding:"12px",fontFamily:"'DM Sans',sans-serif",fontSize:13,fontWeight:600,cursor:"pointer"}}>📞 Call Philly 311 — Free Resource Helpline</button>
+            <button onClick={()=>window.open("tel:211")} style={{background:PHILLY_BLUE,color:PHILLY_WHITE,border:"none",borderRadius:12,padding:"12px",fontFamily:"'DM Sans',sans-serif",fontSize:13,fontWeight:600,cursor:"pointer"}}>📞 Call Philly 311 — Free Resource Helpline</button>
             <button onClick={()=>window.open("tel:988")} style={{background:"#7B2D8B",color:"white",border:"none",borderRadius:12,padding:"12px",fontFamily:"'DM Sans',sans-serif",fontSize:13,fontWeight:600,cursor:"pointer"}}>🧠 Call 988 — Crisis & Mental Health Line</button>
           </div>
         </div>}
@@ -1094,9 +1102,9 @@ function DonateModal({ onClose, lang }) {
         <div className="modal-handle"/>
         <div className="dh-back" onClick={()=>setStep(1)}>{t.back}</div>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:20,color:"#1C2B1E",marginBottom:16}}>{t.confirmDonation}</div>
-        <div style={{background:"#F0F4FF",borderRadius:14,padding:14,marginBottom:16}}>
+        <div style={{background:"rgba(15,76,129,0.06)",borderRadius:14,padding:14,marginBottom:16}}>
           <div style={{fontSize:14,fontWeight:700}}>{org}</div>
-          <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#003594"}}>{amt}{freq==="monthly"?"/mo":""}</div>
+          <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:PHILLY_BLUE}}>{amt}{freq==="monthly"?"/mo":""}</div>
           <div style={{fontSize:12,color:"#6B7C6E"}}>{impact[amt]||"Your gift makes a difference"}</div>
         </div>
         <button className="dh-btn-primary" onClick={()=>setStep(3)} style={{marginBottom:10}}>💛 Donate {amt}{freq==="monthly"?"/month":""} Securely</button>
@@ -1110,7 +1118,7 @@ function DonateModal({ onClose, lang }) {
         <div style={{fontSize:56,marginBottom:12}}>💛</div>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:24,color:"#1C2B1E",marginBottom:8}}>{t.thankYou}</div>
         <div style={{fontSize:13,color:"#6B7C6E",lineHeight:1.6,marginBottom:16}}>{amt} {t.onItsWay} <strong>{org}</strong>.</div>
-        <div style={{background:"#F0F9F4",borderRadius:14,padding:12,marginBottom:20}}><div style={{fontSize:13,color:"#003594",fontWeight:600}}>{t.yourImpact} {impact[amt]||"makes a real difference"}</div></div>
+        <div style={{background:"rgba(242,201,76,0.16)",borderRadius:14,padding:12,marginBottom:20}}><div style={{fontSize:13,color:PHILLY_BLUE,fontWeight:600}}>{t.yourImpact} {impact[amt]||"makes a real difference"}</div></div>
         <button className="dh-btn-primary" onClick={onClose}>{t.done}</button>
       </div>
     </div>
@@ -1125,12 +1133,12 @@ function DonateModal({ onClose, lang }) {
         <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:12}}>
           {amts.map(a=><div key={a} className={`amt-pill${amt===a?" sel":""}`} onClick={()=>setAmt(a==="Custom"?"$":a)}>{a}</div>)}
         </div>
-        {amt&&amt!=="$"&&<div style={{background:"#F0F9F4",borderRadius:10,padding:9,marginBottom:12}}><div style={{fontSize:12,color:"#003594"}}>💛 {amt} — {impact[amt]||"makes a real difference"}</div></div>}
+        {amt&&amt!=="$"&&<div style={{background:"rgba(242,201,76,0.16)",borderRadius:10,padding:9,marginBottom:12}}><div style={{fontSize:12,color:PHILLY_BLUE}}>💛 {amt} — {impact[amt]||"makes a real difference"}</div></div>}
         <div style={{fontSize:12,fontWeight:700,color:"#6B7C6E",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>{t.donateTo}</div>
         <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:16}}>
           {orgs.map(o=>(
-            <div key={o.name} onClick={()=>setOrg(o.name)} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",borderRadius:12,border:`1.5px solid ${org===o.name?"#003594":"rgba(0,0,0,0.08)"}`,background:org===o.name?"#F0F9F4":"white",cursor:"pointer"}}>
-              <div style={{width:18,height:18,borderRadius:"50%",border:`2px solid ${org===o.name?"#003594":"#ccc"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{org===o.name&&<div style={{width:8,height:8,borderRadius:"50%",background:"#003594"}}/>}</div>
+            <div key={o.name} onClick={()=>setOrg(o.name)} style={{display:"flex",alignItems:"center",gap:12,padding:"10px 14px",borderRadius:12,border:`1.5px solid ${org===o.name?PHILLY_BLUE:"rgba(0,0,0,0.08)"}`,background:org===o.name?"rgba(242,201,76,0.16)":PHILLY_WHITE,cursor:"pointer"}}>
+              <div style={{width:18,height:18,borderRadius:"50%",border:`2px solid ${org===o.name?PHILLY_BLUE:"#ccc"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{org===o.name&&<div style={{width:8,height:8,borderRadius:"50%",background:PHILLY_BLUE}}/>}</div>
               <div style={{fontSize:20,flexShrink:0}}>{o.icon}</div>
               <div><div style={{fontSize:13,fontWeight:600,color:"#1C2B1E"}}>{o.name}</div><div style={{fontSize:11,color:"#6B7C6E"}}>{o.desc}</div></div>
             </div>
@@ -1146,10 +1154,10 @@ function DonateModal({ onClose, lang }) {
 function NotifOverlay({ onClose, lang }) {
   const t=T[lang]||T.en;
   const notifs=[
-    {icon:"🍽",bg:"#003594",title:"Call ahead before visiting",body:"Hours and availability can change throughout Philadelphia.",time:"now"},
-    {icon:"📦",bg:"#F4A261",title:"New resource added",body:"Philadelphia pantry and benefits listings restored",time:"2m ago"},
-    {icon:"⚡",bg:"#023E8A",title:"LIHEAP deadline soon",body:"PA utility assistance deadline is April 30th — apply now",time:"1h ago"},
-    {icon:"💛",bg:"#E76F51",title:"Thank you!",body:"Your $25 donation to the General Philly Fund was received",time:"Yesterday"},
+    {icon:"🍽",bg:PHILLY_BLUE,title:"Call ahead before visiting",body:"Hours and availability can change throughout Philadelphia.",time:"now"},
+    {icon:"📦",bg:PHILLY_GOLD,title:"New resource added",body:"Philadelphia pantry and benefits listings restored",time:"2m ago"},
+    {icon:"⚡",bg:PHILLY_BLUE_DARK,title:"LIHEAP deadline soon",body:"PA utility assistance deadline is April 30th — apply now",time:"1h ago"},
+    {icon:"💛",bg:PHILLY_GOLD,title:"Thank you!",body:"Your $25 donation to the General Philly Fund was received",time:"Yesterday"},
   ];
   return (
     <div className="notif-overlay" onClick={onClose}>
@@ -1207,7 +1215,7 @@ export default function App() {
   };
 
   return (
-    <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#E8F5E9 0%,#F1F8E9 100%)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 0"}}>
+    <div style={{minHeight:"100vh",background:`linear-gradient(135deg,${PHILLY_BLUE} 0%,${PHILLY_WHITE} 52%,${PHILLY_GOLD} 100%)`,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 0"}}>
       {/* Feature 1 — PWA install prompt */}
       <InstallPrompt/>
       {/* Family profile setup — shows once on first visit */}
@@ -1220,10 +1228,10 @@ export default function App() {
         <div className="dh-sb">
           <span>9:41</span>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
-            <span style={{fontSize:13,fontWeight:700,letterSpacing:"0.04em",color:"#003594"}}>{(T[lang]||T.en).appName}</span>
-            <div className="lang-toggle" style={{background:"rgba(0,53,148,0.12)"}}>
+            <span style={{fontSize:13,fontWeight:700,letterSpacing:"0.04em",color:PHILLY_BLUE}}>{(T[lang]||T.en).appName}</span>
+            <div className="lang-toggle" style={{background:"rgba(15,76,129,0.12)"}}>
               {["en","es","vi","zh"].map(code=>(
-                <button key={code} className={`lang-btn ${lang===code?"active":"inactive"}`} style={{color:lang===code?"#003594":"#6B7C6E",background:lang===code?"white":"transparent"}} onClick={()=>setLang(code)}>
+                <button key={code} className={`lang-btn ${lang===code?"active":"inactive"}`} style={{color:lang===code?PHILLY_BLUE:"#6B7C6E",background:lang===code?PHILLY_WHITE:"transparent"}} onClick={()=>setLang(code)}>
                   {code==="en"?"EN":code==="es"?"ES":code==="vi"?"VI":"中"}
                 </button>
               ))}
@@ -1233,7 +1241,7 @@ export default function App() {
             <div onClick={()=>setTab("submit")} style={{cursor:"pointer",fontSize:16,opacity:0.6}}>✏</div>
             <div onClick={()=>{setShowNotif(true);setNotifCount(0);}} style={{position:"relative",cursor:"pointer",fontSize:16,opacity:0.7}}>
               🔔
-              {notifCount>0&&<div style={{position:"absolute",top:-4,right:-4,width:16,height:16,background:"#D62828",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,color:"white",border:"2px solid #FAFAF7"}}>{notifCount}</div>}
+              {notifCount>0&&<div style={{position:"absolute",top:-4,right:-4,width:16,height:16,background:PHILLY_GOLD,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:800,color:PHILLY_BLUE_DARK,border:`2px solid ${PHILLY_WHITE}`}}>{notifCount}</div>}
             </div>
           </div>
         </div>
@@ -1250,8 +1258,8 @@ export default function App() {
           ))}
         </nav>
         {/* Legal footer */}
-        <div style={{textAlign:"center",padding:"4px 0 2px",borderTop:"1px solid rgba(0,0,0,0.04)"}}>
-          <button onClick={()=>setShowLegal(true)} style={{background:"transparent",border:"none",color:"#9BA8A0",fontSize:9,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",padding:"2px 8px"}}>
+        <div style={{textAlign:"center",padding:"4px 0 2px",borderTop:"1px solid rgba(15,76,129,0.14)",background:PHILLY_WHITE}}>
+          <button onClick={()=>setShowLegal(true)} style={{background:"transparent",border:"none",color:PHILLY_BLUE,fontSize:9,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",padding:"2px 8px"}}>
             Terms · Privacy · Disclaimer · © 2026 CieroLink LLC
           </button>
         </div>
