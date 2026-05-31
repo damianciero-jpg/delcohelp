@@ -759,7 +759,11 @@ function FindScreen({ onResource, lang, resources=RESOURCES }) {
 }
 
 /* ── NEARBY ESSENTIALS MAP ── */
-function NearbyEssentialsMap() {
+function NearbyEssentialsMap({
+  locations=ESSENTIAL_LOCATIONS,
+  title="Nearby Essentials Map",
+  subtitle="Find nearby bathrooms, water, Wi-Fi, and cooling spaces in Philadelphia."
+}) {
   const [selectedCategory,setSelectedCategory]=useState("All");
   const [selectedLocation,setSelectedLocation]=useState(null);
   const categories=["All","Bathroom","Water","Wi-Fi","Cooling"];
@@ -769,14 +773,14 @@ function NearbyEssentialsMap() {
     "Wi-Fi":{ icon:"📶", color:PHILLY_BLUE_DARK, bg:"rgba(15,76,129,0.1)" },
     Cooling:{ icon:"❄️", color:PHILLY_GOLD_DARK, bg:"rgba(242,201,76,0.24)" },
   };
-  const shownLocations=ESSENTIAL_LOCATIONS.filter(loc=>selectedCategory==="All"||loc.category===selectedCategory);
+  const shownLocations=locations.filter(loc=>selectedCategory==="All"||loc.category===selectedCategory);
   const selectedMeta=selectedLocation?categoryMeta[selectedLocation.category]:null;
 
   return (
     <div className="dfi">
       <div style={{padding:"16px 24px 12px"}}>
-        <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#1C2B1E",marginBottom:4}}>Nearby Essentials Map</div>
-        <div style={{fontSize:13,color:"#5F6F75",lineHeight:1.45,marginBottom:14}}>Find nearby bathrooms, water, Wi-Fi, and cooling spaces in Philadelphia.</div>
+        <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:"#1C2B1E",marginBottom:4}}>{title}</div>
+        <div style={{fontSize:13,color:"#5F6F75",lineHeight:1.45,marginBottom:14}}>{subtitle}</div>
         <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:6,scrollbarWidth:"none",marginBottom:12}}>
           {categories.map(category=>(
             <button

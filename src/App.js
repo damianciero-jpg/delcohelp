@@ -43,6 +43,14 @@ const THEME = {
 const APP_VERSION = "restored-delco-blue-philly-2026-05-05";
 const DELCO_RESOURCE_CACHE_KEY = "delcohelp_cached_resources_v1";
 
+const DELCO_ESSENTIAL_LOCATIONS = [
+  { id: 1, name: 'Media-Upper Providence Free Library', category: 'Wi-Fi', distance: '0.4 mi', notes: 'Public Wi-Fi available during library hours. Good quiet indoor stop.', x: 45, y: 35 },
+  { id: 2, name: 'Delaware County Courthouse', category: 'Bathroom', distance: '0.5 mi', notes: 'Public restroom access may require security screening during business hours.', x: 50, y: 45 },
+  { id: 3, name: 'Rose Tree Park Water Fountain', category: 'Water', distance: '1.2 mi', notes: 'Seasonal public water fountain near park paths and event areas.', x: 65, y: 55 },
+  { id: 4, name: 'Chester City Hall Cooling Location', category: 'Cooling', distance: '2.8 mi', notes: 'Potential cooling location during extreme heat events. Verify hours before travel.', x: 30, y: 70 },
+  { id: 5, name: '69th Street Transportation Center', category: 'Bathroom', distance: '3.5 mi', notes: 'Restroom access may vary by SEPTA hours and security availability.', x: 78, y: 25 }
+];
+
 /* ── TRANSLATIONS ── */
 const T = {
   en: {
@@ -641,6 +649,7 @@ const CSS = `
   .impact-stat { background:white; border-radius:16px; padding:14px; flex:1; box-shadow:0 4px 14px rgba(15,23,42,0.06); text-align:center; }
   .sponsor-ticker { overflow:hidden; white-space:nowrap; }
   .sponsor-inner { display:inline-block; animation:ticker 12s linear infinite; }
+  .essentials-pin:hover, .essentials-pin:focus-visible { transform:translate(-50%,-50%) scale(1.08); outline:3px solid var(--color-gold); outline-offset:2px; }
   .support-trust-line { text-align:center; font-size:0.85rem; color:#c7d2fe; margin-top:8px; }
   .support-trust-card { margin:28px auto 12px; padding:18px; border-radius:18px; background:white; border:1px solid var(--color-border); box-shadow:0 4px 14px rgba(15,23,42,0.06); }
   .support-pill { display:inline-block; background:var(--color-soft-gold); color:#92400E; padding:5px 10px; border-radius:999px; font-size:0.75rem; font-weight:bold; margin-bottom:8px; }
@@ -882,6 +891,7 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=
             {icon:"🔎",label:t.checkInfo,sub:t.scamBiasSignals,nav:"trust",category:"check_info"},
             {icon:"📞",label:t.crisisLine,sub:t.freeConfidential,nav:"hotline",category:"crisis"},
             {icon:"🏠",label:t.housing,sub:t.shelterLegalAid,nav:"find",filter:"assistance",category:"housing"},
+            {icon:"🗺️",label:"Essentials",sub:"Find nearby bathrooms, water, Wi-Fi, and cooling spots.",nav:"essentials",category:"essentials"},
           ].map(a=>(
             <div key={a.label} onClick={()=>{trackImpactEvent("category_click",{category:a.category});onNav(a.nav,a.filter);}} style={{background:"white",borderRadius:20,padding:"16px 14px",cursor:"pointer",border:"1px solid rgba(226,232,240,0.8)",boxShadow:"0 6px 18px rgba(15,23,42,0.07)"}}>
               <div style={{width:40,height:40,borderRadius:12,background:"#F0F6FF",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,marginBottom:10}}>{a.icon}</div>
@@ -1040,6 +1050,172 @@ function FindScreen({ onResource, lang, initialFilter="all", resources=RESOURCES
           <div style={{fontSize:11,color:"#12355B",lineHeight:1.5}}>{t.pa211Coming}</div>
         </div>
         <div style={{height:8}}/>
+      </div>
+    </div>
+  );
+}
+
+/* ── NEARBY ESSENTIALS MAP ── */
+function NearbyEssentialsMap({
+  locations=DELCO_ESSENTIAL_LOCATIONS,
+  title="Nearby Essentials Map",
+  subtitle="Find nearby bathrooms, water, Wi-Fi, and cooling spots."
+}) {
+  const [selectedCategory,setSelectedCategory]=useState("All");
+  const [selectedLocation,setSelectedLocation]=useState(null);
+  const categories=["All","Bathroom","Water","Wi-Fi","Cooling"];
+  const categoryMeta={
+    Bathroom:{ icon:"🚻", color:THEME.civicBlue, bg:"rgba(30,90,138,0.12)" },
+    Water:{ icon:"💧", color:"#0E7490", bg:"rgba(14,116,144,0.12)" },
+    "Wi-Fi":{ icon:"📶", color:THEME.countyNavy, bg:"rgba(18,53,91,0.1)" },
+    Cooling:{ icon:"❄️", color:"#92400E", bg:"rgba(242,201,76,0.28)" },
+  };
+  const shownLocations=locations.filter(loc=>selectedCategory==="All"||loc.category===selectedCategory);
+  const selectedMeta=selectedLocation?categoryMeta[selectedLocation.category]:null;
+
+  return (
+    <div className="dfi">
+      <div style={{padding:"16px 24px 12px"}}>
+        <div style={{fontFamily:"'DM Serif Display',serif",fontSize:22,color:THEME.text,marginBottom:4}}>{title}</div>
+        <div style={{fontSize:13,color:THEME.muted,lineHeight:1.45,marginBottom:14}}>{subtitle}</div>
+        <div style={{display:"flex",gap:8,overflowX:"auto",paddingBottom:6,scrollbarWidth:"none",marginBottom:12}}>
+          {categories.map(category=>(
+            <button
+              key={category}
+              type="button"
+              onClick={()=>{setSelectedCategory(category);setSelectedLocation(null);}}
+              style={{
+                flexShrink:0,
+                border:`1.5px solid ${selectedCategory===category?THEME.civicBlue:THEME.border}`,
+                background:selectedCategory===category?THEME.civicBlue:THEME.card,
+                color:selectedCategory===category?"white":THEME.countyNavy,
+                borderRadius:999,
+                padding:"8px 13px",
+                fontFamily:"'DM Sans',sans-serif",
+                fontSize:12,
+                fontWeight:800,
+                cursor:"pointer"
+              }}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div style={{padding:"0 24px 18px"}}>
+        <div
+          role="application"
+          aria-label="Simulated nearby essentials map"
+          onClick={()=>setSelectedLocation(null)}
+          style={{
+            position:"relative",
+            height:"min(42vh, 360px)",
+            minHeight:280,
+            borderRadius:20,
+            overflow:"hidden",
+            border:`1px solid ${THEME.border}`,
+            backgroundColor:"#EEF3F7",
+            backgroundImage:"linear-gradient(rgba(30,90,138,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(30,90,138,0.08) 1px, transparent 1px)",
+            backgroundSize:"28px 28px",
+            boxShadow:"0 8px 26px rgba(15,23,42,0.12)"
+          }}
+        >
+          <div style={{position:"absolute",left:14,top:12,background:"rgba(255,255,255,0.92)",border:`1px solid ${THEME.border}`,borderRadius:999,padding:"6px 10px",fontSize:11,fontWeight:800,color:THEME.countyNavy}}>
+            Delaware County essentials
+          </div>
+          {shownLocations.map(loc=>{
+            const meta=categoryMeta[loc.category];
+            const active=selectedLocation?.id===loc.id;
+            return (
+              <button
+                key={loc.id}
+                type="button"
+                className="essentials-pin"
+                aria-label={`${loc.name}, ${loc.category}, ${loc.distance}`}
+                title={loc.name}
+                onClick={e=>{e.stopPropagation();setSelectedLocation(loc);}}
+                style={{
+                  position:"absolute",
+                  left:`${loc.x}%`,
+                  top:`${loc.y}%`,
+                  transform:"translate(-50%,-50%)",
+                  width:active?48:42,
+                  height:active?48:42,
+                  borderRadius:"50%",
+                  border:"3px solid white",
+                  background:meta.color,
+                  color:"white",
+                  boxShadow:active?"0 0 0 5px rgba(242,201,76,0.42), 0 8px 18px rgba(15,23,42,0.28)":"0 6px 14px rgba(15,23,42,0.24)",
+                  display:"flex",
+                  alignItems:"center",
+                  justifyContent:"center",
+                  fontSize:active?21:18,
+                  cursor:"pointer",
+                  transition:"all 0.18s ease",
+                  zIndex:active?4:2
+                }}
+              >
+                {meta.icon}
+              </button>
+            );
+          })}
+          {selectedLocation&&(
+            <div
+              onClick={e=>e.stopPropagation()}
+              style={{
+                position:"absolute",
+                left:12,
+                right:12,
+                bottom:12,
+                background:"white",
+                borderRadius:18,
+                padding:14,
+                border:`1px solid ${THEME.border}`,
+                boxShadow:"0 14px 34px rgba(15,23,42,0.2)",
+                zIndex:5
+              }}
+            >
+              <div style={{display:"flex",gap:12,alignItems:"flex-start"}}>
+                <div style={{width:42,height:42,borderRadius:12,background:selectedMeta.bg,color:selectedMeta.color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:21,flexShrink:0}}>
+                  {selectedMeta.icon}
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:14,fontWeight:800,color:THEME.text,lineHeight:1.25,marginBottom:3}}>{selectedLocation.name}</div>
+                  <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:7}}>
+                    <span className="dh-tag">{selectedLocation.category}</span>
+                    <span className="dh-tag">{selectedLocation.distance}</span>
+                  </div>
+                  <div style={{fontSize:12,color:THEME.muted,lineHeight:1.5,marginBottom:10}}>{selectedLocation.notes}</div>
+                  <button
+                    type="button"
+                    aria-label={`Get directions to ${selectedLocation.name}`}
+                    onClick={()=>{}}
+                    style={{width:"100%",background:THEME.civicBlue,color:"white",border:"none",borderRadius:12,padding:"10px 12px",fontFamily:"'DM Sans',sans-serif",fontSize:13,fontWeight:800,cursor:"pointer"}}
+                  >
+                    Get Directions
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginTop:12}}>
+          {shownLocations.map(loc=>{
+            const meta=categoryMeta[loc.category];
+            return (
+              <button
+                key={loc.id}
+                type="button"
+                onClick={()=>setSelectedLocation(loc)}
+                style={{background:"white",border:`1px solid ${THEME.border}`,borderRadius:14,padding:"10px",textAlign:"left",fontFamily:"'DM Sans',sans-serif",cursor:"pointer",boxShadow:"0 2px 10px rgba(15,23,42,0.06)"}}
+              >
+                <div style={{fontSize:18,marginBottom:5}}>{meta.icon}</div>
+                <div style={{fontSize:12,fontWeight:800,color:THEME.text,lineHeight:1.25}}>{loc.name}</div>
+                <div style={{fontSize:11,color:THEME.civicBlue,marginTop:4,fontWeight:700}}>{loc.category} · {loc.distance}</div>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -1613,6 +1789,7 @@ function DelcoApp() {
   const tabs=[
     {id:"home",icon:"🏠",label:"home"},
     {id:"find",icon:"🔍",label:"find"},
+    {id:"essentials",icon:"🗺️",label:"Essentials"},
     {id:"benefits",icon:"📋",label:"benefits"},
     {id:"nutrition",icon:"🍎",label:"nutrition"},
     {id:"hotline",icon:"🚨",label:"hotline"},
@@ -1622,6 +1799,7 @@ function DelcoApp() {
   const screens={
     home:<HomeScreen onNav={handleNav} onResource={setDetail} onDonate={()=>setShowDonate(true)} onEmergency={()=>setShowEmergency(true)} lang={lang} resources={resources}/>,
     find:<FindScreen key={findFilter} initialFilter={findFilter} onResource={setDetail} lang={lang} resources={resources}/>,
+    essentials:<NearbyEssentialsMap/>,
     benefits:<BenefitsScreen lang={lang}/>,
     nutrition:<NutritionFoodCheck variant="delco" lang={lang}/>,
     trust:<TrustCheck lang={lang}/>,
