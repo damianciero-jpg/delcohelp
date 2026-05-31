@@ -410,7 +410,6 @@ function ResourceCard({ r, onClick, lang }) {
           <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
             <span className={`dh-chip ${open?"open":today?"today":"closed"}`}>{open?t.openRightNow:today?t.opensLaterToday:t.closedToday}</span>
             <span className="dh-chip" style={{background:CATEGORY_COLORS[r.category]+"15",color:CATEGORY_COLORS[r.category]}}>{rt(CATEGORY_LABELS[r.category])}</span>
-            <span className="dh-chip" style={{background:"#FFF3CD",color:"#7B5800"}}>{rt("Needs verification")}</span>
             <span className="dh-chip" style={{background:"#FFF3CD",color:"#7B5800"}}>{rt("Call ahead")}</span>
           </div>
         </div>
@@ -433,7 +432,6 @@ function DetailView({ r, onBack, onDonate, lang, online=true }) {
         <div style={{display:"flex",gap:6,marginBottom:8,flexWrap:"wrap"}}>
           <span className={`dh-chip ${open?"open":today?"today":"closed"}`}>{open?t.openRightNow:today?t.opensLaterToday:t.closedToday}</span>
           <span className="dh-chip" style={{background:CATEGORY_COLORS[r.category]+"15",color:CATEGORY_COLORS[r.category]}}>{rt(CATEGORY_LABELS[r.category])}</span>
-          <span className="dh-chip" style={{background:"#FFF3CD",color:"#7B5800"}}>{rt("Needs verification")}</span>
           <span className="dh-chip" style={{background:"#FFF3CD",color:"#7B5800"}}>{rt("Call ahead")}</span>
         </div>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:24,color:"#1C2B1E",lineHeight:1.2,marginBottom:6}}>{r.name}</div>
@@ -554,11 +552,17 @@ function HomeScreen({ onNav, onResource, onDonate, onEmergency, lang, resources=
       <div style={{background:"linear-gradient(160deg,#003594 0%,#0046AD 100%)",padding:"16px 24px 24px",borderRadius:"0 0 28px 28px",marginBottom:16}}>
         <div style={{fontSize:11,fontWeight:600,color:"rgba(255,255,255,0.65)",letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:4}}>{t.county}</div>
         <div style={{fontFamily:"'DM Serif Display',serif",fontSize:24,color:"white",lineHeight:1.25,marginBottom:2}}>{t.tagline}</div>
-        <div style={{display:"inline-flex",background:"rgba(250,204,21,0.18)",color:"#FDE68A",border:"1px solid rgba(250,204,21,0.32)",borderRadius:999,padding:"4px 9px",fontSize:10,fontWeight:800,marginBottom:8}}>Philadelphia beta page</div>
         <div style={{fontSize:12,color:"rgba(255,255,255,0.75)",marginBottom:16}}>{t.zip}</div>
         <button onClick={()=>{trackEvent("emergency_button_tapped");onEmergency();}} style={{width:"100%",background:"#D62828",border:"2px solid rgba(255,255,255,0.3)",borderRadius:14,padding:"12px",fontFamily:"'DM Sans',sans-serif",fontSize:14,fontWeight:700,color:"white",cursor:"pointer",marginBottom:12,display:"flex",alignItems:"center",justifyContent:"center",gap:8}}>
           {t.needHelpNow}
         </button>
+        <a
+          className="dh-btn-secondary"
+          href="https://www.delcohelp.org"
+          style={{ marginBottom:10, background:"#1E5A8A", border:"1px solid rgba(255,255,255,0.24)", display:"block", textAlign:"center", textDecoration:"none" }}
+        >
+          Switch to Delaware County
+        </a>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}}>
           {[{icon:"🔍",label:t.findResources,sub:t.foodHelpMore,nav:"find"},{icon:"📋",label:t.benefits,sub:t.snapWic,nav:"benefits"},{icon:"🥗",label:"Food Health",sub:"Scan to check",nav:"health"},{icon:"🤖",label:t.askAI,sub:"Powered by Claude",nav:"ai"},{icon:"🚨",label:t.emergency,sub:"Crisis hotlines",nav:"hotline"},{icon:"🏥",label:"Volunteer",sub:"Give back",nav:"volunteer"}].map(a=>(
             <div key={a.nav} onClick={()=>onNav(a.nav)} style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(10px)",borderRadius:14,padding:"10px 8px",cursor:"pointer",border:"1px solid rgba(255,255,255,0.2)",textAlign:"center"}}>
@@ -731,11 +735,6 @@ function FindScreen({ onResource, lang, resources=RESOURCES }) {
             <div style={{fontSize:12,color:"#6B7C6E",lineHeight:1.6}}>Try a nearby zip code, or call Philly 311 for help finding resources anywhere in Philadelphia.</div>
           </div>
         )}
-        {/* 211 upgrade note */}
-        <div style={{background:"#F0F4FF",borderRadius:14,padding:14,marginTop:8,marginBottom:8,border:"1px solid rgba(2,62,138,0.12)"}}>
-          <div style={{fontSize:12,fontWeight:700,color:"#023E8A",marginBottom:4}}>🔄 More resources coming soon</div>
-          <div style={{fontSize:11,color:"#1A4A8A",lineHeight:1.5}}>We're integrating the Philly 311 database — coming Q3 2026 with hundreds of verified resources across all 49 Philadelphia zip codes.</div>
-        </div>
         <div style={{height:8}}/>
       </div>
     </div>
@@ -1147,7 +1146,7 @@ function DonateModal({ onClose, lang }) {
 function NotifOverlay({ onClose, lang }) {
   const t=T[lang]||T.en;
   const notifs=[
-    {icon:"🍽",bg:"#003594",title:"Call ahead before visiting",body:"Philadelphia listings are marked for verification before publication",time:"now"},
+    {icon:"🍽",bg:"#003594",title:"Call ahead before visiting",body:"Hours and availability can change throughout Philadelphia.",time:"now"},
     {icon:"📦",bg:"#F4A261",title:"New resource added",body:"Philadelphia pantry and benefits listings restored",time:"2m ago"},
     {icon:"⚡",bg:"#023E8A",title:"LIHEAP deadline soon",body:"PA utility assistance deadline is April 30th — apply now",time:"1h ago"},
     {icon:"💛",bg:"#E76F51",title:"Thank you!",body:"Your $25 donation to the General Philly Fund was received",time:"Yesterday"},
