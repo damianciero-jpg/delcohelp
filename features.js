@@ -677,12 +677,13 @@ export function SMSAccessCard() {
 
 /* ═══════════════════════════════════════════════════════════
    FEATURE 9 — USER ANALYTICS HOOK
-   Lightweight event tracking (stores locally, send to backend later).
+   Lightweight event tracking (stores locally AND sends to GA4).
    Critical for grant impact reports.
    ═══════════════════════════════════════════════════════════ */
 
 export function trackEvent(eventName, properties = {}) {
   try {
+    // 1. Maintain local offline tracking for in-app impact stats (Feature 17)
     const events = JSON.parse(localStorage.getItem("dh_events") || "[]");
     events.push({
       event: eventName,
@@ -693,7 +694,23 @@ export function trackEvent(eventName, properties = {}) {
     // Keep only last 1000 events
     if (events.length > 1000) events.splice(0, events.length - 1000);
     localStorage.setItem("dh_events", JSON.stringify(events));
-  } catch {}
+
+    // 2. LIVE ROUTING: Send to Google Analytics 4
+    if (typeof window !== "undefined" && window.gtag) {
+      // Automatically flag if this came from the Philly or Delco domain
+      const currentApp = window.location.hostname.includes("philly") ? "PhillyHelp" : "DelcoHelp";
+      
+      window.gtag("event", eventName, {
+        ...properties,
+        app_platform: currentApp, 
+        send_to: "G-3DEVDTQ80W" 
+      });
+    } else {
+      console.log(`[Analytics Offline] ${eventName}:`, properties);
+    }
+  } catch (error) {
+    console.error("Analytics routing error:", error);
+  }
 }
 
 function initSession() {
@@ -846,7 +863,7 @@ export function IAmGoingButton({ resource }) {
   }
 
   function requestDirections() {
-    window.open(`https://maps.google.com/?q=${encodeURIComponent(resource.address)}`);
+    window.open(`https://maps.google.com/?q=$${encodeURIComponent(resource.address)}`);
   }
 
   if (going) return (
